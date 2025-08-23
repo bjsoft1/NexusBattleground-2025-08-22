@@ -38,8 +38,6 @@ protected:
 
 private:
 #pragma region Configurable & Internal Properties
-	const float MinRespawnDelay = 3.0f;
-	bool IsAllowComputerCharacter;
 #pragma endregion Configurable & Internal Properties
 
 

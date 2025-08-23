@@ -6,6 +6,7 @@
 
 #pragma region NexusBattleground Header Files
 #include "BattlegroundCheatManager.h"
+#include "BattlegroundPlayerCameraManager.h"
 #pragma endregion NexusBattleground Header Files
 
 
@@ -13,6 +14,7 @@
 ABattlegroundPlayerController::ABattlegroundPlayerController(const FObjectInitializer& objectInitializer) : Super(objectInitializer)
 {
 	APlayerController::CheatClass = UBattlegroundCheatManager::StaticClass();
+	PlayerCameraManagerClass = ABattlegroundPlayerCameraManager::StaticClass();
 }
 #pragma endregion Constructors and Overrides
 

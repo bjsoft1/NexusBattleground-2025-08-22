@@ -2,22 +2,95 @@
 
 #pragma region Default System Header Files
 #include "HumanCharacter.h"
+#include "Camera/CameraComponent.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
+#include "InputMappingContext.h"
+#include "InputActionValue.h"
+#include "Components/InputComponent.h"
 #pragma endregion Default System Header Files
 
 
 #pragma region NexusBattleground Header Files
+#include "BattlegroundCharacterMovementComponent.h"
 #pragma endregion NexusBattleground Header Files
 
 
 #pragma region Constructors and Overrides
-AHumanCharacter::AHumanCharacter(const FObjectInitializer& objectInitializer) : Super(objectInitializer)
+AHumanCharacter::AHumanCharacter(const FObjectInitializer& objectInitializer) 
+	: Super(objectInitializer.SetDefaultSubobjectClass<UBattlegroundCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 
+	this->CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+	this->CameraBoom->bUsePawnControlRotation = true;
+	this->CameraBoom->bEnableCameraLag = true;
+
+	this->FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
+	this->FollowCamera->SetupAttachment(this->CameraBoom, USpringArmComponent::SocketName);
+	this->FollowCamera->bUsePawnControlRotation = false;
+
+	// Find Inputs
+	ConstructorHelpers::FObjectFinder<UInputMappingContext> inputMappingContext(ASSET_PATH(TEXT("Inputs/IMC_NexusInputContext")));
+	ConstructorHelpers::FObjectFinder<UInputAction> jumpAction(ASSET_PATH(TEXT("Inputs/Actions/IA_Jump")));
+	ConstructorHelpers::FObjectFinder<UInputAction> moveAction(ASSET_PATH(TEXT("Inputs/Actions/IA_Move")));
+	ConstructorHelpers::FObjectFinder<UInputAction> lookAction(ASSET_PATH(TEXT("Inputs/Actions/IA_Look")));
+	ConstructorHelpers::FObjectFinder<UInputAction> crouchAction(ASSET_PATH(TEXT("Inputs/Actions/IA_Crouch")));
+	ConstructorHelpers::FObjectFinder<UInputAction> cameraAction(ASSET_PATH(TEXT("Inputs/Actions/IA_Camera")));
+	ConstructorHelpers::FObjectFinder<UInputAction> pickupAction(ASSET_PATH(TEXT("Inputs/Actions/IA_Pickup")));
+
+	this->IMC_DefaultMappingContext = inputMappingContext.Object;
+	this->IA_JumpAction = jumpAction.Object;
+	this->IA_MoveAction = moveAction.Object;
+	this->IA_LookAction = lookAction.Object;
+	this->IA_CrouchAction = crouchAction.Object;
+	this->IA_CameraAction = cameraAction.Object;
+	this->IA_PickupAction = pickupAction.Object;
+
+}
+void AHumanCharacter::SetupPlayerInputComponent(UInputComponent* playerInputComponent)
+{
+	Super::SetupPlayerInputComponent(playerInputComponent);
+
+	// Set up action bindings
+	if (UEnhancedInputComponent* enhancedInputComponent = CastChecked<UEnhancedInputComponent>(playerInputComponent))
+	{
+		//Jumping
+		enhancedInputComponent->BindAction(this->IA_JumpAction, ETriggerEvent::Started, this, &AHumanCharacter::IE_JumpStartCharacter);
+		enhancedInputComponent->BindAction(this->IA_JumpAction, ETriggerEvent::Completed, this, &AHumanCharacter::IE_JumpEndCharacter);
+
+		// Basic Movement
+		enhancedInputComponent->BindAction(this->IA_MoveAction, ETriggerEvent::Triggered, this, &AHumanCharacter::IE_MoveCharacter);
+		enhancedInputComponent->BindAction(this->IA_LookAction, ETriggerEvent::Triggered, this, &AHumanCharacter::IE_LookCharacter);
+
+		// Crouch/Uncrouch/Prone/Unprone
+		enhancedInputComponent->BindAction(this->IA_CrouchAction, ETriggerEvent::Started, this, &AHumanCharacter::IE_CrouchCharacter);
+
+		// Utilities
+		enhancedInputComponent->BindAction(this->IA_CameraAction, ETriggerEvent::Started, this, &AHumanCharacter::IE_SwitchCameraMode);
+		enhancedInputComponent->BindAction(this->IA_PickupAction, ETriggerEvent::Started, this, &AHumanCharacter::IE_PickupItem);
+	}
 }
 #pragma endregion Constructors and Overrides
 
 
 #pragma region Lifecycle Overrides
+void AHumanCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	this->IE_SwitchCameraMode();
+
+	if (APlayerController* playerController = Cast<APlayerController>(GetController()))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(playerController->GetLocalPlayer()))
+			subsystem->AddMappingContext(this->IMC_DefaultMappingContext, 0);
+	}
+}
+void AHumanCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+}
 #pragma endregion Lifecycle Overrides
 
 
@@ -34,6 +107,92 @@ AHumanCharacter::AHumanCharacter(const FObjectInitializer& objectInitializer) : 
 
 
 #pragma region Input Bindings
+void AHumanCharacter::IE_MoveCharacter(const FInputActionValue& actionValue)
+{
+	const FVector2D movement = actionValue.Get<FVector2D>();
+	if (!APawn::Controller && movement.IsNearlyZero()) return;
+
+	const FRotator yawRotation(0.f, APawn::Controller->GetControlRotation().Yaw, 0.f);
+	APawn::AddMovementInput(FRotationMatrix(yawRotation).GetUnitAxis(EAxis::X), movement.Y);
+	APawn::AddMovementInput(FRotationMatrix(yawRotation).GetUnitAxis(EAxis::Y), movement.X);
+}
+void AHumanCharacter::IE_LookCharacter(const FInputActionValue& actionValue)
+{
+	const FVector2D lookInput = actionValue.Get<FVector2D>();
+
+	if (Controller && !lookInput.IsNearlyZero())
+	{
+		// Add yaw input (turn left/right)
+		AddControllerYawInput(lookInput.X);
+
+		// Add pitch input (look up/down)
+		AddControllerPitchInput(lookInput.Y);
+	}
+}
+void AHumanCharacter::IE_JumpStartCharacter()
+{
+	if (this->IsCrouched())
+	{
+		IE_CrouchCharacter();
+		return;
+	}
+
+	// TODO: Detact wall for climb on the wall.
+
+	ACharacter::Jump();
+}
+void AHumanCharacter::IE_JumpEndCharacter()
+{
+	ACharacter::StopJumping();
+}
+void AHumanCharacter::IE_CrouchCharacter()
+{
+	if (this->IsCrouched()) ACharacter::UnCrouch();
+	else ACharacter::Crouch();
+}
+void AHumanCharacter::IE_SwitchCameraMode()
+{
+	int32 next = ((int32)this->ActiveCameraMode + 1) % 3;
+	this->ActiveCameraMode = static_cast<ECameraModes>(next);
+	this->CameraBoom->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+
+	switch (this->ActiveCameraMode)
+	{
+	case ECameraModes::FirstPerson:
+		this->CameraBoom->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, HEAD_CAMERA_SOCKET);
+
+		this->IsUseControllerYaw = APawn::bUseControllerRotationYaw = true;
+		this->CameraBoom->SocketOffset = FVector(0.0f, 0.0f, 0.0f);
+		this->CameraBoom->TargetArmLength = 0.0f;
+		this->CameraBoom->CameraLagSpeed = 30.0f;
+		this->CameraBoom->bEnableCameraRotationLag = false;
+		break;
+	case ECameraModes::SecondPerson:
+		this->CameraBoom->AttachToComponent(AActor::RootComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
+		this->CameraBoom->TargetArmLength = 120.0f;
+		this->CameraBoom->CameraLagSpeed = 25.0f;
+		this->CameraBoom->CameraRotationLagSpeed = 25.0f;
+		this->CameraBoom->bEnableCameraRotationLag = true;
+		this->CameraBoom->SocketOffset = FVector(0.0f, 20.0f, 100.0f);
+		this->IsUseControllerYaw = APawn::bUseControllerRotationYaw = true;
+		break;
+	case ECameraModes::ThirdPerson:
+		this->CameraBoom->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
+		this->CameraBoom->TargetArmLength = 250.0f;
+		this->CameraBoom->CameraLagSpeed = 20.0f;
+		this->CameraBoom->CameraRotationLagSpeed = 20.0f;
+		this->CameraBoom->bEnableCameraRotationLag = true;
+		this->CameraBoom->SocketOffset = FVector(0.0f, 20.0f, 100.0f);
+		this->IsUseControllerYaw = APawn::bUseControllerRotationYaw = false;
+		break;
+	}
+
+	if (!AActor::HasAuthority()) ServerSetControllerYaw(this->IsUseControllerYaw);
+	else OnRep_ControllerYaw();
+}
+void AHumanCharacter::IE_PickupItem()
+{
+}
 #pragma endregion Input Bindings
 
 #pragma region Callbacks
@@ -41,6 +200,11 @@ AHumanCharacter::AHumanCharacter(const FObjectInitializer& objectInitializer) : 
 
 
 #pragma region Server/Multicast RPC
+void AHumanCharacter::ServerSetControllerYaw_Implementation(bool isEnabled)
+{
+	this->IsUseControllerYaw = isEnabled;
+	this->OnRep_ControllerYaw();
+}
 #pragma endregion Server/Multicast RPC
 
 
