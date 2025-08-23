@@ -1,0 +1,13 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/
+/Binaries/
+/DerivedDataCache/
+/Intermediate/
+/New folder/
+/Saved
+*.sln
+/Content/__ExternalActors__
+/Content/__ExternalObjects__

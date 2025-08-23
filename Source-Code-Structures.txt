@@ -1,0 +1,88 @@
+C++ Souce-File Structures
+
+Source/NexusBattleground/Public
+│
+├── Core/                                 # Core systems
+│   ├── BattlegroundGameEngine.h          # Custom Game Engine extensions
+│   ├── BattlegroundGameInstance.h        # Global game instance (lifetime objects, session, etc.)
+│   ├── BattlegroundSaveGame.h            # Save/Load system
+│   ├── BattlegroundGameUserSettings.h    # Custom user settings (graphics, input, etc.)
+│   ├── BattlegroundGameViewportClient.h  # Viewport customization
+│   └── BattlegroundCheatManager.h        # Cheat/debug commands
+│
+├── Gameplay/                             # High-level gameplay classes
+│   ├── GameModes/
+│   │   ├── BattlegroundGameMode.h        # Base GameMode, shared logic
+│   │   ├── SoloDeathmatchGameMode.h          # Free-for-all Deathmatch
+│   │   ├── TeamDeathmatchGameMode.h      # Team-based Deathmatch
+│   │   ├── BattleRoyaleGameMode.h        # Battle Royale (PUBG-style)
+│   │   ├── CaptureFlagGameMode.h         # Capture the Flag
+│   │   ├── SearchDestroyGameMode.h       # Search & Destroy
+│   │   ├── KillConfirmGameMode.h         # Kill Confirm
+│   │   └── TrainingGameMode.h            # Training / Tutorial mode
+│   ├── States/
+│   │   ├── BattlegroundPlayerState.h     # Per-player state (score, team, etc.)
+│   │   └── BattlegroundGameState.h       # Match-wide state (rules, timers, teams)
+│   ├── Controllers/
+│   │   ├── BattlegroundPlayerController.h# Player input/controller logic
+│   │   └── BattlegroundAIController.h    # AI bots controller
+│   └── HUD/
+│       └── BattlegroundOverlay           # Game HUD/Overlay
+│
+├── Characters/                           # Characters & Pawns
+│   ├── Base/
+│   │   ├── BattlegroundCharacter.h       # Base player character
+│   │   └── BattlegroundSpectatorPawn.h   # Spectator pawn
+│   ├── Components/
+│   │   ├── BattlegroundMovementComponent.h# Custom movement logic
+│   │   └── BattlegroundPlayerCameraManager.h # Camera handling
+│   └── Animations/
+│       └── BattlegroundAnimation.h       # Animation system setup
+│
+├── Items/                                # Items & Pickups
+│   ├── Pickups/
+│   │   ├── BattlegroundPickup.h          # Base Pickup
+│   │   └── BattlegroundPickupManager.h   # Pickup spawner/manager
+│   └── Weapons/
+│       └── BattlegroundWeapon.h          # Base Weapon
+│
+├── Data/                                 # Enums, Structs, Config data
+│   ├── BattlegroundEnum.h                # Game Enums
+│   └── BattlegroundStruct.h              # Data Structs
+│
+├── Utilities/                            # Helpers & Managers
+│   ├── BattlegroundUtilities.h           # Utility functions
+│   └── BattlegroundAssets.h              # Asset references/manager
+│
+└── Networking/                           # Multiplayer logic
+│    └── (Future networking helpers)       # Placeholder for networking utilities
+│
+├── Menu/                                 # All menu & UI systems
+│   ├── Main/                             # Main menu & gameplay entry points
+│   │   ├── MainMenu.h                     # Main Menu manager / entry UI
+│   │   ├── GameplayMenu.h                 # Gameplay menu / level selection
+│   │   └── PauseMenu.h                    # Pause / in-game menu
+│   │
+│   ├── Settings/                         # Game settings menus
+│   │   ├── SettingsManager.h              # Core settings handling
+│   │   ├── DisplaySettings.h              # Resolution, brightness, UI scale
+│   │   ├── SoundSettings.h                # Volume, SFX, music
+│   │   └── AdvancedDisplaySettings.h      # HDR, post-processing, shadows, etc.
+│   │
+│   ├── Profile/                          # Player profile & stats
+│   │   ├── ProfileManager.h               # Core profile handling
+│   │   ├── PlayerProfileMenu.h            # Player info, avatar, settings
+│   │   ├── LeaderboardMenu.h              # Leaderboards
+│   │   └── ScoreMenu.h                    # Player scores / achievements
+│   │
+│   ├── Shopping/                         # In-game shop / marketplace
+│   │   ├── ShopManager.h                  # Core shop handling
+│   │   ├── ItemsShopMenu.h                # Weapon, skins, items
+│   │   ├── CurrencyShopMenu.h             # Buy in-game currency / credits
+│   │   └── OffersMenu.h                   # Special offers / bundles
+│   │
+│   └── Widgets/                           # Lightweight/Small Widgets
+│       ├── PickupWidget.h                 # Pickup Info Widget
+│       └── NotificationWidget.h           # Pop-ups, alerts
+
+
