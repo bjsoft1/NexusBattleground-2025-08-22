@@ -30,14 +30,9 @@ Source/NexusBattleground/Public
 │       └── BattlegroundOverlay           # Game HUD/Overlay
 │
 ├── Characters/                           # Characters & Pawns
-│   ├── Base/
-│   │   ├── BattlegroundCharacter.h       # Base player character
-│   │   └── BattlegroundSpectatorPawn.h   # Spectator pawn
-│   ├── Components/
-│   │   ├── BattlegroundMovementComponent.h# Custom movement logic
-│   │   └── BattlegroundPlayerCameraManager.h # Camera handling
-│   └── Animations/
-│       └── BattlegroundAnimation.h       # Animation system setup
+│   ├── BattlegroundCharacter.h           # Base player character
+│   └── BattlegroundSpectatorPawn.h       # Spectator pawn
+│   └── BattlegroundAnimation.h           # Animation system setup
 │
 ├── Items/                                # Items & Pickups
 │   ├── Pickups/

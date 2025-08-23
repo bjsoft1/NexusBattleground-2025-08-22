@@ -1,27 +1,16 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-#pragma once
-#include "CoreMinimal.h"
-#include "GameFramework/PlayerController.h"
-#include "BattlegroundPlayerController.generated.h"
-
+----- .H file-----
 
 #pragma region Forward declaretions
 #pragma endregion Forward declaretions
 
 
-UCLASS()
-class NEXUSBATTLEGROUND_API ABattlegroundPlayerController : public APlayerController
-{
-	GENERATED_BODY()
-	
-
 #pragma region Friend Declarations
 #pragma endregion Friend Declarations
 
+
 public:
 #pragma region Constructors and Overrides
-	ABattlegroundPlayerController(const FObjectInitializer& objectInitializer);
+	(const FObjectInitializer& objectInitializer);
 #pragma endregion Constructors and Overrides
 
 
@@ -88,4 +77,53 @@ public:
 #pragma region Delegates
 #pragma endregion Delegates
 
-};
+
+
+
+----- .CPP file-----
+
+#pragma region Default System Header Files
+#pragma endregion Default System Header Files
+
+
+#pragma region NexusBattleground Header Files
+#pragma endregion NexusBattleground Header Files
+
+
+#pragma region Constructors and Overrides
+#pragma endregion Constructors and Overrides
+
+
+#pragma region Lifecycle Overrides
+#pragma endregion Lifecycle Overrides
+
+
+#pragma region Public Methods
+#pragma endregion Public Methods
+
+
+#pragma region Protected Methods
+#pragma endregion Protected Methods
+
+
+#pragma region Private Helper Methods
+#pragma endregion Private Helper Methods
+
+
+#pragma region Input Bindings
+#pragma endregion Input Bindings
+
+#pragma region Callbacks
+#pragma endregion Callbacks
+
+
+#pragma region Server/Multicast RPC
+#pragma endregion Server/Multicast RPC
+
+
+#pragma region Client/OnRep RPC
+#pragma endregion Client/OnRep RPC
+
+
+#pragma region Debug Methods
+#pragma endregion Debug Methods

@@ -28,6 +28,7 @@ public class NexusBattleground : ModuleRules
         PublicIncludePaths.AddRange(new string[] {
             "NexusBattleground",
             "NexusBattleground/Public",
+            "NexusBattleground/Public/Characters",
             "NexusBattleground/Public/Core",
             "NexusBattleground/Public/Gameplay",
             "NexusBattleground/Public/Gameplay/Controllers",

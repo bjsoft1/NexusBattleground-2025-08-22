@@ -1,18 +1,18 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
 
 #pragma region Default System Header Files
-#include "BattlegroundPlayerController.h"
+#include "DevelopmentGameMode.h"
 #pragma endregion Default System Header Files
 
 
 #pragma region NexusBattleground Header Files
-#include "BattlegroundCheatManager.h"
 #pragma endregion NexusBattleground Header Files
 
 
 #pragma region Constructors and Overrides
-ABattlegroundPlayerController::ABattlegroundPlayerController(const FObjectInitializer& objectInitializer) : Super(objectInitializer)
+ADevelopmentGameMode::ADevelopmentGameMode(const FObjectInitializer& objectInitializer) : Super(objectInitializer)
 {
-	CheatClass = UBattlegroundCheatManager::StaticClass();
 }
 #pragma endregion Constructors and Overrides
 

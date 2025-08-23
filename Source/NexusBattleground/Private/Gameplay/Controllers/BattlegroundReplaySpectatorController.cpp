@@ -1,6 +1,6 @@
 
 #pragma region Default System Header Files
-#include "BattlegroundPlayerController.h"
+#include "BattlegroundReplaySpectatorController.h"
 #pragma endregion Default System Header Files
 
 
@@ -10,7 +10,7 @@
 
 
 #pragma region Constructors and Overrides
-ABattlegroundPlayerController::ABattlegroundPlayerController(const FObjectInitializer& objectInitializer) : Super(objectInitializer)
+ABattlegroundReplaySpectatorController::ABattlegroundReplaySpectatorController(const FObjectInitializer& objectInitializer) : Super(objectInitializer)
 {
 	CheatClass = UBattlegroundCheatManager::StaticClass();
 }

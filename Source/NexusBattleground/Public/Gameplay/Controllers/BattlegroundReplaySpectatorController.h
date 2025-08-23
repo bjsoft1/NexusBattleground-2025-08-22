@@ -3,7 +3,7 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "BattlegroundPlayerController.generated.h"
+#include "BattlegroundReplaySpectatorController.generated.h"
 
 
 #pragma region Forward declaretions
@@ -11,7 +11,7 @@
 
 
 UCLASS()
-class NEXUSBATTLEGROUND_API ABattlegroundPlayerController : public APlayerController
+class NEXUSBATTLEGROUND_API ABattlegroundReplaySpectatorController : public APlayerController
 {
 	GENERATED_BODY()
 	
@@ -21,7 +21,7 @@ class NEXUSBATTLEGROUND_API ABattlegroundPlayerController : public APlayerContro
 
 public:
 #pragma region Constructors and Overrides
-	ABattlegroundPlayerController(const FObjectInitializer& objectInitializer);
+	ABattlegroundReplaySpectatorController(const FObjectInitializer& objectInitializer);
 #pragma endregion Constructors and Overrides
 
 
