@@ -1,3 +1,4 @@
+#pragma once
 #include "CoreMinimal.h"
 
 enum class ECameraModes : uint8

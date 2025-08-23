@@ -1,3 +1,4 @@
+#pragma once
 #include "BattlegroundStruct.h"
 
 // Declare custom log category

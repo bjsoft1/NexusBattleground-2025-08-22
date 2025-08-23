@@ -2,7 +2,6 @@
 
 #pragma once
 #include "BattlegroundCharacter.h"
-#include "BattlegroundUtilities.h"
 #include "HumanCharacter.generated.h"
 
 
@@ -12,6 +11,7 @@ class UCameraComponent;
 class UInputAction;
 class UInputMappingContext;
 struct FInputActionValue;
+enum class ECameraModes : uint8;
 #pragma endregion Forward declaretions
 
 
@@ -41,7 +41,9 @@ protected:
 
 private:
 #pragma region Components
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = GameMode, meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* CameraBoom;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = GameMode, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
 
 	// -----Inputs-----
@@ -57,7 +59,7 @@ private:
 
 private:
 #pragma region Configurable & Internal Properties
-	ECameraModes ActiveCameraMode = ECameraModes::SecondPerson;
+	ECameraModes ActiveCameraMode;
 	UPROPERTY(ReplicatedUsing = OnRep_ControllerYaw) bool IsUseControllerYaw;
 #pragma endregion Configurable & Internal Properties
 

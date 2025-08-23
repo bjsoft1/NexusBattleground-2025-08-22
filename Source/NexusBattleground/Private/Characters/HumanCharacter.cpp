@@ -9,27 +9,21 @@
 #include "InputMappingContext.h"
 #include "InputActionValue.h"
 #include "Components/InputComponent.h"
+#include "UObject/UObjectGlobals.h"
 #pragma endregion Default System Header Files
 
 
 #pragma region NexusBattleground Header Files
 #include "BattlegroundCharacterMovementComponent.h"
+#include "BattlegroundUtilities.h"
 #pragma endregion NexusBattleground Header Files
 
 
 #pragma region Constructors and Overrides
 AHumanCharacter::AHumanCharacter(const FObjectInitializer& objectInitializer) 
-	: Super(objectInitializer.SetDefaultSubobjectClass<UBattlegroundCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
+	: Super(objectInitializer.SetDefaultSubobjectClass<UBattlegroundCharacterMovementComponent>(ACharacter::CharacterMovementComponentName)),
+	ActiveCameraMode(ECameraModes::SecondPerson)
 {
-
-	this->CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
-	this->CameraBoom->bUsePawnControlRotation = true;
-	this->CameraBoom->bEnableCameraLag = true;
-
-	this->FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	this->FollowCamera->SetupAttachment(this->CameraBoom, USpringArmComponent::SocketName);
-	this->FollowCamera->bUsePawnControlRotation = false;
-
 	// Find Inputs
 	ConstructorHelpers::FObjectFinder<UInputMappingContext> inputMappingContext(ASSET_PATH(TEXT("Inputs/IMC_NexusInputContext")));
 	ConstructorHelpers::FObjectFinder<UInputAction> jumpAction(ASSET_PATH(TEXT("Inputs/Actions/IA_Jump")));
@@ -46,7 +40,6 @@ AHumanCharacter::AHumanCharacter(const FObjectInitializer& objectInitializer)
 	this->IA_CrouchAction = crouchAction.Object;
 	this->IA_CameraAction = cameraAction.Object;
 	this->IA_PickupAction = pickupAction.Object;
-
 }
 void AHumanCharacter::SetupPlayerInputComponent(UInputComponent* playerInputComponent)
 {
@@ -79,12 +72,35 @@ void AHumanCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	this->IE_SwitchCameraMode();
-
 	if (APlayerController* playerController = Cast<APlayerController>(GetController()))
 	{
-		if (UEnhancedInputLocalPlayerSubsystem* subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(playerController->GetLocalPlayer()))
-			subsystem->AddMappingContext(this->IMC_DefaultMappingContext, 0);
+		if (playerController->IsLocalController())
+		{
+			if (ACharacter::GetMesh())
+			{
+				// Create Spring Arm
+				this->CameraBoom = NewObject<USpringArmComponent>(this, USpringArmComponent::StaticClass(), TEXT("DynamicCameraBoom"));
+				this->CameraBoom->bUsePawnControlRotation = true;
+				this->CameraBoom->bEnableCameraLag = true;
+
+				// Register with the actor so it exists in the world
+				this->CameraBoom->RegisterComponent();
+				this->CameraBoom->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, HEAD_CAMERA_SOCKET);
+
+				// Create Camera
+				this->FollowCamera = NewObject<UCameraComponent>(this, UCameraComponent::StaticClass(), TEXT("DynamicFollowCamera"));
+				this->FollowCamera->bUsePawnControlRotation = false;
+
+				// Register & attach
+				this->FollowCamera->RegisterComponent();
+				this->FollowCamera->AttachToComponent(this->CameraBoom, FAttachmentTransformRules::SnapToTargetIncludingScale, USpringArmComponent::SocketName);
+
+				this->IE_SwitchCameraMode();
+			}
+
+			if (UEnhancedInputLocalPlayerSubsystem* subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(playerController->GetLocalPlayer()))
+				subsystem->AddMappingContext(this->IMC_DefaultMappingContext, 0);
+		}
 	}
 }
 void AHumanCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -154,13 +170,10 @@ void AHumanCharacter::IE_SwitchCameraMode()
 {
 	int32 next = ((int32)this->ActiveCameraMode + 1) % 3;
 	this->ActiveCameraMode = static_cast<ECameraModes>(next);
-	this->CameraBoom->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 
 	switch (this->ActiveCameraMode)
 	{
 	case ECameraModes::FirstPerson:
-		this->CameraBoom->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, HEAD_CAMERA_SOCKET);
-
 		this->IsUseControllerYaw = APawn::bUseControllerRotationYaw = true;
 		this->CameraBoom->SocketOffset = FVector(0.0f, 0.0f, 0.0f);
 		this->CameraBoom->TargetArmLength = 0.0f;
@@ -168,21 +181,19 @@ void AHumanCharacter::IE_SwitchCameraMode()
 		this->CameraBoom->bEnableCameraRotationLag = false;
 		break;
 	case ECameraModes::SecondPerson:
-		this->CameraBoom->AttachToComponent(AActor::RootComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
-		this->CameraBoom->TargetArmLength = 120.0f;
+		this->CameraBoom->TargetArmLength = 100.0f;
 		this->CameraBoom->CameraLagSpeed = 25.0f;
 		this->CameraBoom->CameraRotationLagSpeed = 25.0f;
 		this->CameraBoom->bEnableCameraRotationLag = true;
-		this->CameraBoom->SocketOffset = FVector(0.0f, 20.0f, 100.0f);
+		this->CameraBoom->SocketOffset = FVector(0.0f, 20.0f, 20.0f);
 		this->IsUseControllerYaw = APawn::bUseControllerRotationYaw = true;
 		break;
 	case ECameraModes::ThirdPerson:
-		this->CameraBoom->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
-		this->CameraBoom->TargetArmLength = 250.0f;
+		this->CameraBoom->TargetArmLength = 200.0f;
 		this->CameraBoom->CameraLagSpeed = 20.0f;
 		this->CameraBoom->CameraRotationLagSpeed = 20.0f;
 		this->CameraBoom->bEnableCameraRotationLag = true;
-		this->CameraBoom->SocketOffset = FVector(0.0f, 20.0f, 100.0f);
+		this->CameraBoom->SocketOffset = FVector(0.0f, 20.0f, 20.0f);
 		this->IsUseControllerYaw = APawn::bUseControllerRotationYaw = false;
 		break;
 	}
