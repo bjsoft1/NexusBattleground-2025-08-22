@@ -22,11 +22,12 @@ public class NexusBattleground : ModuleRules
         });
 
         PrivateDependencyModuleNames.AddRange(new string[] {
-
         });
 
         PublicIncludePaths.AddRange(new string[] {
             "NexusBattleground",
+
+            // ------- Public Include Paths -------
             "NexusBattleground/Public",
             "NexusBattleground/Public/Characters",
             "NexusBattleground/Public/Core",
@@ -35,6 +36,11 @@ public class NexusBattleground : ModuleRules
             "NexusBattleground/Public/Gameplay/GameModes",
             "NexusBattleground/Public/Gameplay/HUD",
             "NexusBattleground/Public/Gameplay/States",
+
+            //------- Privates Include Paths -------
+            "NexusBattleground/Private",
+            "NexusBattleground/Private/Data",
+
         });
 
         // Uncomment if you are using Slate UI

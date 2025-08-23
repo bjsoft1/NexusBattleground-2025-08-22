@@ -41,14 +41,6 @@ Source/NexusBattleground/Public
 │   └── Weapons/
 │       └── BattlegroundWeapon.h          # Base Weapon
 │
-├── Data/                                 # Enums, Structs, Config data
-│   ├── BattlegroundEnum.h                # Game Enums
-│   └── BattlegroundStruct.h              # Data Structs
-│
-├── Utilities/                            # Helpers & Managers
-│   ├── BattlegroundUtilities.h           # Utility functions
-│   └── BattlegroundAssets.h              # Asset references/manager
-│
 └── Networking/                           # Multiplayer logic
 │    └── (Future networking helpers)       # Placeholder for networking utilities
 │
@@ -79,5 +71,16 @@ Source/NexusBattleground/Public
 │   └── Widgets/                           # Lightweight/Small Widgets
 │       ├── PickupWidget.h                 # Pickup Info Widget
 │       └── NotificationWidget.h           # Pop-ups, alerts
+│
+│
 
 
+
+Source/NexusBattleground/Private
+│
+├── Utilities/                                 # Enums, Structs, Config data
+│   ├── BattlegroundEnum.h                # Game Enums
+│   └── BattlegroundStruct.h              # Data Structs
+│   └── BattlegroundDatatable.h              # Datatable
+│   └── BattlegroundUtilities.h           # Utility functions
+│   └── BattlegroundAssets.h              # Asset references/manager

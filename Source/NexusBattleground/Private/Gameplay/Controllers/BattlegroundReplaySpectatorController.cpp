@@ -5,14 +5,12 @@
 
 
 #pragma region NexusBattleground Header Files
-#include "BattlegroundCheatManager.h"
 #pragma endregion NexusBattleground Header Files
 
 
 #pragma region Constructors and Overrides
 ABattlegroundReplaySpectatorController::ABattlegroundReplaySpectatorController(const FObjectInitializer& objectInitializer) : Super(objectInitializer)
 {
-	CheatClass = UBattlegroundCheatManager::StaticClass();
 }
 #pragma endregion Constructors and Overrides
 

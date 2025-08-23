@@ -12,7 +12,7 @@
 #pragma region Constructors and Overrides
 ABattlegroundPlayerController::ABattlegroundPlayerController(const FObjectInitializer& objectInitializer) : Super(objectInitializer)
 {
-	CheatClass = UBattlegroundCheatManager::StaticClass();
+	APlayerController::CheatClass = UBattlegroundCheatManager::StaticClass();
 }
 #pragma endregion Constructors and Overrides
 

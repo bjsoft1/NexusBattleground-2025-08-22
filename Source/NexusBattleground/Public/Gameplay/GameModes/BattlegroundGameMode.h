@@ -33,12 +33,14 @@ protected:
 
 protected:
 #pragma region Components
-	TSubclassOf<APawn> ComputerCharacter;
+	TSubclassOf<APawn> ComputerCharacterClass;
 #pragma endregion Components
 
 
 private:
 #pragma region Configurable & Internal Properties
+	const float MinRespawnDelay = 3.0f;
+	bool IsAllowComputerCharacter;
 #pragma endregion Configurable & Internal Properties
 
 

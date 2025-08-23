@@ -4,26 +4,35 @@
 
 
 #pragma region NexusBattleground Header Files
+#include "BattlegroundSpectatorPawn.h"
+#include "HumanCharacter.h"
 #include "BattlegroundAICharacter.h"
 #include "BattlegroundOverlay.h"
 #include "BattlegroundPlayerController.h"
 #include "BattlegroundReplaySpectatorController.h"
+#include "BattlegroundPlayerState.h"
+#include "BattlegroundGameState.h"
 #pragma endregion NexusBattleground Header Files
 
 
 #pragma region Constructors and Overrides
-ABattlegroundGameMode::ABattlegroundGameMode(const FObjectInitializer& objectInitializer)
+ABattlegroundGameMode::ABattlegroundGameMode(const FObjectInitializer& objectInitializer) : Super(objectInitializer)
 {
 	// Default Pawn Class
-	DefaultPawnClass = ABattlegroundCharacter::StaticClass();
-	ComputerCharacter = ABattlegroundAICharacter::StaticClass();
+	AGameModeBase::DefaultPawnClass = AHumanCharacter::StaticClass();
+	AGameModeBase::SpectatorClass = ABattlegroundSpectatorPawn::StaticClass();
+	ABattlegroundGameMode::ComputerCharacterClass = ABattlegroundAICharacter::StaticClass();
 
 	// Default HUD Class
-	HUDClass = ABattlegroundOverlay::StaticClass();
+	AGameModeBase::HUDClass = ABattlegroundOverlay::StaticClass();
 
 	// Default Controller Class
-	PlayerControllerClass = ABattlegroundPlayerController::StaticClass();
-	ReplaySpectatorPlayerControllerClass = ABattlegroundReplaySpectatorController::StaticClass();
+	AGameModeBase::PlayerControllerClass = ABattlegroundPlayerController::StaticClass();
+	AGameModeBase::ReplaySpectatorPlayerControllerClass = ABattlegroundReplaySpectatorController::StaticClass();
+	AGameModeBase::PlayerStateClass = ABattlegroundPlayerState::StaticClass();
+	AGameModeBase::GameStateClass = ABattlegroundGameState::StaticClass();
+
+	AGameModeBase::bUseSeamlessTravel = FParse::Param(FCommandLine::Get(), TEXT("NoSeamlessTravel")) ? false : true;
 }
 #pragma endregion Constructors and Overrides
 
