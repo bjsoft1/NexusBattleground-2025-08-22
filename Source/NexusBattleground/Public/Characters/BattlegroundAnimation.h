@@ -15,6 +15,11 @@ enum class EAnimationOffsets : uint8
 	AO_RifleCrouch UMETA(DisplayName = "Rifle Crouch"),
 	AO_RifleStandAim UMETA(DisplayName = "Rifle Stand Aim"),
 	AO_RifleCrouchAim UMETA(DisplayName = "Rifle Crouch Aim"),
+
+	AO_PistolStand UMETA(DisplayName = "Rifle Stand"),
+	AO_PistolCrouch UMETA(DisplayName = "Rifle Crouch"),
+	AO_PistolStandAim UMETA(DisplayName = "Rifle Stand Aim"),
+	AO_PistolCrouchAim UMETA(DisplayName = "Rifle Crouch Aim"),
 };
 
 UCLASS()
