@@ -168,6 +168,8 @@ void AHumanCharacter::IE_CrouchCharacter()
 }
 void AHumanCharacter::IE_SwitchCameraMode()
 {
+	if (!this->CameraBoom) return;
+
 	int32 next = ((int32)this->ActiveCameraMode + 1) % 3;
 	this->ActiveCameraMode = static_cast<ECameraModes>(next);
 
