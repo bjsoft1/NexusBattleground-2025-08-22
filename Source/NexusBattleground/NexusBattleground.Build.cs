@@ -39,7 +39,7 @@ public class NexusBattleground : ModuleRules
 
             //------- Privates Include Paths -------
             "NexusBattleground/Private",
-            "NexusBattleground/Private/Data",
+            "NexusBattleground/Private/Utilities",
 
         });
 
