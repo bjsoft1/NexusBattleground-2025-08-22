@@ -1,5 +1,5 @@
 #pragma region Default System Header Files
-#include "Gameplay/GameModes/BattlegroundGameMode.h"
+#include "BattlegroundGameMode.h"
 #pragma endregion Default System Header Files
 
 

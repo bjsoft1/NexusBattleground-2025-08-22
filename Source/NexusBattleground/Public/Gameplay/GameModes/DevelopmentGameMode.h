@@ -2,7 +2,7 @@
 
 #pragma once
 #include "CoreMinimal.h"
-#include "Gameplay/GameModes/BattlegroundGameMode.h"
+#include "BattlegroundGameMode.h"
 #include "DevelopmentGameMode.generated.h"
 
 
