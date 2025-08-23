@@ -3,6 +3,8 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "BattlegroundUtilities.h"
 #include "BattlegroundCharacter.generated.h"
 
 
@@ -28,6 +30,7 @@ public:
 
 protected:
 #pragma region Lifecycle Overrides
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 #pragma endregion Lifecycle Overrides
 
 
@@ -38,11 +41,28 @@ protected:
 
 private:
 #pragma region Configurable & Internal Properties
+	UPROPERTY(ReplicatedUsing = OnRepAnimationStates) EAnimationStates AnimationStates = EAnimationStates::None;
+public: EWeaponTypes WeaponType;
 #pragma endregion Configurable & Internal Properties
 
 
 public:
 #pragma region Public Inline Methods
+	FORCEINLINE bool IsFalling() const { return ACharacter::GetCharacterMovement()->IsFalling(); }
+	FORCEINLINE bool IsCrouched() const { return ACharacter::GetCharacterMovement()->IsCrouching(); }
+	FORCEINLINE bool IsAccelerating() const { return !ACharacter::GetCharacterMovement()->GetCurrentAcceleration().IsNearlyZero(); }
+	FORCEINLINE FVector GetMovementVelocity() const { return ACharacter::GetCharacterMovement()->Velocity; }
+	FORCEINLINE FVector GetCurrentAcceleration() const { return ACharacter::GetCharacterMovement()->GetCurrentAcceleration(); }
+	FORCEINLINE EWeaponTypes GetWeaponType() const { return this->WeaponType; }
+
+	FORCEINLINE bool HasAnimationFlag(EAnimationStates flag) const { return (static_cast<uint8>(this->AnimationStates) & static_cast<uint8>(flag)) != 0; }
+	FORCEINLINE bool IsAiming() const { return (this->AnimationStates & EAnimationStates::IsAiming) != EAnimationStates::None; }
+	FORCEINLINE bool IsReloading() const { return (this->AnimationStates & EAnimationStates::IsReloading) != EAnimationStates::None; }
+	FORCEINLINE bool IsWeaponEquipped() const { return (this->AnimationStates & EAnimationStates::IsWeaponEquipped) != EAnimationStates::None; }
+	FORCEINLINE bool IsDead() const { return false; }
+	FORCEINLINE bool IsPlayingMontage() const { return (this->AnimationStates & EAnimationStates::IsPlayingMontage) != EAnimationStates::None; }
+	FORCEINLINE bool IsFreeFalling() const { return (this->AnimationStates & EAnimationStates::IsFreeFalling) != EAnimationStates::None; }
+	FORCEINLINE bool IsParachuteOpen() const { return (this->AnimationStates & EAnimationStates::IsParachuteOpen) != EAnimationStates::None; }
 #pragma endregion Public Inline Methods
 
 
@@ -77,6 +97,8 @@ private:
 
 private:
 #pragma region Client/OnRep RPC
+	UFUNCTION()
+	void OnRepAnimationStates() {};
 #pragma endregion Client/OnRep RPC
 
 

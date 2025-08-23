@@ -10,12 +10,12 @@
 #include "InputActionValue.h"
 #include "Components/InputComponent.h"
 #include "UObject/UObjectGlobals.h"
+#include "Net/UnrealNetwork.h"
 #pragma endregion Default System Header Files
 
 
 #pragma region NexusBattleground Header Files
 #include "BattlegroundCharacterMovementComponent.h"
-#include "BattlegroundUtilities.h"
 #pragma endregion NexusBattleground Header Files
 
 
@@ -106,6 +106,8 @@ void AHumanCharacter::BeginPlay()
 void AHumanCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AHumanCharacter, IsUseControllerYaw);
 }
 #pragma endregion Lifecycle Overrides
 
@@ -205,6 +207,8 @@ void AHumanCharacter::IE_SwitchCameraMode()
 }
 void AHumanCharacter::IE_PickupItem()
 {
+	int32 next = ((int32)this->WeaponType + 1) % 3;
+	this->WeaponType = static_cast<EWeaponTypes>(next);
 }
 #pragma endregion Input Bindings
 

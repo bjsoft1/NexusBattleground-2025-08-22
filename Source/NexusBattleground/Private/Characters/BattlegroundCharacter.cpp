@@ -5,17 +5,17 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "Components/CapsuleComponent.h"
-
+#include "Net/UnrealNetwork.h"
 #pragma endregion Default System Header Files
 
 
 #pragma region NexusBattleground Header Files
-#include "BattlegroundUtilities.h"
 #pragma endregion NexusBattleground Header Files
 
 
 #pragma region Constructors and Overrides
-ABattlegroundCharacter::ABattlegroundCharacter(const FObjectInitializer& objectInitializer) : Super(objectInitializer)
+ABattlegroundCharacter::ABattlegroundCharacter(const FObjectInitializer& objectInitializer) : Super(objectInitializer),
+WeaponType(EWeaponTypes::WT_None)
 {
 
 	// Setup Character Mesh
@@ -63,6 +63,13 @@ ABattlegroundCharacter::ABattlegroundCharacter(const FObjectInitializer& objectI
 
 
 #pragma region Lifecycle Overrides
+void ABattlegroundCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ABattlegroundCharacter, AnimationStates);
+}
+
 #pragma endregion Lifecycle Overrides
 
 

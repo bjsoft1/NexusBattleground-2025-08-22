@@ -21,13 +21,28 @@ enum class EAnimationOffsets : uint8
 	AO_ArmedAimCrouch UMETA(DisplayName = "Armed Aim Crouch"),
 };
 
+UENUM(BlueprintType)
+enum class EWeaponTypes : uint8
+{
+	WT_None UMETA(DisplayName = "None"),
+	WT_Knife UMETA(DisplayName = "Knife"),
+	WT_Pistol UMETA(DisplayName = "Pistol"),
+	WT_Shotgun UMETA(DisplayName = "Shotgun"),
+	WT_Grenade UMETA(DisplayName = "Grenade"),
+	WT_AssaultRifle UMETA(DisplayName = "Assault Rifle"),
+	WT_SubmachineGun UMETA(DisplayName = "Submachine Gun"),
+};
 
-//UENUM(BlueprintType)
-//enum class EWeaponTypes : uint8
-//{
-//	WT_None UMETA(DisplayName = "None"),
-//	WT_Pistol UMETA(DisplayName = "Pistol"),
-//	WT_Rifle UMETA(DisplayName = "Rifle"),
-//	WT_Shotgun UMETA(DisplayName = "Shotgun"),
-//	WT_Sniper UMETA(DisplayName = "Sniper"),
-//};
+UENUM(BlueprintType)
+enum class EAnimationStates : uint8
+{
+	None = 0     UMETA(Hidden),
+	IsAiming = 1 << 0,
+	IsReloading = 1 << 1,
+	IsWeaponEquipped = 1 << 2,
+	IsPlayingMontage = 1 << 3,
+	IsFreeFalling = 1 << 4,
+	IsParachuteOpen = 1 << 5,
+	IsProne = 1 << 6
+};
+ENUM_CLASS_FLAGS(EAnimationStates)

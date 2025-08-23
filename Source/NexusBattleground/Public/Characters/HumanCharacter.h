@@ -66,6 +66,7 @@ private:
 
 public:
 #pragma region Public Inline Methods
+
 #pragma endregion Public Inline Methods
 
 
