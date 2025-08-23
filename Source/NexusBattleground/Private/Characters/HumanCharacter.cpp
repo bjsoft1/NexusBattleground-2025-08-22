@@ -22,7 +22,7 @@
 #pragma region Constructors and Overrides
 AHumanCharacter::AHumanCharacter(const FObjectInitializer& objectInitializer) 
 	: Super(objectInitializer.SetDefaultSubobjectClass<UBattlegroundCharacterMovementComponent>(ACharacter::CharacterMovementComponentName)),
-	ActiveCameraMode(ECameraModes::SecondPerson)
+	ActiveCameraMode(ECameraModes::CM_SecondPerson)
 {
 	// Find Inputs
 	ConstructorHelpers::FObjectFinder<UInputMappingContext> inputMappingContext(ASSET_PATH(TEXT("Inputs/IMC_NexusInputContext")));
@@ -175,14 +175,14 @@ void AHumanCharacter::IE_SwitchCameraMode()
 
 	switch (this->ActiveCameraMode)
 	{
-	case ECameraModes::FirstPerson:
+	case ECameraModes::CM_FirstPerson:
 		this->IsUseControllerYaw = APawn::bUseControllerRotationYaw = true;
 		this->CameraBoom->SocketOffset = FVector(0.0f, 0.0f, 0.0f);
 		this->CameraBoom->TargetArmLength = 0.0f;
 		this->CameraBoom->CameraLagSpeed = 30.0f;
 		this->CameraBoom->bEnableCameraRotationLag = false;
 		break;
-	case ECameraModes::SecondPerson:
+	case ECameraModes::CM_SecondPerson:
 		this->CameraBoom->TargetArmLength = 100.0f;
 		this->CameraBoom->CameraLagSpeed = 25.0f;
 		this->CameraBoom->CameraRotationLagSpeed = 25.0f;
@@ -190,7 +190,7 @@ void AHumanCharacter::IE_SwitchCameraMode()
 		this->CameraBoom->SocketOffset = FVector(0.0f, 20.0f, 20.0f);
 		this->IsUseControllerYaw = APawn::bUseControllerRotationYaw = true;
 		break;
-	case ECameraModes::ThirdPerson:
+	case ECameraModes::CM_ThirdPerson:
 		this->CameraBoom->TargetArmLength = 200.0f;
 		this->CameraBoom->CameraLagSpeed = 20.0f;
 		this->CameraBoom->CameraRotationLagSpeed = 20.0f;

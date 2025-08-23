@@ -5,22 +5,7 @@
 #include "Animation/AnimInstance.h"
 #include "BattlegroundAnimation.generated.h"
 
-UENUM(BlueprintType)
-enum class EAnimationOffsets : uint8
-{
-	AO_None UMETA(DisplayName = "None"),
-	AO_NormalStand UMETA(DisplayName = "Normal Stand"),
-	AO_NormalCrouch UMETA(DisplayName = "Normal Crouch"),
-	AO_RifleStand UMETA(DisplayName = "Rifle Stand"),
-	AO_RifleCrouch UMETA(DisplayName = "Rifle Crouch"),
-	AO_RifleStandAim UMETA(DisplayName = "Rifle Stand Aim"),
-	AO_RifleCrouchAim UMETA(DisplayName = "Rifle Crouch Aim"),
 
-	AO_PistolStand UMETA(DisplayName = "Rifle Stand"),
-	AO_PistolCrouch UMETA(DisplayName = "Rifle Crouch"),
-	AO_PistolStandAim UMETA(DisplayName = "Rifle Stand Aim"),
-	AO_PistolCrouchAim UMETA(DisplayName = "Rifle Crouch Aim"),
-};
 
 UCLASS()
 class NEXUSBATTLEGROUND_API UBattlegroundAnimation : public UAnimInstance
