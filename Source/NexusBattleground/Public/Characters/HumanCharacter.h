@@ -34,7 +34,39 @@ public:
 
 protected:
 #pragma region Lifecycle Overrides
+	/**
+	* BeginPlay override for AHumanCharacter.
+	*
+	* Dynamically create the CameraBoom (spring arm) and FollowCamera components on the local player only.
+	*
+	* Reason for local-only creation:
+	*   1. These components are purely client-side visuals for the player’s camera.
+	*   2. The server does not need to replicate or simulate these components, saving bandwidth and memory.
+	*   3. Other clients do not require this player’s camera components, ensuring multiplayer efficiency.
+	*
+	* Steps performed:
+	*   - Create and register the spring arm (CameraBoom) attached to the mesh's head socket.
+	*   - Create and register the follow camera (FollowCamera) attached to the spring arm.
+	*   - Add the default input mapping context for the local player.
+	*
+	* This approach ensures client-side camera setup is clean, efficient, and multiplayer-safe.
+	*/
 	virtual void BeginPlay() override;
+	/**
+	* EndPlay override for AHumanCharacter.
+	*
+	* Dynamically created components (CameraBoom and FollowCamera) exist only on the local player.
+	* These components are not replicated to the server or other clients.
+	*
+	* Destroying them explicitly in EndPlay ensures:
+	*   1. Memory is properly released and marked for garbage collection.
+	*   2. No dangling pointers remain (we set CameraBoom and FollowCamera to nullptr).
+	*   3. Multiplayer safety: only the local player's visuals are affected; server and other clients remain unaffected.
+	*
+	* This is a clean and professional approach to handle dynamically spawned client-side components.
+	*/
+	virtual void EndPlay(EEndPlayReason::Type endPlayReason) override;
+
 	virtual void EndPlay(EEndPlayReason::Type endPlayReason) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 #pragma endregion Lifecycle Overrides
@@ -42,9 +74,7 @@ protected:
 
 private:
 #pragma region Components
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = GameMode, meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* CameraBoom;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = GameMode, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
 
 	// -----Inputs-----

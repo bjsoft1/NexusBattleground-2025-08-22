@@ -28,6 +28,19 @@ public:
 protected:
 #pragma region Lifecycle Overrides
 	virtual void BeginPlay() override;
+	/**
+	* EndPlay override for ABattlegroundPickup.
+	*
+	* Since PickupMesh is dynamically created on the client side (not on the server),
+	* we need to explicitly destroy it when the actor is ending play.
+	*
+	* Destroying the component here ensures:
+	*   1. Memory is properly released and garbage collected.
+	*   2. No dangling pointers remain (we set PickupMesh = nullptr).
+	*   3. Multiplayer safety: only client-side visuals are affected; server and other clients remain unaffected.
+	*
+	* This is a clean, professional approach to handle dynamically created components.
+	*/
 	virtual void EndPlay(const EEndPlayReason::Type endPlayReason) override;
 #pragma endregion Lifecycle Overrides
 
@@ -52,6 +65,24 @@ public:
 
 public:
 #pragma region Public Methods
+	/**
+	 * Highlights the pickup item by enabling a post-process outline.
+	 *
+	 * @param isHighlight  Whether to enable (true) or disable (false) the highlight.
+	 *
+	 * How it works:
+	 *   - If the player looks at the pickup from nearby, this function highlights the outline to make it easily visible.
+	 *   - Ready for pickup indication.
+	 *   - The function only works if a PostProcessVolume exists in the map:
+	 *       Name: PostProcessVolume_Outline
+	 *       Rendering Features > Post Process Materials > Array index 0 -> Selected PP_Outliner_Inst
+	 *
+	 * Example setup guide:
+	 *   Youtube: #YOUTUBE_HOW_TO_SETUP_OUTLINER
+	 *
+	 * UE Macro tip:
+	 *   You can use UE_MICRO for quick in-code reference or documentation flags.
+	 */
 	void SetHighlight(bool isHighlight);
 #pragma endregion Public Methods
 

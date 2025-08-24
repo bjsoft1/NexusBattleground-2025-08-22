@@ -67,9 +67,7 @@ void ABattlegroundPickup::SetHighlight(bool isHighlight)
     if (this->PickupMesh == nullptr) return;
 
     this->PickupMesh->SetRenderCustomDepth(isHighlight);
-
-    // TODO: Custome Depth is needed or not?
-    this->PickupMesh->SetCustomDepthStencilValue(isHighlight);
+    this->PickupMesh->SetCustomDepthStencilValue(isHighlight ? 1 : 0);
 }
 #pragma endregion Public Methods
 

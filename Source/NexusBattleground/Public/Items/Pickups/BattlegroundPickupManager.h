@@ -38,6 +38,10 @@ protected:
 
 private:
 #pragma region Configurable & Internal Properties
+	/**
+	* Maps each UWorld instance to its corresponding ABattlegroundPickupManager.
+	* This allows any Pickup item or other actor to easily access the manager for the current world.
+	*/
 	static TMap<UWorld*, class ABattlegroundPickupManager*> PickupManagers;
 #pragma endregion Configurable & Internal Properties
 
@@ -56,7 +60,6 @@ public:
 		ABattlegroundPickupManager** Found = PickupManagers.Find(World);
 		return Found ? *Found : nullptr;
 	}
-
 #pragma endregion Public Methods
 
 
