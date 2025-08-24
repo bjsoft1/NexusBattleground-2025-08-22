@@ -42,12 +42,12 @@ struct FPickupData
 	*   - Memory efficient.
 	*   - Shared among pickups that use the same mesh.
 	*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite) TSoftObjectPtr < UStaticMesh> StaticMesh = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) TSoftObjectPtr< UStaticMesh> StaticMesh = nullptr;
 
 	/**
 	 * Icon for the pickup.
 	 *
 	 * TSoftObjectPtr avoids loading all icons at once.
 	 */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite) TSoftObjectPtr < UTexture2D> PickIcon = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) TSoftObjectPtr<UTexture2D> PickIcon = nullptr;
 };
