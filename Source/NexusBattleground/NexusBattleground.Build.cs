@@ -36,6 +36,9 @@ public class NexusBattleground : ModuleRules
             "NexusBattleground/Public/Gameplay/GameModes",
             "NexusBattleground/Public/Gameplay/HUD",
             "NexusBattleground/Public/Gameplay/States",
+            "NexusBattleground/Public/Items",
+            "NexusBattleground/Public/Items/Pickups",
+            "NexusBattleground/Public/Items/Weapons",
 
             //------- Privates Include Paths -------
             "NexusBattleground/Private",

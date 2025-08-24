@@ -39,9 +39,16 @@ Source/NexusBattleground/Public
 ├── Items/                                          # Items & Pickups
 │   ├── Pickups/
 │   │   ├── BattlegroundPickup.h                    # Base Pickup
+│   │   ├── BattlegroundItemPickup.h                # Health, Drink, Asseseries etc. Pickup
+│   │   ├── BattlegroundWeaponPickup.h              # Weapon Pickup
 │   │   └── BattlegroundPickupManager.h             # Pickup spawner/manager
 │   └── Weapons/
+│       └── BattlegroundBaseWeapon.h                # Base Weapon
+│       └── BattlegroundGrenade.h                   # Grenade
 │       └── BattlegroundWeapon.h                    # Base Weapon
+
+
+
 │
 └── Networking/                                     # Multiplayer logic
 │    └── (Future networking helpers)                # Placeholder for networking utilities
