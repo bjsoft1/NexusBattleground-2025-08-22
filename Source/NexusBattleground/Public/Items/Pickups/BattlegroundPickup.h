@@ -68,6 +68,8 @@ public:
 	{
 		this->DatatableRowId = rowId;
 		this->PickupAmount = amount;
+
+		if (AActor::HasAuthority() && BattlegroundUtilities::IsListenServer(GetWorld())) OnRep_DatatableRowId();
 	}
 #pragma endregion Public Inline Methods
 

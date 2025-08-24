@@ -35,6 +35,23 @@ public:
 static class BattlegroundUtilities
 {
 public:
+
+	/**
+	* Parses a DataTable row name to extract the PickupType and SubType.
+	*
+	* Row names are expected in the format: "<PickupTypeEnumName>_<SubType>"
+	* For example: "Ammo_1", "Weapon_3", etc.
+	*
+	* This function:
+	* - Splits the row name by underscore ('_')
+	* - Maps the first part to the corresponding EPickupTypes enum
+	* - Converts the second part to a uint8 SubType
+	*
+	* @param rowName        The FName of the DataTable row to parse
+	* @param outPickupType  Output parameter to receive the parsed EPickupTypes value
+	* @param outSubType     Output parameter to receive the parsed sub-type as uint8
+	* @return true if parsing succeeded and both PickupType and SubType were valid, false otherwise
+	*/
 	static bool ParsePickupRowName(const FName& rowName, EPickupTypes& outPickupType, uint8& outSubType)
 	{
 		FString rowString = rowName.ToString();
@@ -60,4 +77,22 @@ public:
 		outSubType = FCString::Atoi(*parts[1]);
 		return true;
 	}
+
+
+
+	/**
+	 * Checks whether the current UWorld is running as a listen server.
+	 *
+	 * A listen server is a server that also has a local player playing on it.
+	 * This is useful to handle cases where OnRep functions won't trigger for
+	 * the host player, since replication notifications only fire on remote clients.
+	 *
+	 * @param world - The UWorld context to check.
+	 * @return true if this instance is a listen server, false otherwise.
+	 */
+	FORCEINLINE static bool IsListenServer(const UWorld* world)
+	{
+		return world && world->GetNetMode() == NM_ListenServer;
+	}
+
 };
