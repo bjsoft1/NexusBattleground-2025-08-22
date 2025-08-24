@@ -1,27 +1,73 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
+#pragma region Default System Header Files
 #include "BattlegroundPickupManager.h"
+#pragma endregion Default System Header Files
 
-// Sets default values
-ABattlegroundPickupManager::ABattlegroundPickupManager()
+
+#pragma region NexusBattleground Header Files
+#pragma endregion NexusBattleground Header Files
+
+// This line defines the static member PickupManagers declared in the header.
+// In C++, static class members must be defined in exactly one .cpp file
+// so the linker can allocate storage for them. Without this, you'll get
+// LNK2001 unresolved external symbol errors.
+TMap<UWorld*, ABattlegroundPickupManager*> ABattlegroundPickupManager::PickupManagers;
+
+
+#pragma region Constructors and Overrides
+ABattlegroundPickupManager::ABattlegroundPickupManager(const FObjectInitializer& objectInitializer) : Super(objectInitializer)
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
+    AActor::SetReplicates(true);
+    AActor::PrimaryActorTick.bCanEverTick = false;
+    AActor::RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 }
+#pragma endregion Constructors and Overrides
 
-// Called when the game starts or when spawned
+
+#pragma region Lifecycle Overrides
 void ABattlegroundPickupManager::BeginPlay()
 {
-	Super::BeginPlay();
-	
-}
+    Super::BeginPlay();
 
-// Called every frame
-void ABattlegroundPickupManager::Tick(float DeltaTime)
+    PickupManagers.Add(GetWorld(), this);
+}
+void ABattlegroundPickupManager::EndPlay(const EEndPlayReason::Type endPlayReason)
 {
-	Super::Tick(DeltaTime);
-
+    Super::EndPlay(endPlayReason);
+    PickupManagers.Remove(GetWorld());
 }
+#pragma endregion Lifecycle Overrides
+
+
+#pragma region Public Methods
+#pragma endregion Public Methods
+
+
+#pragma region Protected Methods
+#pragma endregion Protected Methods
+
+
+#pragma region Private Helper Methods
+#pragma endregion Private Helper Methods
+
+
+#pragma region Input Bindings
+#pragma endregion Input Bindings
+
+#pragma region Callbacks
+#pragma endregion Callbacks
+
+
+#pragma region Server/Multicast RPC
+#pragma endregion Server/Multicast RPC
+
+
+#pragma region Client/OnRep RPC
+
+#pragma endregion Client/OnRep RPC
+
+
+#pragma region Debug Methods
+#pragma endregion Debug Methods
 

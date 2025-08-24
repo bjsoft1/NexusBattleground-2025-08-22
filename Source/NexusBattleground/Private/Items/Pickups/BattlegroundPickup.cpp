@@ -48,6 +48,16 @@ void ABattlegroundPickup::BeginPlay()
         if (isHit) AActor::SetActorLocation(hitResult.ImpactPoint);
     }
 }
+void ABattlegroundPickup::EndPlay(const EEndPlayReason::Type endPlayReason)
+{
+    Super::EndPlay(endPlayReason);
+
+    if (this->PickupMesh)
+    {
+        this->PickupMesh->DestroyComponent(false);
+        this->PickupMesh = nullptr;
+    }
+}
 #pragma endregion Lifecycle Overrides
 
 

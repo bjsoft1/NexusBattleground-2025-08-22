@@ -103,6 +103,23 @@ void AHumanCharacter::BeginPlay()
 		}
 	}
 }
+void AHumanCharacter::EndPlay(const EEndPlayReason::Type endPlayReason)
+{
+	Super::EndPlay(endPlayReason);
+
+	if (this->FollowCamera)
+	{
+		this->FollowCamera->DestroyComponent(false);
+		this->FollowCamera = nullptr;
+	}
+
+	if (this->CameraBoom)
+	{
+		this->CameraBoom->DestroyComponent(false);
+		this->CameraBoom = nullptr;
+	}
+}
+
 void AHumanCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);

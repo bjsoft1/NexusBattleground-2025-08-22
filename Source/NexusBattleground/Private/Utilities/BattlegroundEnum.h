@@ -46,3 +46,16 @@ enum class EAnimationStates : uint8
 	IsProne = 1 << 6
 };
 ENUM_CLASS_FLAGS(EAnimationStates)
+
+UENUM(BlueprintType, meta = (Bitflags))
+enum class EGameModes : uint8
+{
+	GM_BR      UMETA(DisplayName = "Battle Royale"),
+	GM_CTF     UMETA(DisplayName = "Capture the Flag"),
+	GM_DEV     UMETA(DisplayName = "Development"),
+	GM_KC      UMETA(DisplayName = "Kill Confirm"),
+	GM_SD      UMETA(DisplayName = "Search Destroy"),
+	GM_SDM     UMETA(DisplayName = "Solo Deathmatch"),
+	GM_TDM     UMETA(DisplayName = "Team Deathmatch"),
+	GM_TRN     UMETA(DisplayName = "Training")
+};

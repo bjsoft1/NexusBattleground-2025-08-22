@@ -35,6 +35,7 @@ public:
 protected:
 #pragma region Lifecycle Overrides
 	virtual void BeginPlay() override;
+	virtual void EndPlay(EEndPlayReason::Type endPlayReason) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 #pragma endregion Lifecycle Overrides
 
