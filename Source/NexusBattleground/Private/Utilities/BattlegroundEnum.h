@@ -1,5 +1,6 @@
 #pragma once
 #include "CoreMinimal.h"
+#include "BattlegroundEnum.generated.h"
 
 enum class ECameraModes : uint8
 {
@@ -66,4 +67,17 @@ enum class EGameModes : uint8
 	GM_TDM     UMETA(DisplayName = "Team Deathmatch"),
 	/** Training / School */
 	GM_TRN     UMETA(DisplayName = "Training")
+};
+
+
+UENUM(BlueprintType)
+enum class EPickupTypes : uint8
+{
+	Ammo			UMETA(DisplayName = "Ammo"),
+	Sight			UMETA(DisplayName = "Sight"),
+	Armor			UMETA(DisplayName = "Armor"),
+	Medkit			UMETA(DisplayName = "Medkit"),
+	Helmet			UMETA(DisplayName = "Helmet"),
+	Weapon			UMETA(DisplayName = "Weapon"),
+	Backpack		UMETA(DisplayName = "Backpack"),
 };

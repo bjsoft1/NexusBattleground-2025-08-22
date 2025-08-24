@@ -53,7 +53,7 @@ void ABattlegroundGameMode::BeginPlay()
 	if (HasAuthority() && this->PickupManagerClass)
 	{
 		FActorSpawnParameters spawnParams;
-		spawnParams.Owner = this;
+		spawnParams.Owner = nullptr;
 		spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 		GetWorld()->SpawnActor<ABattlegroundPickupManager>(this->PickupManagerClass, FVector::ZeroVector, FRotator::ZeroRotator, spawnParams);

@@ -7,6 +7,7 @@
 
 
 #pragma region Forward declaretions
+struct FPickupData;
 #pragma endregion Forward declaretions
 
 UCLASS()
@@ -31,35 +32,43 @@ protected:
 #pragma endregion Lifecycle Overrides
 
 
-protected:
-#pragma region Components
-#pragma endregion Components
-
-
 private:
-#pragma region Configurable & Internal Properties
+#pragma region Components
 	/**
 	* Maps each UWorld instance to its corresponding ABattlegroundPickupManager.
 	* This allows any Pickup item or other actor to easily access the manager for the current world.
 	*/
 	static TMap<UWorld*, class ABattlegroundPickupManager*> PickupManagers;
+#pragma endregion Components
+
+
+private:
+#pragma region Configurable & Internal Properties
 #pragma endregion Configurable & Internal Properties
 
 
 public:
 #pragma region Public Inline Methods
+	FORCEINLINE static ABattlegroundPickupManager* GetManager(UWorld* World)
+	{
+		if (!World) return nullptr;
+
+		ABattlegroundPickupManager** found = PickupManagers.Find(World);
+		return found ? *found : nullptr;
+	}
 #pragma endregion Public Inline Methods
 
 
 public:
 #pragma region Public Methods
-	FORCEINLINE static ABattlegroundPickupManager* GetManager(UWorld* World)
-	{
-		if (!World) return nullptr;
-
-		ABattlegroundPickupManager** Found = PickupManagers.Find(World);
-		return Found ? *Found : nullptr;
-	}
+	// Declares a function that can be called from both C++ and Blueprints
+	// BlueprintNativeEvent means:
+	//   - This function has a C++ default implementation
+	//   - Blueprints can optionally override it to provide custom behavior
+	// BlueprintCallable means:
+	//   - This function can be called directly from Blueprints
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	FPickupData GetPickupData(const FName& rowName);
 #pragma endregion Public Methods
 
 

@@ -6,6 +6,7 @@
 
 
 #pragma region NexusBattleground Header Files
+#include "BattlegroundUtilities.h"
 #pragma endregion NexusBattleground Header Files
 
 // This line defines the static member PickupManagers declared in the header.
@@ -41,6 +42,31 @@ void ABattlegroundPickupManager::EndPlay(const EEndPlayReason::Type endPlayReaso
 
 
 #pragma region Public Methods
+/**
+ * Default C++ implementation of GetPickupData.
+ *
+ * This function provides the default behavior for the BlueprintNativeEvent GetPickupData.
+ * If a Blueprint subclass overrides this function, the Blueprint version will be called instead.
+ *
+ * @param RowName  The name of the row in your datatable or pickup collection to retrieve.
+ * @return FPickupData  A copy of the pickup data struct corresponding to RowName.
+ *
+ * Notes:
+ * - The _Implementation suffix is required when implementing a BlueprintNativeEvent in C++.
+ * - Returning by value is safe here because it avoids dangling pointers or references.
+ * - You can optionally fill this struct with default values or lookup logic (e.g., from a DataTable or TMap).
+ */
+FPickupData ABattlegroundPickupManager::GetPickupData_Implementation(const FName& rowName)
+{
+    // Create a new, empty FPickupData struct
+    FPickupData data;
+
+    // TODO: You can fill 'data' here with default values or lookup logic (e.g., from a DataTable or TMap)
+    
+    // Return the struct by value (safe for both C++ and Blueprint)
+    return data;
+}
+
 #pragma endregion Public Methods
 
 
