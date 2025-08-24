@@ -7,6 +7,8 @@
 
 #pragma region NexusBattleground Header Files
 #include "BattlegroundUtilities.h"
+#include "BattlegroundItemPickup.h"
+#include "BattlegroundWeaponPickup.h"
 #pragma endregion NexusBattleground Header Files
 
 // This line defines the static member PickupManagers declared in the header.
@@ -22,6 +24,10 @@ ABattlegroundPickupManager::ABattlegroundPickupManager(const FObjectInitializer&
     AActor::SetReplicates(true);
     AActor::PrimaryActorTick.bCanEverTick = false;
     AActor::RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+
+    this->PickupClassList.Add(ABattlegroundItemPickup::StaticClass());
+    this->PickupClassList.Add(ABattlegroundWeaponPickup::StaticClass());
+
 }
 #pragma endregion Constructors and Overrides
 
@@ -32,6 +38,7 @@ void ABattlegroundPickupManager::BeginPlay()
     Super::BeginPlay();
 
     PickupManagers.Add(GetWorld(), this);
+    GetWorld()->GetTimerManager().SetTimer(this->SpawnTimerHandle, this, &ABattlegroundPickupManager::SpawnRandomPickup, this->SpawnInterval, true);
 }
 void ABattlegroundPickupManager::EndPlay(const EEndPlayReason::Type endPlayReason)
 {
@@ -61,12 +68,22 @@ FPickupData ABattlegroundPickupManager::GetPickupData_Implementation(const FName
     // Create a new, empty FPickupData struct
     FPickupData data;
 
-    // TODO: You can fill 'data' here with default values or lookup logic (e.g., from a DataTable or TMap)
-    
     // Return the struct by value (safe for both C++ and Blueprint)
     return data;
 }
+FPickupData ABattlegroundPickupManager::GetRandomPickupData_Implementation()
+{
+    // Create a new, empty FPickupData struct
+    FPickupData data;
 
+    // Return the struct by value (safe for both C++ and Blueprint)
+    return data;
+}
+FName ABattlegroundPickupManager::GetRandomPickupRow_Implementation()
+{
+    static FName defaultName = NAME_None;
+	return defaultName;
+}
 #pragma endregion Public Methods
 
 
@@ -75,6 +92,81 @@ FPickupData ABattlegroundPickupManager::GetPickupData_Implementation(const FName
 
 
 #pragma region Private Helper Methods
+TSubclassOf<ABattlegroundPickup> ABattlegroundPickupManager::GetPickupClass(EPickupTypes pickupType)
+{
+    if (pickupType == EPickupTypes::Weapon) return this->PickupClassList[1]; // WeaponPickup
+    else return this->PickupClassList[0];
+}
+uint8 ABattlegroundPickupManager::GetDefaultQuantity(EPickupTypes pickupType, uint8 subType) const
+{
+    switch (pickupType)
+    {
+    case EPickupTypes::Ammo:
+        return 30;
+    case EPickupTypes::Medkit:
+    {
+        if (EPickupMedkitTypes::Bandage == static_cast<EPickupMedkitTypes>(subType)) return 5;
+        return 1;
+    }
+    default:
+        return 1;
+    }
+}
+void ABattlegroundPickupManager::SpawnRandomPickup()
+{
+    if (!HasAuthority()) return;
+
+    bool bUseLine1 = FMath::RandBool();
+    FVector startLocation, endLocation;
+    float* progress;
+
+    if (bUseLine1)
+    {
+        startLocation = this->StartPoint1;
+        endLocation = this->EndPoint1;
+        progress = &this->Line1Progress;
+    }
+    else
+    {
+        startLocation = this->StartPoint2;
+        endLocation = this->EndPoint2;
+        progress = &this->Line2Progress;
+    }
+
+    FVector direction = (endLocation - startLocation).GetSafeNormal();
+    float lineLength = FVector::Distance(startLocation, endLocation);
+
+    // Stop spawning if we reached the end
+    if (*progress >= lineLength)
+    {
+        GetWorld()->GetTimerManager().ClearTimer(this->SpawnTimerHandle);
+        return;
+    }
+
+    // Calculate spawn location along line
+    FVector spawnLocation = startLocation + direction * (*progress);
+
+    // Add random margin
+    spawnLocation.X += FMath::FRandRange(-this->SpawnMargin, this->SpawnMargin);
+    spawnLocation.Y += FMath::FRandRange(-this->SpawnMargin, this->SpawnMargin);
+    const FName& pickupRowName = GetRandomPickupRow();
+    EPickupTypes pickupType;
+    uint8 subType;
+    BattlegroundUtilities::ParsePickupRowName(pickupRowName, pickupType, subType);
+    GetRandomPickupData();
+    TSubclassOf<ABattlegroundPickup> pickupClass = GetPickupClass(pickupType);
+
+    if (pickupClass)
+    {
+        FActorSpawnParameters spawnParams;
+        spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+        ABattlegroundPickup* newPickup = GetWorld()->SpawnActor<ABattlegroundPickup>(pickupClass, spawnLocation, FRotator::ZeroRotator, spawnParams);
+        if (newPickup) newPickup->InitializePickup(pickupRowName, GetDefaultQuantity(pickupType, subType));
+    }
+
+    // Move progress forward
+    *progress += this->SpawnStep;
+}
 #pragma endregion Private Helper Methods
 
 

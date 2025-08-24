@@ -8,6 +8,7 @@
 
 #pragma region Forward declaretions
 struct FPickupData;
+enum class EPickupTypes : uint8;
 #pragma endregion Forward declaretions
 
 UCLASS()
@@ -39,11 +40,24 @@ private:
 	* This allows any Pickup item or other actor to easily access the manager for the current world.
 	*/
 	static TMap<UWorld*, class ABattlegroundPickupManager*> PickupManagers;
+	TArray<TSubclassOf<class ABattlegroundPickup>> PickupClassList;
 #pragma endregion Components
 
 
 private:
 #pragma region Configurable & Internal Properties
+	const float SpawnInterval = 0.5f;	// Spawn interval
+	const float SpawnMargin = 100.f;	//  Random offset margin left/right
+	const float SpawnStep = 100.f;		// Distance between pickups
+	float Line1Progress = 0.f;
+	float Line2Progress = 0.f;
+	FTimerHandle SpawnTimerHandle;
+
+	FVector StartPoint1 = FVector(-10.f, -1200.f, 105.f);
+	FVector StartPoint2 = FVector(-10.f, 1200.f, -15.f);
+	FVector EndPoint1 = FVector(2380.f, 1880.f, 110.f);
+	FVector EndPoint2 = FVector(-1310.f, 0.f, 60.f);
+
 #pragma endregion Configurable & Internal Properties
 
 
@@ -67,8 +81,9 @@ public:
 	//   - Blueprints can optionally override it to provide custom behavior
 	// BlueprintCallable means:
 	//   - This function can be called directly from Blueprints
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	FPickupData GetPickupData(const FName& rowName);
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent) FPickupData GetPickupData(const FName& rowName);
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent) FPickupData GetRandomPickupData();
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent) FName GetRandomPickupRow();
 #pragma endregion Public Methods
 
 
@@ -79,6 +94,9 @@ protected:
 
 private:
 #pragma region Private Helper Methods
+	TSubclassOf<ABattlegroundPickup> GetPickupClass(EPickupTypes pickupType);
+	uint8 GetDefaultQuantity(EPickupTypes pickupType, uint8 subType) const;
+	void SpawnRandomPickup();
 #pragma endregion Private Helper Methods
 
 

@@ -81,3 +81,13 @@ enum class EPickupTypes : uint8
 	Weapon			UMETA(DisplayName = "Weapon"),
 	Backpack		UMETA(DisplayName = "Backpack"),
 };
+
+enum class EPickupMedkitTypes : uint8
+{
+	Bandage = 1,
+	FirstAidKit = 2,
+	Medkit = 3,
+	EnergyDrink = 4,
+	Painkiller = 5,
+	AdrenalineSyringe = 6,
+};

@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #pragma once
 #include "CoreMinimal.h"
+#include "BattlegroundUtilities.h"
 #include "GameFramework/Actor.h"
 #include "BattlegroundPickup.generated.h"
 
@@ -47,7 +48,7 @@ protected:
 
 protected:
 #pragma region Components
-	UStaticMeshComponent* PickupMesh;
+	UPROPERTY() UStaticMeshComponent* PickupMesh;
 #pragma endregion Components
 
 
@@ -55,11 +56,19 @@ private:
 #pragma region Configurable & Internal Properties
 	UPROPERTY(Replicated) uint16 PickupAmount;
 	UPROPERTY(ReplicatedUsing = OnRep_DatatableRowId) FName DatatableRowId;
+	UPROPERTY() FPickupData PickupData;
+	UPROPERTY() EPickupTypes PickupType;
+	UPROPERTY() uint8 PickupSubType;
 #pragma endregion Configurable & Internal Properties
 
 
 public:
 #pragma region Public Inline Methods
+	FORCEINLINE void InitializePickup(const FName& rowId, uint16 amount = 1)
+	{
+		this->DatatableRowId = rowId;
+		this->PickupAmount = amount;
+	}
 #pragma endregion Public Inline Methods
 
 

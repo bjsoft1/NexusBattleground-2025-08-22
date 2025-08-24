@@ -8,6 +8,7 @@ struct FPickupData
 {
 	GENERATED_BODY()
 
+public:
 	UPROPERTY() uint8 Quantity = 0;
 	UPROPERTY() EPickupTypes PickupType;
 	UPROPERTY() uint8 Subtype = 1;

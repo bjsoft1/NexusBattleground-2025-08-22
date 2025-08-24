@@ -31,3 +31,33 @@ public:
 	
 	static const FString CLS_PICKUP_MANAGER_PATH;
 };
+
+static class BattlegroundUtilities
+{
+public:
+	static bool ParsePickupRowName(const FName& rowName, EPickupTypes& outPickupType, uint8& outSubType)
+	{
+		FString rowString = rowName.ToString();
+		TArray<FString> parts;
+		rowString.ParseIntoArray(parts, TEXT("_"), true);
+
+		if (parts.Num() != 2) return false;
+
+		FString typeString = parts[0];
+		outPickupType = EPickupTypes::Ammo;
+
+
+		for (uint8 i = 0; i < static_cast<int32>(6u) + 1u; i++)
+		{
+			FString enumString = UEnum::GetValueAsString(static_cast<EPickupTypes>(i));
+			enumString = enumString.RightChop(enumString.Find(TEXT("::")) + 2);
+			if (enumString.Equals(typeString, ESearchCase::IgnoreCase))
+			{
+				outPickupType = static_cast<EPickupTypes>(i);
+				break;
+			}
+		}
+		outSubType = FCString::Atoi(*parts[1]);
+		return true;
+	}
+};

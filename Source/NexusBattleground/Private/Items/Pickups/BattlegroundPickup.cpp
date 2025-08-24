@@ -9,6 +9,7 @@
 
 
 #pragma region NexusBattleground Header Files
+#include "BattlegroundPickupManager.h"
 #pragma endregion NexusBattleground Header Files
 
 
@@ -94,7 +95,11 @@ void ABattlegroundPickup::SetHighlight(bool isHighlight)
 #pragma region Client/OnRep RPC
 void ABattlegroundPickup::OnRep_DatatableRowId()
 {
-    if (this->DatatableRowId.IsNone()) return;
+
+    if (this->PickupData.StaticMesh.IsValid() || this->DatatableRowId.IsNone()) return;
+
+    ABattlegroundPickupManager* pickupManager = ABattlegroundPickupManager::GetManager(GetWorld());
+    if (!pickupManager) return;
 
     this->PickupMesh = NewObject<UStaticMeshComponent>(this, UStaticMeshComponent::StaticClass(), TEXT("DynamicPickupMesh"));
     this->PickupMesh->AttachToComponent(AActor::RootComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
@@ -107,6 +112,21 @@ void ABattlegroundPickup::OnRep_DatatableRowId()
     this->PickupMesh->SetCollisionResponseToAllChannels(ECR_Ignore); // Ignore everything by default
     this->PickupMesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore); // Ignore pawns
     this->PickupMesh->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block); // Still traceable
+
+    this->PickupData = pickupManager->GetPickupData(this->DatatableRowId);
+    if (this->PickupData.StaticMesh.IsValid())
+    {
+		// TODO: Handle failure
+        if (!BattlegroundUtilities::ParsePickupRowName(this->DatatableRowId, this->PickupType, this->PickupSubType))
+			NEXUS_ERROR("Failed to parse pickup row name: %s", *this->DatatableRowId.ToString());
+
+        UStaticMesh* staticMesh = this->PickupData.StaticMesh.LoadSynchronous();
+        if (staticMesh)
+        {
+            this->PickupMesh->SetStaticMesh(staticMesh);
+            this->PickupMesh->SetWorldScale3D(FVector(this->PickupData.DefaultScale));
+        }
+    }
 }
 #pragma endregion Client/OnRep RPC
 
