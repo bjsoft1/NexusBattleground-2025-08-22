@@ -66,8 +66,6 @@ protected:
 	* This is a clean and professional approach to handle dynamically spawned client-side components.
 	*/
 	virtual void EndPlay(EEndPlayReason::Type endPlayReason) override;
-
-	virtual void EndPlay(EEndPlayReason::Type endPlayReason) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 #pragma endregion Lifecycle Overrides
 

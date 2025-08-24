@@ -12,6 +12,7 @@
 #include "BattlegroundReplaySpectatorController.h"
 #include "BattlegroundPlayerState.h"
 #include "BattlegroundGameState.h"
+#include "BattlegroundPickupManager.h"
 #pragma endregion NexusBattleground Header Files
 
 
@@ -33,11 +34,31 @@ ABattlegroundGameMode::ABattlegroundGameMode(const FObjectInitializer& objectIni
 	AGameModeBase::GameStateClass = ABattlegroundGameState::StaticClass();
 
 	AGameModeBase::bUseSeamlessTravel = FParse::Param(FCommandLine::Get(), TEXT("NoSeamlessTravel")) ? false : true;
+
+	static ConstructorHelpers::FClassFinder<ABattlegroundPickupManager> pickupManagerClass(*AssetsPaths::CLS_PICKUP_MANAGER_PATH);
+	if (pickupManagerClass.Succeeded()) this->PickupManagerClass = pickupManagerClass.Class;
+}
+ABattlegroundGameMode::ABattlegroundGameMode(const FObjectInitializer& objectInitializer, EGameModes currentGameMode) : ABattlegroundGameMode(objectInitializer)
+{
+	this->CurrentGameMode = currentGameMode;
 }
 #pragma endregion Constructors and Overrides
 
 
 #pragma region Lifecycle Overrides
+void ABattlegroundGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (HasAuthority() && this->PickupManagerClass)
+	{
+		FActorSpawnParameters spawnParams;
+		spawnParams.Owner = this;
+		spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		GetWorld()->SpawnActor<ABattlegroundPickupManager>(this->PickupManagerClass, FVector::ZeroVector, FRotator::ZeroRotator, spawnParams);
+	}
+}
 #pragma endregion Lifecycle Overrides
 
 

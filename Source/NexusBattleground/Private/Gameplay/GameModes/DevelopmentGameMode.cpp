@@ -7,11 +7,12 @@
 
 
 #pragma region NexusBattleground Header Files
+#include "BattlegroundUtilities.h"
 #pragma endregion NexusBattleground Header Files
 
 
 #pragma region Constructors and Overrides
-ADevelopmentGameMode::ADevelopmentGameMode(const FObjectInitializer& objectInitializer) : Super(objectInitializer)
+ADevelopmentGameMode::ADevelopmentGameMode(const FObjectInitializer& objectInitializer) : Super(objectInitializer, EGameModes::GM_DEV)
 {
 }
 #pragma endregion Constructors and Overrides

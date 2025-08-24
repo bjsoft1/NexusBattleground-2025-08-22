@@ -7,6 +7,7 @@
 
 
 #pragma region Forward declaretions
+enum class EGameModes : uint8;
 #pragma endregion Forward declaretions
 
 
@@ -23,22 +24,26 @@ class NEXUSBATTLEGROUND_API ABattlegroundGameMode : public AGameMode
 public:
 #pragma region Constructors and Overrides
 	ABattlegroundGameMode(const FObjectInitializer & objectInitializer);
+	ABattlegroundGameMode(const FObjectInitializer & objectInitializer, EGameModes currentGameMode);
 #pragma endregion Constructors and Overrides
 
 
 protected:
 #pragma region Lifecycle Overrides
+	virtual void BeginPlay() override;
 #pragma endregion Lifecycle Overrides
 
 
 protected:
 #pragma region Components
+	TSubclassOf<class ABattlegroundPickupManager> PickupManagerClass;
 	TSubclassOf<APawn> ComputerCharacterClass;
 #pragma endregion Components
 
 
 private:
 #pragma region Configurable & Internal Properties
+	EGameModes CurrentGameMode;
 	const float MinRespawnDelay = 3.0f;
 	bool IsAllowComputerCharacter;
 #pragma endregion Configurable & Internal Properties

@@ -26,5 +26,8 @@ static class AssetsPaths
 public:
 	static const FString SKM_FEMALE_PATH;
 	static const FString SKM_MALE_PATH;
+
 	static const FString ANIM_FEMALE_PATH;
+	
+	static const FString CLS_PICKUP_MANAGER_PATH;
 };

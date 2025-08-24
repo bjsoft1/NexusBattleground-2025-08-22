@@ -50,12 +50,20 @@ ENUM_CLASS_FLAGS(EAnimationStates)
 UENUM(BlueprintType, meta = (Bitflags))
 enum class EGameModes : uint8
 {
+	/** Battle Royal */
 	GM_BR      UMETA(DisplayName = "Battle Royale"),
+	/** Capture The Flag */
 	GM_CTF     UMETA(DisplayName = "Capture the Flag"),
+	/** Development */
 	GM_DEV     UMETA(DisplayName = "Development"),
+	/** Kill Confirm */
 	GM_KC      UMETA(DisplayName = "Kill Confirm"),
+	/** Search and Destroy */
 	GM_SD      UMETA(DisplayName = "Search Destroy"),
+	/** Solo Deathmatch / Free for all */
 	GM_SDM     UMETA(DisplayName = "Solo Deathmatch"),
+	/** Team Deathmatch */
 	GM_TDM     UMETA(DisplayName = "Team Deathmatch"),
+	/** Training / School */
 	GM_TRN     UMETA(DisplayName = "Training")
 };
