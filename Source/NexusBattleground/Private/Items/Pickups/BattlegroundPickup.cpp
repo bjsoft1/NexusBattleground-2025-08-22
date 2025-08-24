@@ -102,6 +102,7 @@ void ABattlegroundPickup::OnRep_DatatableRowId()
     if (!pickupManager) return;
 
     this->PickupMesh = NewObject<UStaticMeshComponent>(this, UStaticMeshComponent::StaticClass(), TEXT("DynamicPickupMesh"));
+    this->PickupMesh->RegisterComponent();
     this->PickupMesh->AttachToComponent(AActor::RootComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
 
     this->PickupMesh->SetSimulatePhysics(false);
@@ -114,11 +115,11 @@ void ABattlegroundPickup::OnRep_DatatableRowId()
     this->PickupMesh->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block); // Still traceable
 
     this->PickupData = pickupManager->GetPickupData(this->DatatableRowId);
-    if (this->PickupData.StaticMesh.IsValid())
+    if (!this->PickupData.StaticMesh.IsNull())
     {
-		// TODO: Handle failure
+        // TODO: Handle failure
         if (!BattlegroundUtilities::ParsePickupRowName(this->DatatableRowId, this->PickupType, this->PickupSubType))
-			NEXUS_ERROR("Failed to parse pickup row name: %s", *this->DatatableRowId.ToString());
+            NEXUS_ERROR("Failed to parse pickup row name: %s", *this->DatatableRowId.ToString());
 
         UStaticMesh* staticMesh = this->PickupData.StaticMesh.LoadSynchronous();
         if (staticMesh)
