@@ -152,20 +152,22 @@ void ABattlegroundPickupManager::SpawnRandomPickup()
     const FName& pickupRowName = GetRandomPickupRow();
     EPickupTypes pickupType;
     uint8 subType;
-    BattlegroundUtilities::ParsePickupRowName(pickupRowName, pickupType, subType);
-    GetRandomPickupData();
-    TSubclassOf<ABattlegroundPickup> pickupClass = GetPickupClass(pickupType);
 
-    if (pickupClass)
-    {
-        FActorSpawnParameters spawnParams;
-        spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-        ABattlegroundPickup* newPickup = GetWorld()->SpawnActor<ABattlegroundPickup>(pickupClass, spawnLocation, FRotator::ZeroRotator, spawnParams);
-        if (newPickup) newPickup->InitializePickup(pickupRowName, GetDefaultQuantity(pickupType, subType));
+    if (BattlegroundUtilities::ParsePickupRowName(pickupRowName, pickupType, subType)) {
+        GetRandomPickupData();
+        TSubclassOf<ABattlegroundPickup> pickupClass = GetPickupClass(pickupType);
+
+        if (pickupClass)
+        {
+            FActorSpawnParameters spawnParams;
+            spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+            ABattlegroundPickup* newPickup = GetWorld()->SpawnActor<ABattlegroundPickup>(pickupClass, spawnLocation, FRotator::ZeroRotator, spawnParams);
+            if (newPickup) newPickup->InitializePickup(pickupRowName, GetDefaultQuantity(pickupType, subType));
+        }
+
+        // Move progress forward
+        *progress += this->SpawnStep;
     }
-
-    // Move progress forward
-    *progress += this->SpawnStep;
 }
 #pragma endregion Private Helper Methods
 

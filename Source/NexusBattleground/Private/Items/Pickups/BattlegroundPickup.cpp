@@ -117,9 +117,17 @@ void ABattlegroundPickup::OnRep_DatatableRowId()
     this->PickupData = pickupManager->GetPickupData(this->DatatableRowId);
     if (!this->PickupData.StaticMesh.IsNull())
     {
+		EPickupTypes pickupType;
+		uint8 pickupSubType;
+
         // TODO: Handle failure
-        if (!BattlegroundUtilities::ParsePickupRowName(this->DatatableRowId, this->PickupType, this->PickupSubType))
-            NEXUS_ERROR("Failed to parse pickup row name: %s", *this->DatatableRowId.ToString());
+        if (BattlegroundUtilities::ParsePickupRowName(this->DatatableRowId, pickupType, pickupSubType))
+        {
+			this->PickupData.PickupType = pickupType;
+			this->PickupData.Subtype = pickupSubType;
+        }
+        else NEXUS_ERROR("Failed to parse pickup row name: %s", *this->DatatableRowId.ToString());
+
 
         UStaticMesh* staticMesh = this->PickupData.StaticMesh.LoadSynchronous();
         if (staticMesh)
