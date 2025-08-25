@@ -31,8 +31,6 @@ public:
 	static void Shutdown();
 	static const ISlateStyle& Get();
 	FORCEINLINE static FTextBlockStyle* GetTextBlockStyle(FName styleName) { Get().GetWidgetStyle<FTextBlockStyle>(styleName); }
-	//.TextStyle(FShooterStyle::Get(), "ShooterGame.MenuStoreListTextStyle");
-
 
 private:
 	static TSharedRef<FSlateStyleSet> Create();

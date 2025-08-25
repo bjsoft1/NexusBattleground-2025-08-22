@@ -19,10 +19,18 @@ public class NexusBattleground : ModuleRules
             "GameplayStateTreeModule",
             "UMG",
             "Slate",
+
+            "AssetRegistry",
             "SlateCore",
+            "AIModule",
+            "GameplayTasks",
+            "NavigationSystem",
+            "OnlineSubsystem",
+            "OnlineSubsystemUtils",
         });
 
         PrivateDependencyModuleNames.AddRange(new string[] {
+            "PakFile",
         });
 
         PublicIncludePaths.AddRange(new string[] {

@@ -6,9 +6,6 @@
 #include "GameFramework/GameState.h"
 #include "BattlegroundGameState.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class NEXUSBATTLEGROUND_API ABattlegroundGameState : public AGameState
 {

@@ -4,5 +4,9 @@
 
 #include "CoreMinimal.h"
 
-/** Main log category used across the project */
-DECLARE_LOG_CATEGORY_EXTERN(LogNexusBattleground, Log, All);
+
+class FNexusBattlegroundGameModule : public FDefaultGameModuleImpl
+{
+	virtual void StartupModule() override;
+	virtual void ShutdownModule() override;
+};
