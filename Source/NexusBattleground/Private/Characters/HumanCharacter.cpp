@@ -108,9 +108,9 @@ void AHumanCharacter::BeginPlay()
 			if (GEngine && GEngine->GameViewport)
 			{
 				GetWorld()->GetTimerManager().SetTimer(this->PickupTimerHandle, this, &AHumanCharacter::DetectPickupItem, 0.1f, true);
-				SAssignNew(this->PickupHoverWidget, SPickupHoverWidget);
+				SAssignNew(this->PickupHoverWidget, SPickupHoverWidget).AnimationType(EAnimationTypes::FadeIn_Out);
 				GEngine->GameViewport->AddViewportWidgetContent(this->PickupHoverWidget.ToSharedRef());
-				this->PickupHoverWidget->SetVisibility(EVisibility::Visible);
+				this->PickupHoverWidget->OverrideVisibility(true, false);
 			}
 		}
 	}
@@ -129,6 +129,13 @@ void AHumanCharacter::EndPlay(const EEndPlayReason::Type endPlayReason)
 	{
 		this->CameraBoom->DestroyComponent(false);
 		this->CameraBoom = nullptr;
+	}
+	
+	if (this->PickupHoverWidget.IsValid() && GEngine && GEngine->GameViewport)
+	{
+		GEngine->GameViewport->RemoveViewportWidgetContent(this->PickupHoverWidget.ToSharedRef());
+		PickupHoverWidget.Reset();
+		this->PickupHoverWidget = nullptr;
 	}
 }
 
@@ -177,11 +184,11 @@ void AHumanCharacter::SetHoverPickupItem(ABattlegroundPickup* pickup)
 		pickup->SetHighlight(true);
 		if (this->PickupHoverWidget)
 		{
-			this->PickupHoverWidget->SetVisibility(EVisibility::Visible);
+			this->PickupHoverWidget->OverrideVisibility(true);
 			this->PickupHoverWidget->SetItemData(pickup->GetPickupIcon(), FText::FromString(pickup->GetPickupName()));
 		}
 	}
-	else if (this->PickupHoverWidget) this->PickupHoverWidget->SetVisibility(EVisibility::Hidden);
+	else if (this->PickupHoverWidget) this->PickupHoverWidget->OverrideVisibility(false);
 }
 
 void AHumanCharacter::GetCrosshairTrace(FVector& outStart, FVector& outEnd)

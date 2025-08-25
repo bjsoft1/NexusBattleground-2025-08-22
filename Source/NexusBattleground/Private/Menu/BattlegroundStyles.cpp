@@ -58,9 +58,9 @@ void FBattlegroundStyles::Shutdown()
  * to organize UI assets by type (Icons, Boxes, Fonts).
  */
 #define SLATE_ROOT_PATH FPaths::ProjectContentDir() / "NexusBattleground/Assets/SlateWidget"
-#define IMAGE_BRUSH( RelativePath, ... ) FSlateImageBrush( SLATE_ROOT_PATH / "Icons" / RelativePath + TEXT(".png"), __VA_ARGS__ )
-#define BOX_BRUSH( RelativePath, ... ) FSlateBoxBrush( SLATE_ROOT_PATH / "Boxes" / RelativePath + TEXT(".png"), __VA_ARGS__ )
-#define BORDER_BRUSH( RelativePath, ... ) FSlateBorderBrush( SLATE_ROOT_PATH / "Boxes" / RelativePath + TEXT(".png"), __VA_ARGS__ )
+#define IMAGE_BRUSH( RelativePath, ... ) FSlateImageBrush( SLATE_ROOT_PATH / RelativePath + TEXT(".png"), __VA_ARGS__ )
+#define BOX_BRUSH( RelativePath, ... ) FSlateBoxBrush( SLATE_ROOT_PATH / RelativePath + TEXT(".png"), __VA_ARGS__ )
+#define BORDER_BRUSH( RelativePath, ... ) FSlateBorderBrush( SLATE_ROOT_PATH / RelativePath + TEXT(".png"), __VA_ARGS__ )
 #define TTF_FONT( RelativePath, ... ) FSlateFontInfo( SLATE_ROOT_PATH / "Fonts" / RelativePath + TEXT(".ttf"), __VA_ARGS__ )
 
 PRAGMA_DISABLE_OPTIMIZATION
@@ -93,7 +93,7 @@ TSharedRef<FSlateStyleSet> FBattlegroundStyles::Create()
 
 
 	// SIDE BACKGROUND FADE
-	//slateStyleSet.Set(WidgetKeys::BORDER_SIDE_FADE, new IMAGE_BRUSH("Tx_RightFade"), FVector2D(256)));
+	slateStyleSet.Set(WidgetKeys::BORDER_SIDE_FADE, new IMAGE_BRUSH("Boxes/Tx_RightFade", FVector2D(256, 256)));
 
 	return slateStyleSetRef;
 }

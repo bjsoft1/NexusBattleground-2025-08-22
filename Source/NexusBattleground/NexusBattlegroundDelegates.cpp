@@ -84,12 +84,12 @@ static void ReloadHandler( EPackageReloadPhase ReloadPhase, FPackageReloadedEven
 }
 
 #define EXPERIMENTAL_ENABLEHOTRELOAD 0
-static void ReloadPackagesCallback( const TArray<FString>& PackageNames)
+static void ReloadPackagesCallback( const TArray<FString>& packageNames)
 {
 #if EXPERIMENTAL_ENABLEHOTRELOAD
 	TArray<UPackage*> packagesToReload;
 	TArray<UPackage*> materialPackagesToReload;
-	for (const FString&packageName : PackageNames)
+	for (const FString&packageName : packageNames)
 	{
 		UPackage* package = FindPackage(nullptr, *packageName);
 
