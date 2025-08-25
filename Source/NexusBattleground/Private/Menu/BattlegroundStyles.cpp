@@ -27,7 +27,6 @@ void FBattlegroundStyles::Shutdown()
 }
 
 
-
 /**
  * Slate Style Macros
  *
