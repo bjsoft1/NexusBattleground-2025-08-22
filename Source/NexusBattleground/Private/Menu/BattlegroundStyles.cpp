@@ -57,7 +57,7 @@ void FBattlegroundStyles::Shutdown()
  * These macros keep your Slate style definitions clean, reduce repetition, and make it easy
  * to organize UI assets by type (Icons, Boxes, Fonts).
  */
-#define SLATE_ROOT_PATH FPaths::ProjectContentDir() / "NexusBattleground/Assets/SlateWidget"
+#define SLATE_ROOT_PATH FPaths::ProjectContentDir() / "Slate"
 #define IMAGE_BRUSH( RelativePath, ... ) FSlateImageBrush( SLATE_ROOT_PATH / RelativePath + TEXT(".png"), __VA_ARGS__ )
 #define BOX_BRUSH( RelativePath, ... ) FSlateBoxBrush( SLATE_ROOT_PATH / RelativePath + TEXT(".png"), __VA_ARGS__ )
 #define BORDER_BRUSH( RelativePath, ... ) FSlateBorderBrush( SLATE_ROOT_PATH / RelativePath + TEXT(".png"), __VA_ARGS__ )
