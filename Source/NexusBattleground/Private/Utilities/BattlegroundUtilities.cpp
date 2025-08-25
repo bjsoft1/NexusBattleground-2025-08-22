@@ -9,4 +9,4 @@ const FString AssetsPaths::ANIM_FEMALE_PATH = ASSET_PATH(TEXT("Blueprints/Animat
 
 const FString AssetsPaths::CLS_PICKUP_MANAGER_PATH = ASSET_PATH(TEXT("Blueprints/Pickups/BP_BattlegroundPickupManager"));
 
-const FString AssetsPaths::TX2D_MAIN_HUD_PATH = ASSET_PATH(TEXT("Assets/HUD/HUDMain"));
+const FString AssetsPaths::TX2D_MAIN_HUD_PATH = ASSET_PATH(TEXT("Assets/Widget-Icons/TX_HUDMain"));
