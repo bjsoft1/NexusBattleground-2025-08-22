@@ -72,10 +72,10 @@ TSharedRef<FSlateStyleSet> FBattlegroundStyles::Create()
 
 	// LARGE TITLE FONT
 	slateStyleSet.Set(WidgetKeys::FONT_LARGE_TITLE, FTextBlockStyle().SetFont(TTF_FONT("Roboto-Black", 25))
-		.SetColorAndOpacity(FLinearColor::White).SetShadowOffset(FIntPoint(-1, 1)));
+		.SetColorAndOpacity(FLinearColor::White).SetShadowOffset(FIntPoint(-2, 2)));
 
 	// MEDIUM TITLE FONT
-	slateStyleSet.Set(WidgetKeys::FONT_Medium_TITLE, FTextBlockStyle().SetFont(TTF_FONT("Roboto-Bold", 20))
+	slateStyleSet.Set(WidgetKeys::FONT_Medium_TITLE, FTextBlockStyle().SetFont(TTF_FONT("Roboto-Medium", 20))
 		.SetColorAndOpacity(FLinearColor::White).SetShadowOffset(FIntPoint(-1, 1)));
 
 	// NORMAL BUTTON FONT

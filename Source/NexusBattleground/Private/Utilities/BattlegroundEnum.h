@@ -100,3 +100,17 @@ enum EDirections : uint8
 	Bottom = 3,
 	Center = 4
 };
+
+enum class EAnimationTypes : uint8
+{
+	None = 0,
+	FadeIn_Out = 1,
+	MoveLeft_Right = 2,
+};
+enum class EWidgetStates : uint8
+{
+	Idle = 0,
+	AnimatingIn = 1,
+	AnimatingOut = 2,
+	AnimatingOut_AutoDestroy = 3
+};

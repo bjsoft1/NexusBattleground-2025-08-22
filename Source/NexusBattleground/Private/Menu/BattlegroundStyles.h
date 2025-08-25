@@ -31,7 +31,7 @@ public:
 	static void Shutdown();
 	static const ISlateStyle& Get();
 
-	FORCEINLINE static const FTextBlockStyle& GetTextStyle(FName styleName) { return Get().GetWidgetStyle<FTextBlockStyle>(styleName); }
+	FORCEINLINE static const FTextBlockStyle* GetTextBlockStyle(FName styleName) { return &Get().GetWidgetStyle<FTextBlockStyle>(styleName); }
 	FORCEINLINE static const FSlateBrush* GetBrushStyle(FName styleName) { return Get().GetBrush(styleName); }
 
 private:

@@ -48,7 +48,7 @@ public class NexusBattleground : ModuleRules
             "NexusBattleground/Public/Items",
             "NexusBattleground/Public/Items/Pickups",
             "NexusBattleground/Public/Items/Weapons",
-            "NexusBattleground/Public/Items/Menu",
+            "NexusBattleground/Public/Menu",
             "NexusBattleground/Public/Menu/Widgets",
 
             //------- Privates Include Paths -------

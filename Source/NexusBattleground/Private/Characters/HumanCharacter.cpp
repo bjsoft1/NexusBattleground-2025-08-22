@@ -108,9 +108,13 @@ void AHumanCharacter::BeginPlay()
 			if (GEngine && GEngine->GameViewport)
 			{
 				GetWorld()->GetTimerManager().SetTimer(this->PickupTimerHandle, this, &AHumanCharacter::DetectPickupItem, 0.1f, true);
-				SAssignNew(this->PickupHoverWidget, SPickupHoverWidget).AnimationType(EAnimationTypes::FadeIn_Out);
+				SAssignNew(this->PickupHoverWidget, SPickupHoverWidget).AnimationType(EAnimationTypes::MoveLeft_Right);
 				GEngine->GameViewport->AddViewportWidgetContent(this->PickupHoverWidget.ToSharedRef());
+				
+
 				this->PickupHoverWidget->OverrideVisibility(true, false);
+				// TODO: Removed above line and uncomment below line to test visibility issue
+				//this->PickupHoverWidget->SetVisibility(EVisibility::Collapsed);
 			}
 		}
 	}
