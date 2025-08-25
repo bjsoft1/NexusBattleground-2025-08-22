@@ -91,3 +91,12 @@ enum class EPickupMedkitTypes : uint8
 	Painkiller = 5,
 	AdrenalineSyringe = 6,
 };
+
+enum EDirections : uint8
+{
+	Left = 0,
+	Right = 1,
+	Top = 2,
+	Bottom = 3,
+	Center = 4
+};

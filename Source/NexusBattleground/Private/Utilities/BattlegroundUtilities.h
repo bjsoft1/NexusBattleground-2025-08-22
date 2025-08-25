@@ -30,6 +30,8 @@ public:
 	static const FString ANIM_FEMALE_PATH;
 	
 	static const FString CLS_PICKUP_MANAGER_PATH;
+
+	static const FString TX2D_MAIN_HUD_PATH;
 };
 
 static class BattlegroundUtilities
