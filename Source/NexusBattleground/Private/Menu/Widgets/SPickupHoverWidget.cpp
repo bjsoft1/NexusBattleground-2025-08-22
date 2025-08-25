@@ -5,7 +5,7 @@
 #include "Widgets/Text/STextBlock.h"
 #include "Engine/Texture2D.h"
 // ------------
-#include "BattlegroundUtilities.h"
+#include "BattlegroundStyles.h"
 
 
 void SPickupHoverWidget::Construct(const FArguments& InArgs)
@@ -60,6 +60,6 @@ void SPickupHoverWidget::Construct(const FArguments& InArgs)
 
 void SPickupHoverWidget::SetItemData(UTexture2D* itemIcon, const FText& itemName)
 {
-    if (this->PickupIconImage.IsValid() && itemIcon) this->PickupIconImage->SetImage(BattlegroundStyles::FSlateBrushFromTexture(itemIcon));
+    if (this->PickupIconImage.IsValid() && itemIcon) this->PickupIconImage->SetImage(WidgetHelpers::FSlateBrushFromTexture(itemIcon));
     if (this->PickupText.IsValid()) this->PickupText->SetText(itemName);
 }

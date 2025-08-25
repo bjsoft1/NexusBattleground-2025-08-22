@@ -18,12 +18,13 @@ DECLARE_LOG_CATEGORY_EXTERN(LogNexus, Log, All);
 #define NEXUS_INFO(Format, ...)    UE_LOG(LogNexus, Log, TEXT(Format), ##__VA_ARGS__)
 #define NEXUS_WARNING(Format, ...) UE_LOG(LogNexus, Warning, TEXT(Format), ##__VA_ARGS__)
 #define NEXUS_ERROR(Format, ...)   UE_LOG(LogNexus, Error, TEXT(Format), ##__VA_ARGS__)
-
 #endif
 
 static class AssetsPaths
 {
 public:
+	static const FString DEFAULT_WIDGET_STYLE_PATH;
+
 	static const FString SKM_FEMALE_PATH;
 	static const FString SKM_MALE_PATH;
 
@@ -97,15 +98,4 @@ public:
 		return world && world->GetNetMode() == NM_ListenServer;
 	}
 
-};
-
-static class BattlegroundStyles
-{
-public:
-	static inline FSlateBrush* FSlateBrushFromTexture(UTexture2D* texture)
-	{
-		FSlateBrush* brush = new FSlateBrush();
-		brush->SetResourceObject(texture);
-		return brush;
-	}
 };
