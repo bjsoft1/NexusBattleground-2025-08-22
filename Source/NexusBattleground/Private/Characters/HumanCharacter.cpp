@@ -191,16 +191,19 @@ void AHumanCharacter::GetCrosshairTrace(FVector& outStart, FVector& outEnd)
 	APlayerController* playerController = Cast<APlayerController>(GetController());
 	if (!playerController) return;
 
-	int32 ViewportX, ViewportY;
-	playerController->GetViewportSize(ViewportX, ViewportY);
-	FVector2D CrosshairLocation(ViewportX / 2.0f, ViewportY / 2.0f);
+	int32 viewportX, viewportY;
+	playerController->GetViewportSize(viewportX, viewportY);
+	FVector2D crosshairLocation(viewportX / 2.0f, viewportY / 2.0f);
 
 	// De-project to world
-	FVector WorldLocation, WorldDirection;
-	if (playerController->DeprojectScreenPositionToWorld(CrosshairLocation.X, CrosshairLocation.Y, WorldLocation, WorldDirection))
+	FVector worldLocation, worldDirection;
+	if (playerController->DeprojectScreenPositionToWorld(crosshairLocation.X, crosshairLocation.Y, worldLocation, worldDirection))
 	{
-		outStart = WorldLocation;
-		outEnd = WorldLocation + (WorldDirection * 400.0f);
+		// Trace distance based on camera mode
+		float traceDistance = this->ActiveCameraMode == ECameraModes::CM_ThirdPerson ? 400.0f : this->ActiveCameraMode == ECameraModes::CM_SecondPerson ? 300.0f : 200.0f;
+
+		outStart = worldLocation;
+		outEnd = worldLocation + (worldDirection * traceDistance);
 	}
 }
 
