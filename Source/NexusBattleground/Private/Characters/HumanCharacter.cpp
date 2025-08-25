@@ -110,11 +110,7 @@ void AHumanCharacter::BeginPlay()
 				GetWorld()->GetTimerManager().SetTimer(this->PickupTimerHandle, this, &AHumanCharacter::DetectPickupItem, 0.1f, true);
 				SAssignNew(this->PickupHoverWidget, SPickupHoverWidget).AnimationType(EAnimationTypes::MoveLeft_Right);
 				GEngine->GameViewport->AddViewportWidgetContent(this->PickupHoverWidget.ToSharedRef());
-				
-
-				this->PickupHoverWidget->OverrideVisibility(true, false);
-				// TODO: Removed above line and uncomment below line to test visibility issue
-				//this->PickupHoverWidget->SetVisibility(EVisibility::Collapsed);
+				this->PickupHoverWidget->SetVisibility(EVisibility::Collapsed);
 			}
 		}
 	}
