@@ -16,6 +16,8 @@
 
 #pragma region NexusBattleground Header Files
 #include "BattlegroundCharacterMovementComponent.h"
+#include "BattlegroundPickup.h"
+#include "SPickupHoverWidget.h"
 #pragma endregion NexusBattleground Header Files
 
 
@@ -98,8 +100,18 @@ void AHumanCharacter::BeginPlay()
 				this->IE_SwitchCameraMode();
 			}
 
+			// Add Input Mapping Context
 			if (UEnhancedInputLocalPlayerSubsystem* subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(playerController->GetLocalPlayer()))
 				subsystem->AddMappingContext(this->IMC_DefaultMappingContext, 0);
+
+			// Start pickup detection timer
+			if (GEngine && GEngine->GameViewport)
+			{
+				GetWorld()->GetTimerManager().SetTimer(this->PickupTimerHandle, this, &AHumanCharacter::DetectPickupItem, 0.1f, true);
+				SAssignNew(this->PickupHoverWidget, SPickupHoverWidget);
+				GEngine->GameViewport->AddViewportWidgetContent(this->PickupHoverWidget.ToSharedRef());
+				this->PickupHoverWidget->SetVisibility(EVisibility::Hidden);
+			}
 		}
 	}
 }
@@ -138,6 +150,60 @@ void AHumanCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 
 
 #pragma region Private Helper Methods
+void AHumanCharacter::DetectPickupItem()
+{
+	FVector startLocation, endLocation;
+	GetCrosshairTrace(startLocation, endLocation); // your method to get center trace
+
+	FHitResult hitResult;
+	FCollisionQueryParams params;
+	params.AddIgnoredActor(this);
+
+	if (GetWorld()->LineTraceSingleByChannel(hitResult, startLocation, endLocation, ECC_Visibility, params))
+	{
+		if (ABattlegroundPickup* pickup = Cast<ABattlegroundPickup>(hitResult.GetActor())) SetHoverPickupItem(pickup);
+		else SetHoverPickupItem(nullptr);
+	}
+	else SetHoverPickupItem(nullptr);
+}
+void AHumanCharacter::SetHoverPickupItem(ABattlegroundPickup* pickup)
+{
+	if (pickup == this->LastHoverPickupItem) return;
+	else if (this->LastHoverPickupItem) this->LastHoverPickupItem->SetHighlight(false);
+
+	this->LastHoverPickupItem = pickup;
+	if (pickup)
+	{
+		pickup->SetHighlight(true);
+		if (this->PickupHoverWidget)
+		{
+			this->PickupHoverWidget->SetVisibility(EVisibility::Visible);
+			this->PickupHoverWidget->SetItemData(pickup->GetPickupIcon(), FText::FromString(pickup->GetPickupName()));
+		}
+	}
+	else if (this->PickupHoverWidget) this->PickupHoverWidget->SetVisibility(EVisibility::Hidden);
+}
+
+void AHumanCharacter::GetCrosshairTrace(FVector& outStart, FVector& outEnd)
+{
+	if (!IsLocallyControlled()) return;
+
+	APlayerController* playerController = Cast<APlayerController>(GetController());
+	if (!playerController) return;
+
+	int32 ViewportX, ViewportY;
+	playerController->GetViewportSize(ViewportX, ViewportY);
+	FVector2D CrosshairLocation(ViewportX / 2.0f, ViewportY / 2.0f);
+
+	// De-project to world
+	FVector WorldLocation, WorldDirection;
+	if (playerController->DeprojectScreenPositionToWorld(CrosshairLocation.X, CrosshairLocation.Y, WorldLocation, WorldDirection))
+	{
+		outStart = WorldLocation;
+		outEnd = WorldLocation + (WorldDirection * 400.0f);
+	}
+}
+
 #pragma endregion Private Helper Methods
 
 

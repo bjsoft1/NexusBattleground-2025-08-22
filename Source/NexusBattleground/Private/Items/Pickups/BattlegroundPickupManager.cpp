@@ -38,7 +38,10 @@ void ABattlegroundPickupManager::BeginPlay()
     Super::BeginPlay();
 
     PickupManagers.Add(GetWorld(), this);
-    GetWorld()->GetTimerManager().SetTimer(this->SpawnTimerHandle, this, &ABattlegroundPickupManager::SpawnRandomPickup, this->SpawnInterval, true);
+
+    if(AActor::HasAuthority()) 
+        GetWorld()->GetTimerManager().SetTimer(this->SpawnTimerHandle, this, &ABattlegroundPickupManager::SpawnRandomPickup, this->SpawnInterval, true);
+
 }
 void ABattlegroundPickupManager::EndPlay(const EEndPlayReason::Type endPlayReason)
 {

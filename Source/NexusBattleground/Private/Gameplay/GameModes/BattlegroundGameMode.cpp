@@ -50,13 +50,13 @@ void ABattlegroundGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (HasAuthority() && this->PickupManagerClass)
+	if (AActor::HasAuthority() && this->PickupManagerClass)
 	{
 		FActorSpawnParameters spawnParams;
 		spawnParams.Owner = this;
 		spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-		GetWorld()->SpawnActor<ABattlegroundPickupManager>(this->PickupManagerClass, FVector::ZeroVector, FRotator::ZeroRotator, spawnParams);
+		AActor::GetWorld()->SpawnActor<ABattlegroundPickupManager>(this->PickupManagerClass, FVector::ZeroVector, FRotator::ZeroRotator, spawnParams);
 	}
 }
 #pragma endregion Lifecycle Overrides

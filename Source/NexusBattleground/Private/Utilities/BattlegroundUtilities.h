@@ -96,3 +96,14 @@ public:
 	}
 
 };
+
+static class BattlegroundStyles
+{
+public:
+	static inline FSlateBrush* FSlateBrushFromTexture(UTexture2D* texture)
+	{
+		FSlateBrush* brush = new FSlateBrush();
+		brush->SetResourceObject(texture);
+		return brush;
+	}
+};

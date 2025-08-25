@@ -9,7 +9,6 @@ struct FPickupData
 	GENERATED_BODY()
 
 public:
-	UPROPERTY() uint8 Quantity = 0;
 	UPROPERTY() EPickupTypes PickupType;
 	UPROPERTY() uint8 Subtype = 1;
 
@@ -50,5 +49,5 @@ public:
 	 *
 	 * TSoftObjectPtr avoids loading all icons at once.
 	 */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite) TSoftObjectPtr<UTexture2D> PickIcon = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) TSoftObjectPtr<UTexture2D> PickupIcon = nullptr;
 };

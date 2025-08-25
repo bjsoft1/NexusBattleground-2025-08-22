@@ -59,43 +59,31 @@ private:
 	UPROPERTY() FPickupData PickupData;
 	UPROPERTY() EPickupTypes PickupType;
 	UPROPERTY() uint8 PickupSubType;
+	UPROPERTY() UTexture2D* PickupIcon;
 #pragma endregion Configurable & Internal Properties
 
 
 public:
 #pragma region Public Inline Methods
-	FORCEINLINE void InitializePickup(const FName& rowId, uint16 amount = 1)
-	{
-		if (AActor::HasAuthority())
-		{
-			this->DatatableRowId = rowId;
-			this->PickupAmount = amount;
-
-			if (BattlegroundUtilities::IsListenServer(GetWorld())) OnRep_DatatableRowId();
-
-			float offsetZ = 0.f;
-			if (this->PickupData.PickupType == EPickupTypes::Ammo) offsetZ = 0.f;
-			else if (this->PickupData.PickupType == EPickupTypes::Sight) offsetZ = 0.f;
-			else if (this->PickupData.PickupType == EPickupTypes::Armor) offsetZ = 0.f;
-			else if (this->PickupData.PickupType == EPickupTypes::Medkit) offsetZ = 0.f;
-			else if (this->PickupData.PickupType == EPickupTypes::Helmet) offsetZ = 25.f;
-			else if (this->PickupData.PickupType == EPickupTypes::Weapon) offsetZ = 13.f;
-			else if (this->PickupData.PickupType == EPickupTypes::Backpack) offsetZ = 0.f;
-
-
-			if (offsetZ != 0.0f)
-			{
-				FVector location = AActor::GetActorLocation();
-				location.Z += offsetZ;
-				AActor::SetActorLocation(location);
-			}
-		}
+	FORCEINLINE EPickupTypes GetPickupType() const { return this->PickupData.PickupType; }
+	FORCEINLINE uint8 GetPickupSubType() const { return this->PickupData.Subtype; }
+	FORCEINLINE FString GetPickupName() const { return this->PickupData.PickupName; }
+	FORCEINLINE uint8 GetAmount() const { return this->PickupAmount; }
+	FORCEINLINE uint8 GetAffectValue() const { return this->PickupData.AffectValue; }
+	FORCEINLINE uint8 GetSpaceRequired() const { return this->PickupData.SpaceRequired; }
+	FORCEINLINE float GetDefaultScale() const { return this->PickupData.DefaultScale; }
+	FORCEINLINE UTexture2D* GetPickupIcon() const 
+	{ 
+		return this->PickupIcon ? this->PickupIcon : (this->PickupData.PickupIcon.IsNull()
+		? nullptr : const_cast<ABattlegroundPickup*>(this)->PickupIcon = this->PickupData.PickupIcon.LoadSynchronous());
 	}
 #pragma endregion Public Inline Methods
 
 
 public:
 #pragma region Public Methods
+	void InitializePickup(const FName& rowId, uint16 amount = 1);
+
 	/**
 	 * Highlights the pickup item by enabling a post-process outline.
 	 *

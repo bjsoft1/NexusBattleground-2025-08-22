@@ -12,6 +12,8 @@ class UInputAction;
 class UInputMappingContext;
 struct FInputActionValue;
 enum class ECameraModes : uint8;
+class ABattlegroundPickup;
+class SPickupHoverWidget;
 #pragma endregion Forward declaretions
 
 
@@ -83,6 +85,11 @@ private:
 	UInputAction* IA_CrouchAction;
 	UInputAction* IA_CameraAction;
 	UInputAction* IA_PickupAction;
+
+	// Pickup Helpers
+	ABattlegroundPickup* LastHoverPickupItem;
+	TSharedPtr<SPickupHoverWidget> PickupHoverWidget;
+	FTimerHandle PickupTimerHandle;
 #pragma endregion Components
 
 
@@ -111,6 +118,9 @@ protected:
 
 private:
 #pragma region Private Helper Methods
+	void DetectPickupItem();
+	void GetCrosshairTrace(FVector& outStart, FVector& outEnd);
+	void SetHoverPickupItem(ABattlegroundPickup* pickup);
 #pragma endregion Private Helper Methods
 
 

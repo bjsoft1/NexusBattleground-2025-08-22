@@ -63,6 +63,32 @@ void ABattlegroundPickup::EndPlay(const EEndPlayReason::Type endPlayReason)
 
 
 #pragma region Public Methods
+void ABattlegroundPickup::InitializePickup(const FName& rowId, uint16 amount)
+{
+    if (AActor::HasAuthority())
+    {
+        this->DatatableRowId = rowId;
+        this->PickupAmount = amount;
+
+        if (BattlegroundUtilities::IsListenServer(GetWorld())) OnRep_DatatableRowId();
+
+        float offsetZ = 0.f;
+        if (this->PickupData.PickupType == EPickupTypes::Ammo) offsetZ = 0.f;
+        else if (this->PickupData.PickupType == EPickupTypes::Sight) offsetZ = 0.f;
+        else if (this->PickupData.PickupType == EPickupTypes::Armor) offsetZ = 0.f;
+        else if (this->PickupData.PickupType == EPickupTypes::Medkit) offsetZ = 0.f;
+        else if (this->PickupData.PickupType == EPickupTypes::Helmet) offsetZ = 25.f;
+        else if (this->PickupData.PickupType == EPickupTypes::Weapon) offsetZ = 13.f;
+        else if (this->PickupData.PickupType == EPickupTypes::Backpack) offsetZ = 0.f;
+
+        if (offsetZ != 0.0f)
+        {
+            FVector location = AActor::GetActorLocation();
+            location.Z += offsetZ;
+            AActor::SetActorLocation(location);
+        }
+    }
+}
 void ABattlegroundPickup::SetHighlight(bool isHighlight)
 {
     if (this->PickupMesh == nullptr) return;

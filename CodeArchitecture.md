@@ -46,9 +46,6 @@ Source/NexusBattleground/Public
 │       └── BattlegroundBaseWeapon.h                # Base Weapon
 │       └── BattlegroundGrenade.h                   # Grenade
 │       └── BattlegroundWeapon.h                    # Base Weapon
-
-
-
 │
 └── Networking/                                     # Multiplayer logic
 │    └── (Future networking helpers)                # Placeholder for networking utilities

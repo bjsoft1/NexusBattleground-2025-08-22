@@ -18,7 +18,8 @@ public class NexusBattleground : ModuleRules
             "StateTreeModule",
             "GameplayStateTreeModule",
             "UMG",
-            "Slate"
+            "Slate",
+            "SlateCore",
         });
 
         PrivateDependencyModuleNames.AddRange(new string[] {
@@ -39,6 +40,8 @@ public class NexusBattleground : ModuleRules
             "NexusBattleground/Public/Items",
             "NexusBattleground/Public/Items/Pickups",
             "NexusBattleground/Public/Items/Weapons",
+            "NexusBattleground/Public/Items/Menu",
+            "NexusBattleground/Public/Menu/Widgets",
 
             //------- Privates Include Paths -------
             "NexusBattleground/Private",
