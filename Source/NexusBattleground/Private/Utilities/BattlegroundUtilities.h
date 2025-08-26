@@ -18,6 +18,8 @@ DECLARE_LOG_CATEGORY_EXTERN(LogNexus, Log, All);
 #define NEXUS_INFO(Format, ...)    UE_LOG(LogNexus, Log, TEXT(Format), ##__VA_ARGS__)
 #define NEXUS_WARNING(Format, ...) UE_LOG(LogNexus, Warning, TEXT(Format), ##__VA_ARGS__)
 #define NEXUS_ERROR(Format, ...)   UE_LOG(LogNexus, Error, TEXT(Format), ##__VA_ARGS__)
+
+#define DEFAULT_MAIN_MENU_DELAY 0.3f
 #endif
 
 static class AssetsPaths

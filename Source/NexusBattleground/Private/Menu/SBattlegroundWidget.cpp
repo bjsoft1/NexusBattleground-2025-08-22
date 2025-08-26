@@ -6,9 +6,9 @@
 
 
 #pragma region Public Methods
-void SBattlegroundWidget::OverrideVisibility(bool isShow)
+void SBattlegroundWidget::OverrideVisibility(bool isShow, bool newAnimation)
 {
-    this->CurrentAnimation = (SWidget::RenderOpacity != 0.0f && SWidget::RenderOpacity != 1.0f) ? SWidget::RenderOpacity : 0.0f;
+    this->CurrentAnimation = (SWidget::RenderOpacity != 0.0f && SWidget::RenderOpacity != 1.0f && !newAnimation)  ? SWidget::RenderOpacity : 0.0f;
     if (isShow)
     {
         if (this->WidgetState == EWidgetStates::AnimatingIn) return;

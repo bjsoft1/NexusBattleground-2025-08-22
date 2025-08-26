@@ -14,7 +14,7 @@ class NEXUSBATTLEGROUND_API SBattlegroundWidget : public SCompoundWidget
 
 public:
 #pragma region Public Methods
-	virtual void OverrideVisibility(bool isShow);
+	virtual void OverrideVisibility(bool isShow, bool newAnimation = false);
 	FOnHidden OnHidden;
 #pragma endregion Public Methods
 

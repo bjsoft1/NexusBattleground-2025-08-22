@@ -113,3 +113,18 @@ enum class EWidgetStates : uint8
 	AnimatingIn = 1,
 	AnimatingOut = 2,
 };
+
+enum class EChildrenMenus : uint8
+{
+	Dashboard = 0,
+	HostGame = 1,
+	JoinGame = 2,
+	Inventory = 3,
+	DisplaySettings = 4,
+	SoundSettings = 5,
+	ControlsSettings = 6,
+	Leaderboards = 7,
+	SaveGame = 8,
+	ExitGame = 9,
+	MAX = 10
+};
