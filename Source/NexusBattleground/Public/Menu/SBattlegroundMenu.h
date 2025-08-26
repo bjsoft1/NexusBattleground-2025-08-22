@@ -7,14 +7,14 @@
 
 #pragma region Forward Declarations
 class SBattlegroundWidgetMenuTop;
-enum class EChildrenMenus : uint8;
+//enum class EChildrenMenus : uint8;
 #pragma endregion Forward Declarations
 
-
-struct FChildrenMenu
+enum class EMenuScreens : uint8
 {
-	EChildrenMenus MenuType;
-	TSharedPtr<SBattlegroundWidget> ChildWidget;
+	Gameplay = 0,
+	MainMenu = 1,
+
 };
 
 class NEXUSBATTLEGROUND_API SBattlegroundMenu : public SBattlegroundWidget
@@ -35,18 +35,70 @@ public:
 private:
 #pragma region Components
 	UWorld* world;
-	TSharedPtr<SBattlegroundWidgetMenuTop> MenuTopWidget;
-	TArray<FChildrenMenu> ChildrenMenus;
 
-    // -------------
+	/** Static Top Child Menu (Logo, Player's Name, Score ) */
+	TSharedPtr<SBattlegroundWidgetMenuTop> MenuTopWidget;
+
+	/** Default Welcome Screend | Default Home Screen */
+	TSharedPtr<SCompoundWidget> AbountGameMenu;
+	TSharedPtr<SButton> AbountGameButton;
+	
+	/** User can host a new game */
+	TSharedPtr<SCompoundWidget> HostGameMenu;
+	TSharedPtr<SButton> HostGameButton;
+	
+	/** User can see and join available games */
+	TSharedPtr<SCompoundWidget> JoinGameMenu;
+	TSharedPtr<SButton> JoinGameButton;
+	
+	/** User can see and manage inventory items */
+	TSharedPtr<SCompoundWidget> InventoryMenu;
+	TSharedPtr<SButton> InventoryButton;
+	
+	/** User can change display resolution and quality */
+	TSharedPtr<SCompoundWidget> DisplaySettingsMenu;
+	TSharedPtr<SButton> DisplaySettingsButton;
+	
+	/** User can change sound volume */
+	TSharedPtr<SCompoundWidget> SoundSettingsMenu;
+	TSharedPtr<SButton> SoundSettingsButton;
+
+	/** User can change key bindings */
+	TSharedPtr<SCompoundWidget> ControlSettingsMenu;
+	TSharedPtr<SButton> ControlSettingsButton;
+
+	/** User can see leaderboards */
+	TSharedPtr<SCompoundWidget> LeaderboardMenu;
+	TSharedPtr<SButton> LeaderboardButton;
+
+	/** User can see saved game lists */
+	TSharedPtr<SCompoundWidget> RecordedGameMenu;
+	TSharedPtr<SButton> RecordedGameButton;
+
+	/** Yes | No | Cancel Dialogbox */
+	TSharedPtr<SCompoundWidget> MessageboxMenu;
+	TSharedPtr<SButton> ExitGameButton;
+	
+	/** Return to game | just hide widget */
+	TSharedPtr<SButton> BackButton;
+
+	
+	// -------------
     TSharedPtr<SImage> PickupIconImage;
     TSharedPtr<STextBlock> PickupText;
 #pragma endregion Components
 
 
+private:
+#pragma region Configurable & Internal Properties
+	EMenuScreens CurrentScreen = EMenuScreens::MainMenu;
+#pragma endregion Configurable & Internal Properties
+
+
 public:
 #pragma region Public Methods
 	FORCEINLINE UWorld* GetWorld() const { return this->world; }
+	void SetCurrentScreen(EMenuScreens newScreen);
 #pragma region Public Methods
 
 
@@ -56,9 +108,7 @@ public:
 
 
 #pragma region Private Helper Methods
-	//TSharedPtr<SBattlegroundWidget> GetChildWidget(EChildrenMenus menuType);
-    //TSharedPtr<SBattlegroundWidget> CreateChildWidget(EChildrenMenus menuType);
-    //TSharedPtr<SBattlegroundWidget> GetOrCreateChildWidget(EChildrenMenus menuType);
+	void RefreshButtons();
 	#pragma endregion Private Helper Methods
 
 

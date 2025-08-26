@@ -3,6 +3,7 @@
 #include "Brushes/SlateDynamicImageBrush.h"
 #include "Engine/Texture2D.h"
 #include "Slate/SlateGameResources.h"
+#include "Widgets/SCompoundWidget.h"
 //---------------------
 #include "BattlegroundUtilities.h"
 
@@ -95,12 +96,19 @@ TSharedRef<FSlateStyleSet> FBattlegroundStyles::Create()
 	slateStyleSet.Set(WidgetKeys::BORDER_SIDE_FADE, new IMAGE_BRUSH("Boxes/Tx_RightFade", FVector2D(256, 256)));
 
 	// NEXUS TEMPLATE LOGO
-	slateStyleSet.Set(WidgetKeys::BORDER_NEXUS_TEMPLATE_LOGO, new IMAGE_BRUSH("Logos/nexus-logo", FVector2D(300, 100), FLinearColor(255.f, 255.f, 255.f, 0.75f)));
+	slateStyleSet.Set(WidgetKeys::BORDER_NEXUS_TEMPLATE_LOGO, new IMAGE_BRUSH("Logos/nexus-logo", FVector2D(300, 100), FLinearColor(0.8f, 0.8f, 0.8f, 1.0f)));
+
+	// PROGRESS BARS (0% to 100% in 10% increments)
 	for (uint8 i = 0; i <= 10; i++)
-	{
 		slateStyleSet.Set(FName(*FString::Printf(TEXT("%s%02d"), *WidgetKeys::BORDER_PROGRESS.ToString(), i * 10)), 
 			new IMAGE_BRUSH(FString::Printf(TEXT("Icons/progress_%02d"), i * 10), FVector2D(100, 100)));
-	}
+
+	// Pixel Button Background
+	slateStyleSet.Set(WidgetKeys::BORDER_BUTTON_BACKGROUND, new IMAGE_BRUSH("Boxes/Tx_Pixel", FVector2D(210, 40)));
+
+
+	//SCROLL_DEFAULT
+	slateStyleSet.Set(WidgetKeys::SCROLL_DEFAULT, FScrollBarStyle().SetHorizontalTopSlotImage(FScrollBoxStyle().LeftShadowBrush).SetVerticalBackgroundImage(FScrollBoxStyle().LeftShadowBrush));
 
 	return slateStyleSetRef;
 }

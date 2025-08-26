@@ -23,7 +23,7 @@ void SPickupHoverWidget::Construct(const FArguments& args)
             SNew(SBox).HAlign(HAlign_Left).VAlign(VAlign_Fill)
                 [
                     SNew(SBorder).BorderBackgroundColor(FLinearColor(0.f, 0.f, 0.f, 0.6f)).Padding(30.f)
-                        .BorderImage(FBattlegroundStyles::GetBrushStyle(WidgetKeys::BORDER_SIDE_FADE))
+                        .BorderImage(SlateHelpers::GetBrushStyle(WidgetKeys::BORDER_SIDE_FADE))
                         [
                             SNew(SBox).MaxDesiredWidth(600.f).MaxDesiredHeight(500.f).HAlign(HAlign_Center).VAlign(VAlign_Center)
                                 [
@@ -36,12 +36,12 @@ void SPickupHoverWidget::Construct(const FArguments& args)
                                         SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center).Padding(0, 5, 0, 0)
                                         [
                                             SAssignNew(this->PickupText, STextBlock).Text(FText::FromString("Item Name"))
-                                                .TextStyle(FBattlegroundStyles::GetTextBlockStyle(WidgetKeys::FONT_LARGE_TITLE))
+                                                .TextStyle(SlateHelpers::GetTextBlockStyle(WidgetKeys::FONT_LARGE_TITLE))
                                         ]
                                         + SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center)
                                         [
                                             SNew(STextBlock).Text(FText::FromString("Press E to pick up"))
-                                                .TextStyle(FBattlegroundStyles::GetTextBlockStyle(WidgetKeys::FONT_Medium_TITLE))
+                                                .TextStyle(SlateHelpers::GetTextBlockStyle(WidgetKeys::FONT_Medium_TITLE))
                                         ]
                                 ]
                         ]
