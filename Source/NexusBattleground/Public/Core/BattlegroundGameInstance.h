@@ -25,6 +25,7 @@ public:
 #pragma region Constructors and Overrides
 	UBattlegroundGameInstance(const FObjectInitializer& objectInitializer);
 	virtual void Init() override;
+	virtual void Shutdown() override;
 #pragma endregion Constructors and Overrides
 
 

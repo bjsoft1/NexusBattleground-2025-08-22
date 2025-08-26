@@ -26,6 +26,15 @@ void UBattlegroundGameInstance::Init()
 	this->SettingsManager->AddToRoot();
 	this->SettingsManager->LoadSettings();
 }
+void UBattlegroundGameInstance::Shutdown()
+{
+	if (this->SettingsManager)
+	{
+		this->SettingsManager->RemoveFromRoot();
+		this->SettingsManager = nullptr;
+	}
+	Super::Shutdown();
+}
 #pragma endregion Constructors and Overrides
 
 
