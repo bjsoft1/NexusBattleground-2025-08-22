@@ -22,6 +22,8 @@ namespace WidgetKeys
 	const FName FONT_ACTIVE_BUTTON("FontKey.ActiveButtonfont");
 
 	const FName BORDER_SIDE_FADE("Border.SideFade");
+	const FName BORDER_NEXUS_TEMPLATE_LOGO("Border.NexusTemplateLogo");
+	const FName BORDER_PROGRESS("Border.Progress_");
 };
 
 class FBattlegroundStyles

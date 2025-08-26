@@ -94,6 +94,18 @@ TSharedRef<FSlateStyleSet> FBattlegroundStyles::Create()
 	// SIDE BACKGROUND FADE
 	slateStyleSet.Set(WidgetKeys::BORDER_SIDE_FADE, new IMAGE_BRUSH("Boxes/Tx_RightFade", FVector2D(256, 256)));
 
+	// NEXUS TEMPLATE LOGO
+	slateStyleSet.Set(WidgetKeys::BORDER_NEXUS_TEMPLATE_LOGO, new IMAGE_BRUSH("Logos/nexus-logo", FVector2D(300, 100)));
+
+	for (uint8 i = 0; i <= 10; i++)
+	{
+		FString indexStr = FString::Printf(TEXT("%02d"), i);
+		FName brushKey(*FString::Printf(TEXT("%s%s"), *WidgetKeys::BORDER_PROGRESS.ToString(), *indexStr));
+
+		slateStyleSet.Set(brushKey, new IMAGE_BRUSH(("Icons/progress_" + indexStr), FVector2D(100, 100)));
+	}
+
+
 	return slateStyleSetRef;
 }
 PRAGMA_ENABLE_OPTIMIZATION

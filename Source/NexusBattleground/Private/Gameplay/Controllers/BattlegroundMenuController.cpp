@@ -24,22 +24,17 @@ void ABattlegroundMenuController::BeginPlay()
 {
     Super::BeginPlay();
 
-    int32 CameraCount = 0;
-    for (TActorIterator<ACameraActor> It(GetWorld()); It; ++It)
+    int32 cameraCount = 0;
+    for (TActorIterator<ACameraActor> it(GetWorld()); it; ++it)
     {
-        ACameraActor* Camera = *It;
-        UE_LOG(LogTemp, Warning, TEXT("Camera found: %s"), *Camera->GetName());
+        ACameraActor* camera = *it;
 
-        if (Camera && Camera->ActorHasTag("MenuCamera"))
+        if (camera && camera->ActorHasTag("MenuCamera"))
         {
-            SetViewTarget(Camera);  // use instance, not APlayerController::SetViewTarget
-            UE_LOG(LogTemp, Warning, TEXT("Menu camera found and set: %s"), *Camera->GetName());
+            SetViewTarget(camera);
             break;
         }
     }
-
-    UE_LOG(LogTemp, Warning, TEXT("Total cameras found: %d"), CameraCount);
-
 
     // Enable mouse cursor and UI-only input
     APlayerController::bShowMouseCursor = true;

@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma region Default System Header Files
 #include "SBattlegroundMenu.h"
@@ -17,38 +17,59 @@ void SBattlegroundMenu::Construct(const FArguments& args)
 
     ChildSlot
         [
-            SNew(SBox).HAlign(HAlign_Fill).VAlign(VAlign_Fill)
+            SNew(SVerticalBox)
+			// 01. Top title bar
+            + SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Fill).VAlign(VAlign_Top).Padding(20.0f)
                 [
-                    SNew(SBorder).BorderBackgroundColor(FLinearColor(0.f, 0.f, 0.f, 0.6f)).Padding(30.f)
-                        .BorderImage(FBattlegroundStyles::GetBrushStyle(WidgetKeys::BORDER_SIDE_FADE))
+                    SNew(SHorizontalBox)
+                        // Logo
+                        + SHorizontalBox::Slot().HAlign(HAlign_Left).VAlign(VAlign_Fill)
                         [
-                            SNew(SBox).MaxDesiredWidth(1200.f).MaxDesiredHeight(800.f).HAlign(HAlign_Center).VAlign(VAlign_Center)
+			    	     SNew(SImage).DesiredSizeOverride(FVector2D(350, 100)).Image(FBattlegroundStyles::GetBrushStyle(WidgetKeys::BORDER_NEXUS_TEMPLATE_LOGO))
+                        ]
+                        + SHorizontalBox::Slot().FillWidth(1.0f)
+                        [
+                            SNew(SButton).HAlign(HAlign_Right).VAlign(VAlign_Center).Text(FText::FromString("Close"))
+                        ]
+                ]
+
+			// 02. Bottom body (Left Menu and Right Body)
+            + SVerticalBox::Slot().FillHeight(1.0f)
+                [
+                    SNew(SHorizontalBox)
+						// Left side Menu
+                        + SHorizontalBox::Slot().AutoWidth()
+                        [
+                            SNew(SBorder).Padding(10)
                                 [
                                     SNew(SVerticalBox)
-                                        + SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center)
+
+                                        + SVerticalBox::Slot().AutoHeight().Padding(5)
                                         [
-                                            SNew(STextBlock).Text(FText::FromString("Menu Title"))
-                                                .TextStyle(FBattlegroundStyles::GetTextBlockStyle(WidgetKeys::FONT_LARGE_TITLE))
+                                            SNew(SBorder).DesiredSizeScale(FVector2D(2.0f))
                                         ]
-                                        + SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center).Padding(0, 5, 0, 0)
+                                        + SVerticalBox::Slot().AutoHeight().Padding(5)
                                         [
-                                            SNew(STextBlock).Text(FText::FromString("Subtitle or Description"))
-                                                .TextStyle(FBattlegroundStyles::GetTextBlockStyle(WidgetKeys::FONT_LARGE_TITLE))
-                                        ]
-                                        + SVerticalBox::Slot().FillHeight(1.f).HAlign(HAlign_Fill).VAlign(VAlign_Fill).Padding(0, 20, 0, 0)
-                                        [
-                                            SNew(SOverlay)
-                                                + SOverlay::Slot()
-                                                [
-                                                    SNew(SBox).HAlign(HAlign_Fill).VAlign(VAlign_Fill)
-                                                        [
-                                                            SNew(SImage).Image(FBattlegroundStyles::GetBrushStyle(WidgetKeys::BORDER_SIDE_FADE))
-                                                        ]
-                                                ]
+                                            SNew(SButton).Text(FText::FromString("Button 2"))
                                         ]
                                 ]
                         ]
+
+                    // Right side body
+                    + SHorizontalBox::Slot()
+                        .FillWidth(1.0f)
+                        .Padding(10)
+                        [
+                            SNew(SBorder)
+                                .Padding(10)
+                                [
+                                    SNew(STextBlock)
+                                        .Text(FText::FromString("Right Body Content"))
+                                        .Justification(ETextJustify::Left)
+                                ]
+                        ]
                 ]
-		];
+        ];
 }
+
 #pragma endregion Constructors and Overrides

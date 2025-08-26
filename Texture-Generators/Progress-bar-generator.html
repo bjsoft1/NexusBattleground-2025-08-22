@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Progress Circle Generator</title>
+<style>
+  canvas { margin: 10px; border: 1px solid #ccc; }
+</style>
+</head>
+<body>
+
+<h2>Progress Circles Preview</h2>
+<div id="container"></div>
+<button id="downloadBtn">Download All Images</button>
+
+<script>
+const container = document.getElementById('container');
+
+// Function to draw progress circle
+function drawProgressCircle(ctx, size, progress, showText = true, text = '') {
+    const center = size / 2;
+    const radius = size / 2 - 10;
+    const lineWidth = 14;
+
+    ctx.clearRect(0, 0, size, size);
+
+    // Background circle
+    ctx.beginPath();
+    ctx.arc(center, center, radius, 0, 2 * Math.PI);
+    ctx.strokeStyle = 'rgb(120, 120, 120)';
+    ctx.lineWidth = lineWidth;
+    ctx.stroke();
+
+    // Progress arc
+    ctx.beginPath();
+    ctx.arc(center, center, radius, -Math.PI/2, -Math.PI/2 + 2*Math.PI*progress);
+    ctx.strokeStyle = 'rgb(225, 150, 0)';
+    ctx.lineWidth = lineWidth;
+    ctx.stroke();
+
+    // Center text (optional)
+    if (showText) {
+        ctx.font = '20px Arial';
+        ctx.fillStyle = '#000';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(text, center, center);
+    }
+}
+
+// Arrays to store canvases
+const previewCanvases = [];
+const downloadCanvases = [];
+
+// Render 0% to 100% (inclusive)
+for(let i = 0; i <= 10; i++) {
+    const progress = i / 10;
+
+    // Preview canvas with text
+    const canvas = document.createElement('canvas');
+    canvas.width = 200;
+    canvas.height = 200;
+    container.appendChild(canvas);
+    const ctx = canvas.getContext('2d');
+    drawProgressCircle(ctx, 200, progress, true, `${i*10}%`);
+    previewCanvases.push(canvas);
+
+    // Download canvas without text
+    const downloadCanvas = document.createElement('canvas');
+    downloadCanvas.width = 200;
+    downloadCanvas.height = 200;
+    const downloadCtx = downloadCanvas.getContext('2d');
+    drawProgressCircle(downloadCtx, 200, progress, false);
+    downloadCanvases.push(downloadCanvas);
+}
+
+// Button click to download all images (without text)
+document.getElementById('downloadBtn').addEventListener('click', () => {
+    downloadCanvases.forEach((canvas, index) => {
+        setTimeout(() => {
+            const link = document.createElement('a');
+            link.download = `progress_${index*10}.png`; // first file is progress_0.png
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+        }, index * 100);
+    });
+});
+</script>
+
+</body>
+</html>
