@@ -1,6 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#pragma region Default System Header Files
 #include "SBattlegroundWidget.h"
+#pragma endregion Default System Header Files
+
 
 #pragma region Public Methods
 void SBattlegroundWidget::OverrideVisibility(bool isShow)

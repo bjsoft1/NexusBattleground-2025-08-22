@@ -1,13 +1,19 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#pragma region Default System Header Files
 #include "SPickupHoverWidget.h"
 #include "Widgets/Images/SImage.h"
 #include "Widgets/Text/STextBlock.h"
 #include "Engine/Texture2D.h"
-// ------------
+#pragma endregion Default System Header Files
+
+
+#pragma region NexusBattleground Header Files
 #include "BattlegroundStyles.h"
+#pragma endregion NexusBattleground Header Files
 
 
+#pragma region Constructors and Overrides
 void SPickupHoverWidget::Construct(const FArguments& args)
 {
     SBattlegroundWidget::SetAnimationType(args._AnimationType);
@@ -42,10 +48,13 @@ void SPickupHoverWidget::Construct(const FArguments& args)
                 ]
         ];
 }
+#pragma endregion Constructors and Overrides
 
 
+#pragma region Public Methods
 void SPickupHoverWidget::SetItemData(UTexture2D* itemIcon, const FText& itemName)
 {
     if (this->PickupIconImage.IsValid() && itemIcon) this->PickupIconImage->SetImage(WidgetHelpers::FSlateBrushFromTexture(itemIcon));
     if (this->PickupText.IsValid()) this->PickupText->SetText(itemName);
 }
+#pragma endregion Public Methods

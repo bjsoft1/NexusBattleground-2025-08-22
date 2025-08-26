@@ -8,6 +8,6 @@
 class NEXUSBATTLEGROUND_API SBattlegroundMenu
 {
 public:
-	SBattlegroundMenu();
-	~SBattlegroundMenu();
+
+
 };
