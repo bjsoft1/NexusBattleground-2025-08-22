@@ -7,6 +7,7 @@
 
 #pragma region Forward Declarations
 class SBattlegroundWidgetMenuTop;
+enum class EChildrenMenus : uint8;
 #pragma endregion Forward Declarations
 
 
@@ -55,4 +56,8 @@ public:
 
 #pragma endregion Private Helper Methods
 
+
+#pragma region Callbacks
+	UFUNCTION() void OnSettingsUpdated(ESaveGameTypes type);
+#pragma endregion Callbacks
 };

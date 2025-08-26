@@ -37,6 +37,7 @@ void ABattlegroundMenuGameMode::BeginPlay()
         FTimerHandle timerHandle;
         GetWorldTimerManager().SetTimer(timerHandle, this, &ABattlegroundMenuGameMode::ShowMainMenu, DEFAULT_MAIN_MENU_DELAY, false);
     }
+
 }
 #pragma endregion Lifecycle Overrides
 

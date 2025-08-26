@@ -131,6 +131,7 @@ enum class EChildrenMenus : uint8
 
 enum class ESaveGameTypes : uint8
 {
+	MAX = 0,
 	PlayerData = 1,
 	GraphicSettings = 2,
 	AudioSettings = 3,

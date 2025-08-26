@@ -34,7 +34,7 @@ class NEXUSBATTLEGROUND_API UBattlegroundSettingsManager : public UObject
 
 private:
     UBattlegroundSaveGame* SaveData;
-    void SaveSettings();
+    void SaveSettings(ESaveGameTypes type);
 
 
 public:
@@ -42,17 +42,17 @@ public:
     void LoadSettings();
 
     FString GetPlayerName() const { return this->SaveData->PlayerName; }
-    void SetPlayerName(const FString& Name) { this->SaveData->PlayerName = Name; SaveSettings(); }
+    void SetPlayerName(const FString& Name) { this->SaveData->PlayerName = Name; this->SaveSettings(ESaveGameTypes::PlayerData); }
 
 	int32 GetPlayerLevel() const { return this->SaveData->PlayerLevel; }
-	void SetPlayerLevel(int32 Level) { this->SaveData->PlayerLevel = Level; SaveSettings(); }
+	void SetPlayerLevel(int32 Level) { this->SaveData->PlayerLevel = Level; this->SaveSettings(ESaveGameTypes::PlayerData); }
 
 	int32 GetPlayerScore() const { return this->SaveData->PlayerScore; }
-	void SetPlayerScore(int32 Score) { this->SaveData->PlayerScore = Score; SaveSettings(); }
+	void SetPlayerScore(int32 Score) { this->SaveData->PlayerScore = Score; this->SaveSettings(ESaveGameTypes::PlayerData); }
 
     float GetMasterVolume() const { return this->SaveData->MasterVolume; }
-    void SetMasterVolume(float Volume) { this->SaveData->MasterVolume = Volume; SaveSettings(); }
+    void SetMasterVolume(float Volume) { this->SaveData->MasterVolume = Volume; this->SaveSettings(ESaveGameTypes::AudioSettings); }
 
     bool GetMusicOn() const { return this->SaveData->IsMusicOn; }
-    void SetMusicOn(bool bOn) { this->SaveData->IsMusicOn = bOn; SaveSettings(); }
+    void SetMusicOn(bool bOn) { this->SaveData->IsMusicOn = bOn; this->SaveSettings(ESaveGameTypes::AudioSettings); }
 };
