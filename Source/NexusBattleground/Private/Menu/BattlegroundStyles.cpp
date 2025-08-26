@@ -104,7 +104,7 @@ TSharedRef<FSlateStyleSet> FBattlegroundStyles::Create()
 			new IMAGE_BRUSH(FString::Printf(TEXT("Icons/progress_%02d"), i * 10), FVector2D(100, 100)));
 
 	// Pixel Button Background
-	slateStyleSet.Set(WidgetKeys::BORDER_BUTTON_BACKGROUND, new IMAGE_BRUSH("Boxes/Tx_Pixel", FVector2D(210, 40)));
+	slateStyleSet.Set(WidgetKeys::BORDER_BUTTON_BACKGROUND, new IMAGE_BRUSH("Boxes/Tx_Pixel", FVector2D(250, 40)));
 
 
 	//SCROLL_DEFAULT

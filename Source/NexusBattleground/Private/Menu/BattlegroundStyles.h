@@ -133,7 +133,7 @@ namespace SlateHelpers
 
 	FORCEINLINE static const TSharedRef<SButton> CreateMenuButton(TSharedPtr<SButton>& btnRef, const FText& buttonText, EButtonTypes buttonType)
 	{
-		return SAssignNew(btnRef, SButton).ContentPadding(FMargin(15.0f)).ButtonStyle(&SlateHelpers::GetButtonStyle(buttonType))
+		return SAssignNew(btnRef, SButton).ContentPadding(FMargin(15.0f)).ButtonStyle(&SlateHelpers::GetButtonStyle(buttonType)).Cursor(EMouseCursor::Hand)
 			[
 				SNew(STextBlock).Text(buttonText).Justification(ETextJustify::Left).TextStyle(GetTextBlockStyle(WidgetKeys::FONT_NORMAL_BUTTON))
 					.ColorAndOpacity(FLinearColor(0.8f, 0.8f, 0.8f, 1.0f))

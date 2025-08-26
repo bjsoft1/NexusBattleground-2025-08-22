@@ -15,10 +15,8 @@
 #pragma region Constructors and Overrides
 void SBattlegroundMenu::Construct(const FArguments& args)
 {
-    const float DEFAULT_PADDING = 00.0f;
-    const float MAX_LEFT_MENU_WIDTH = 400.0f;
-    const float MAX_LEFT_MENU_BUTTON_WIDTH = MAX_LEFT_MENU_WIDTH - 50.0f;
-
+    const float DEFAULT_PADDING = 20.0f;
+    const FMargin DEFAULT_BUTTON_PADDING = (0.0f, DEFAULT_PADDING / 8.0f);
     SBattlegroundWidget::SetAnimationType(args._AnimationType);
     this->world = args._World;
 
@@ -36,58 +34,53 @@ void SBattlegroundMenu::Construct(const FArguments& args)
                 [
                     SNew(SHorizontalBox)
                         // Left side Menu buttons
-						+ SHorizontalBox::Slot().FillWidth(0.3).MaxWidth(MAX_LEFT_MENU_WIDTH).Padding(DEFAULT_PADDING)
+                        + SHorizontalBox::Slot().FillWidth(0.4).MaxWidth(400.0f).Padding(DEFAULT_PADDING)
                         [
-                            SNew(SScrollBox).ConsumeMouseWheel(EConsumeMouseWheel::Always).ScrollBarStyle(FBattlegroundStyles::Get(), WidgetKeys::SCROLL_DEFAULT)
-                                .ScrollBarVisibility(EVisibility::Collapsed).AnimateWheelScrolling(true).ScrollWhenFocusChanges(EScrollWhenFocusChanges::NoScroll)
-                                .NavigationDestination(EDescendantScrollDestination::IntoView)
-                                
-                                + SScrollBox::Slot()
+                            SNew(SScrollBox).ConsumeMouseWheel(EConsumeMouseWheel::Always).ScrollBarStyle(FBattlegroundStyles::Get(), WidgetKeys::SCROLL_DEFAULT).ScrollBarVisibility(EVisibility::Collapsed).AnimateWheelScrolling(true).ScrollWhenFocusChanges(EScrollWhenFocusChanges::NoScroll).NavigationDestination(EDescendantScrollDestination::IntoView)
+                                + SScrollBox::Slot().Padding(DEFAULT_BUTTON_PADDING)
                                 [
-                                    SNew(SVerticalBox)
-
-                                        + SVerticalBox::Slot().Padding(FMargin(0.0f, DEFAULT_PADDING / 4.0f))
-                                        [
-                                            SlateHelpers::CreateMenuButton(this->AbountGameButton, FText::FromString("Abount Game"), EButtonTypes::Menu_Active)
-                                        ]
-                                        + SVerticalBox::Slot().Padding(FMargin(0.0f, DEFAULT_PADDING / 4.0f))
-                                        [
-                                            SlateHelpers::CreateMenuButton(this->HostGameButton, FText::FromString("Host Game"), EButtonTypes::Menu_Normal)
-                                        ]
-                                        + SVerticalBox::Slot().Padding(FMargin(0.0f, DEFAULT_PADDING / 4.0f))
-                                        [
-                                            SlateHelpers::CreateMenuButton(this->JoinGameButton, FText::FromString("Join Game"), EButtonTypes::Menu_Normal)
-                                        ]
-                                        + SVerticalBox::Slot().Padding(FMargin(0.0f, DEFAULT_PADDING / 4.0f))
-                                        [
-                                            SlateHelpers::CreateMenuButton(this->InventoryButton, FText::FromString("Inventory"), EButtonTypes::Menu_Normal)
-                                        ]
-                                        + SVerticalBox::Slot().Padding(FMargin(0.0f, DEFAULT_PADDING / 4.0f))
-                                        [
-                                            SlateHelpers::CreateMenuButton(this->DisplaySettingsButton, FText::FromString("Display Settings"), EButtonTypes::Menu_Normal)
-                                        ]
-                                        + SVerticalBox::Slot().Padding(FMargin(0.0f, DEFAULT_PADDING / 4.0f))
-                                        [
-                                            SlateHelpers::CreateMenuButton(this->SoundSettingsButton, FText::FromString("Sound Settings"), EButtonTypes::Menu_Normal)
-                                        ]
-                                        + SVerticalBox::Slot().Padding(FMargin(0.0f, DEFAULT_PADDING / 4.0f))
-                                        [
-                                            SlateHelpers::CreateMenuButton(this->ControlSettingsButton, FText::FromString("Control Settings"), EButtonTypes::Menu_Normal)
-                                        ]
-                                        + SVerticalBox::Slot().Padding(FMargin(0.0f, DEFAULT_PADDING / 4.0f))
-                                        [
-                                            SlateHelpers::CreateMenuButton(this->LeaderboardButton, FText::FromString("Leaderboard"), EButtonTypes::Menu_Normal)
-                                        ]
-                                        + SVerticalBox::Slot().Padding(FMargin(0.0f, DEFAULT_PADDING / 4.0f))
-                                        [
-                                            SlateHelpers::CreateMenuButton(this->RecordedGameButton, FText::FromString("Recorded Game"), EButtonTypes::Menu_Normal)
-                                        ]
-                                        + SVerticalBox::Slot().Padding(FMargin(0.0f, DEFAULT_PADDING / 4.0f))
-                                        [
-                                            SlateHelpers::CreateMenuButton(this->ExitGameButton, FText::FromString("Quit Game"), EButtonTypes::Menu_Normal)
-                                        ]
+                                    SlateHelpers::CreateMenuButton(this->AbountGameButton, FText::FromString("Abount Game"), EButtonTypes::Menu_Active)
                                 ]
-                               
+                                + SScrollBox::Slot().Padding(DEFAULT_BUTTON_PADDING)
+                                [
+                                    SlateHelpers::CreateMenuButton(this->HostGameButton, FText::FromString("Host Game"), EButtonTypes::Menu_Normal)
+                                ]
+                                + SScrollBox::Slot().Padding(DEFAULT_BUTTON_PADDING)
+                                [
+                                    SlateHelpers::CreateMenuButton(this->JoinGameButton, FText::FromString("Join Game"), EButtonTypes::Menu_Normal)
+                                ]
+                                + SScrollBox::Slot().Padding(DEFAULT_BUTTON_PADDING)
+                                [
+                                    SlateHelpers::CreateMenuButton(this->InventoryButton, FText::FromString("Inventory"), EButtonTypes::Menu_Normal)
+                                ]
+                                + SScrollBox::Slot().Padding(DEFAULT_BUTTON_PADDING)
+                                [
+                                    SlateHelpers::CreateMenuButton(this->DisplaySettingsButton, FText::FromString("Display Settings"), EButtonTypes::Menu_Normal)
+                                ]
+                                + SScrollBox::Slot().Padding(DEFAULT_BUTTON_PADDING)
+                                [
+                                    SlateHelpers::CreateMenuButton(this->SoundSettingsButton, FText::FromString("Sound Settings"), EButtonTypes::Menu_Normal)
+                                ]
+                                + SScrollBox::Slot().Padding(DEFAULT_BUTTON_PADDING)
+                                [
+                                    SlateHelpers::CreateMenuButton(this->ControlSettingsButton, FText::FromString("Control Settings"), EButtonTypes::Menu_Normal)
+                                ]
+                                + SScrollBox::Slot().Padding(DEFAULT_BUTTON_PADDING)
+                                [
+                                    SlateHelpers::CreateMenuButton(this->LeaderboardButton, FText::FromString("Leaderboard"), EButtonTypes::Menu_Normal)
+                                ]
+                                + SScrollBox::Slot().Padding(DEFAULT_BUTTON_PADDING)
+                                [
+                                    SlateHelpers::CreateMenuButton(this->RecordedGameButton, FText::FromString("Recorded Game"), EButtonTypes::Menu_Normal)
+                                ]
+                                + SScrollBox::Slot().Padding(DEFAULT_BUTTON_PADDING)
+                                [
+                                    SlateHelpers::CreateMenuButton(this->ExitGameButton, FText::FromString("Quit Game"), EButtonTypes::Menu_Normal)
+                                ]
+                                + SScrollBox::Slot().Padding(DEFAULT_BUTTON_PADDING)
+                                [
+                                    SlateHelpers::CreateMenuButton(this->BackButton, FText::FromString("Back to Game"), EButtonTypes::Menu_Normal)
+                                ]
                         ]
 
                     // Right side body
@@ -111,7 +104,6 @@ void SBattlegroundMenu::Construct(const FArguments& args)
         this->MenuTopWidget->RefreshPlayerInfo(this->GetWorld());
         settingsManager->OnSaveGameTypeUpdated.AddRaw(this, &SBattlegroundMenu::OnSettingsUpdated);
     }
-
 }
 #pragma endregion Constructors and Overrides
 
