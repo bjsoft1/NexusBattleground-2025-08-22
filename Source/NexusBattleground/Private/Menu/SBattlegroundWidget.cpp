@@ -2,7 +2,8 @@
 
 #include "SBattlegroundWidget.h"
 
-void SBattlegroundWidget::OverrideVisibility(bool isShow, bool autoDestroy)
+#pragma region Public Methods
+void SBattlegroundWidget::OverrideVisibility(bool isShow)
 {
     this->CurrentAnimation = (SWidget::RenderOpacity != 0.0f && SWidget::RenderOpacity != 1.0f) ? SWidget::RenderOpacity : 0.0f;
     if (isShow)
@@ -15,7 +16,7 @@ void SBattlegroundWidget::OverrideVisibility(bool isShow, bool autoDestroy)
     }
     else
     {
-        this->WidgetState = autoDestroy ? EWidgetStates::AnimatingOut_AutoDestroy : EWidgetStates::AnimatingOut;
+        this->WidgetState = EWidgetStates::AnimatingOut;
         if (SWidget::GetVisibility() != EVisibility::Visible)
         {
             this->CurrentAnimation = 1.0f;
@@ -23,17 +24,25 @@ void SBattlegroundWidget::OverrideVisibility(bool isShow, bool autoDestroy)
         }
     }
 }
+#pragma endregion Public Methods
+
+
+#pragma region Lifecycle Overrides
 void SBattlegroundWidget::Tick(const FGeometry& allottedGeometry, const double currentTime, const float deltaTime)
 {
     if (this->WidgetState == EWidgetStates::Idle) return;
 
     this->UpdateAnimation();
 }
+#pragma endregion Lifecycle Overrides
+
+
+#pragma region Private Helper Methods
 void SBattlegroundWidget::UpdateAnimation()
 {
     const float animationSpeed = 6.f;
     this->CurrentAnimation += animationSpeed * FApp::GetDeltaTime();
-    const bool isOut = this->WidgetState == EWidgetStates::AnimatingOut || this->WidgetState == EWidgetStates::AnimatingOut_AutoDestroy;
+    const bool isOut = this->WidgetState == EWidgetStates::AnimatingOut;
 
     if (this->CurrentAnimation >= 1.f)
     {
@@ -42,7 +51,7 @@ void SBattlegroundWidget::UpdateAnimation()
         if (isOut)
         {
             SWidget::SetVisibility(EVisibility::Collapsed);
-            if (this->WidgetState == EWidgetStates::AnimatingOut_AutoDestroy) OnRequestDestroy.ExecuteIfBound();
+            OnHidden.ExecuteIfBound();
         }
 
         this->WidgetState = EWidgetStates::Idle;
@@ -56,3 +65,4 @@ void SBattlegroundWidget::UpdateAnimation()
         SWidget::SetRenderOpacity(isOut ? (1.0f - this->CurrentAnimation) : this->CurrentAnimation);
     }
 }
+#pragma endregion Private Helper Methods

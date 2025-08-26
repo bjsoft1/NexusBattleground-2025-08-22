@@ -10,7 +10,7 @@
 
 void SPickupHoverWidget::Construct(const FArguments& args)
 {
-    ConstructBase(args._AnimationType);
+    SBattlegroundWidget::SetAnimationType(args._AnimationType);
 
     ChildSlot
         [
@@ -24,16 +24,15 @@ void SPickupHoverWidget::Construct(const FArguments& args)
                                     SNew(SVerticalBox)
                                         + SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center)
                                         [
-                                            SAssignNew(this->PickupIconImage, SImage).DesiredSizeOverride(FVector2D(100, 100))
+                                            SAssignNew(this->PickupIconImage, SImage).DesiredSizeOverride(FVector2D(200, 200))
                                         ]
-                                        + SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center).Padding(0, 5, 0, 0)
+                                        + 
+                                        SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center).Padding(0, 5, 0, 0)
                                         [
                                             SAssignNew(this->PickupText, STextBlock).Text(FText::FromString("Item Name"))
                                                 .TextStyle(FBattlegroundStyles::GetTextBlockStyle(WidgetKeys::FONT_LARGE_TITLE))
                                         ]
-                                        + SVerticalBox::Slot()
-                                        .AutoHeight()
-                                        .HAlign(HAlign_Center)
+                                        + SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center)
                                         [
                                             SNew(STextBlock).Text(FText::FromString("Press E to pick up"))
                                                 .TextStyle(FBattlegroundStyles::GetTextBlockStyle(WidgetKeys::FONT_Medium_TITLE))

@@ -112,5 +112,4 @@ enum class EWidgetStates : uint8
 	Idle = 0,
 	AnimatingIn = 1,
 	AnimatingOut = 2,
-	AnimatingOut_AutoDestroy = 3
 };
