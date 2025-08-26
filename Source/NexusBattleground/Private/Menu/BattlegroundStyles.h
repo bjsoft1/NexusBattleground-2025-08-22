@@ -24,6 +24,17 @@ namespace WidgetKeys
 	const FName BORDER_SIDE_FADE("Border.SideFade");
 	const FName BORDER_NEXUS_TEMPLATE_LOGO("Border.NexusTemplateLogo");
 	const FName BORDER_PROGRESS("Border.Progress_");
+	const FName BORDER_PROGRESS_00("Border.Progress_00");
+	const FName BORDER_PROGRESS_10("Border.Progress_10");
+	const FName BORDER_PROGRESS_20("Border.Progress_20");
+	const FName BORDER_PROGRESS_30("Border.Progress_30");
+	const FName BORDER_PROGRESS_40("Border.Progress_40");
+	const FName BORDER_PROGRESS_50("Border.Progress_50");
+	const FName BORDER_PROGRESS_60("Border.Progress_60");
+	const FName BORDER_PROGRESS_70("Border.Progress_70");
+	const FName BORDER_PROGRESS_80("Border.Progress_80");
+	const FName BORDER_PROGRESS_90("Border.Progress_90");
+	const FName BORDER_PROGRESS_100("Border.Progress_100");
 };
 
 class FBattlegroundStyles

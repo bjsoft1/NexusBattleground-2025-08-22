@@ -90,20 +90,19 @@ TSharedRef<FSlateStyleSet> FBattlegroundStyles::Create()
 	slateStyleSet.Set(WidgetKeys::FONT_ACTIVE_BUTTON, FTextBlockStyle().SetFont(TTF_FONT("Roboto-Medium", 18))
 		.SetColorAndOpacity(FLinearColor::Green).SetShadowOffset(FIntPoint(-1, 1)));
 
-
+	//Path: Icons/progress_Icons/progress_00
 	// SIDE BACKGROUND FADE
 	slateStyleSet.Set(WidgetKeys::BORDER_SIDE_FADE, new IMAGE_BRUSH("Boxes/Tx_RightFade", FVector2D(256, 256)));
 
 	// NEXUS TEMPLATE LOGO
-	slateStyleSet.Set(WidgetKeys::BORDER_NEXUS_TEMPLATE_LOGO, new IMAGE_BRUSH("Logos/nexus-logo", FVector2D(300, 100)));
-
+	slateStyleSet.Set(WidgetKeys::BORDER_NEXUS_TEMPLATE_LOGO, new IMAGE_BRUSH("Logos/nexus-logo", FVector2D(300, 100), FLinearColor(255.f, 255.f, 255.f, 0.75f)));
 	for (uint8 i = 0; i <= 10; i++)
 	{
-		FString indexStr = FString::Printf(TEXT("%02d"), i);
-		FName brushKey(*FString::Printf(TEXT("%s%s"), *WidgetKeys::BORDER_PROGRESS.ToString(), *indexStr));
-
-		slateStyleSet.Set(brushKey, new IMAGE_BRUSH(("Icons/progress_" + indexStr), FVector2D(100, 100)));
+		slateStyleSet.Set(FName(*FString::Printf(TEXT("%s%02d"), *WidgetKeys::BORDER_PROGRESS.ToString(), i * 10)), 
+			new IMAGE_BRUSH(FString::Printf(TEXT("Icons/progress_%02d"), i * 10), FVector2D(100, 100)));
 	}
+
+
 
 
 	return slateStyleSetRef;

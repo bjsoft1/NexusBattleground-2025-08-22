@@ -7,6 +7,7 @@
 
 #pragma region NexusBattleground Header Files
 #include "BattlegroundStyles.h"
+#include "SBattlegroundWidgetMenuTop.h"
 #pragma endregion NexusBattleground Header Files
 
 
@@ -21,16 +22,7 @@ void SBattlegroundMenu::Construct(const FArguments& args)
 			// 01. Top title bar
             + SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Fill).VAlign(VAlign_Top).Padding(20.0f)
                 [
-                    SNew(SHorizontalBox)
-                        // Logo
-                        + SHorizontalBox::Slot().HAlign(HAlign_Left).VAlign(VAlign_Fill)
-                        [
-			    	     SNew(SImage).DesiredSizeOverride(FVector2D(350, 100)).Image(FBattlegroundStyles::GetBrushStyle(WidgetKeys::BORDER_NEXUS_TEMPLATE_LOGO))
-                        ]
-                        + SHorizontalBox::Slot().FillWidth(1.0f)
-                        [
-                            SNew(SButton).HAlign(HAlign_Right).VAlign(VAlign_Center).Text(FText::FromString("Close"))
-                        ]
+                  SAssignNew(this->MenuTopWidget, SBattlegroundWidgetMenuTop)
                 ]
 
 			// 02. Bottom body (Left Menu and Right Body)

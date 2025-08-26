@@ -5,6 +5,11 @@
 #include "CoreMinimal.h"
 #include "SBattlegroundWidget.h"
 
+#pragma region Forward Declarations
+class SBattlegroundWidgetMenuTop;
+#pragma endregion Forward Declarations
+
+
 struct FChildrenMenu
 {
 	EChildrenMenus MenuType;
@@ -26,7 +31,7 @@ public:
 
 private:
 #pragma region Components
-
+	TSharedPtr<SBattlegroundWidgetMenuTop> MenuTopWidget;
 	TArray<FChildrenMenu> ChildrenMenus;
 
     // -------------
@@ -41,9 +46,9 @@ public:
 
 
 #pragma region Private Helper Methods
-	TSharedPtr<SBattlegroundWidget> GetChildWidget(EChildrenMenus menuType);
-    TSharedPtr<SBattlegroundWidget> CreateChildWidget(EChildrenMenus menuType);
-    TSharedPtr<SBattlegroundWidget> GetOrCreateChildWidget(EChildrenMenus menuType);
+	//TSharedPtr<SBattlegroundWidget> GetChildWidget(EChildrenMenus menuType);
+    //TSharedPtr<SBattlegroundWidget> CreateChildWidget(EChildrenMenus menuType);
+    //TSharedPtr<SBattlegroundWidget> GetOrCreateChildWidget(EChildrenMenus menuType);
 #pragma endregion Private Helper Methods
 
 };
