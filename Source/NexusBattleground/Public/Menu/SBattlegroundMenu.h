@@ -23,6 +23,7 @@ public:
 #pragma region Constructors and Overrides
     SLATE_BEGIN_ARGS(SBattlegroundMenu) {}
         SLATE_ARGUMENT(EAnimationTypes, AnimationType)
+		SLATE_ARGUMENT(UWorld*, World)
     SLATE_END_ARGS()
 
     void Construct(const FArguments& args);
@@ -31,6 +32,7 @@ public:
 
 private:
 #pragma region Components
+	UWorld* world;
 	TSharedPtr<SBattlegroundWidgetMenuTop> MenuTopWidget;
 	TArray<FChildrenMenu> ChildrenMenus;
 
@@ -42,6 +44,7 @@ private:
 
 public:
 #pragma region Public Methods
+	FORCEINLINE UWorld* GetWorld() const { return this->world; }
 #pragma region Public Methods
 
 

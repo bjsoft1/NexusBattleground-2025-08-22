@@ -29,9 +29,9 @@ void ABattlegroundMenuGameMode::BeginPlay()
     Super::BeginPlay();
 
 	// Only create the menu widget on clients and listen servers
-    if (GetWorld() && !GetWorld()->IsNetMode(NM_DedicatedServer))
+    if (AActor::GetWorld() && !AActor::GetWorld()->IsNetMode(NM_DedicatedServer))
     {
-        SAssignNew(this->MainMenuWidget, SBattlegroundMenu).AnimationType(EAnimationTypes::MoveLeft_Right);
+        SAssignNew(this->MainMenuWidget, SBattlegroundMenu).AnimationType(EAnimationTypes::MoveLeft_Right).World(AActor::GetWorld());
         this->MainMenuWidget->SetVisibility(EVisibility::Collapsed);
 
         FTimerHandle timerHandle;
