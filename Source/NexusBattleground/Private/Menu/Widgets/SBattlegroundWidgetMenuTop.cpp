@@ -24,13 +24,13 @@ void SBattlegroundWidgetMenuTop::Construct(const FArguments& args)
                     SNew(SVerticalBox)
                         + SVerticalBox::Slot()
                         [
-                            SAssignNew(this->PlayerScoreIndicatorTextBlock, STextBlock).Text(FText::FromString(TEXT("Score: 500/1000")))
+                            SAssignNew(this->PlayerScoreIndicatorTextBlock, STextBlock).Text(FText::FromString(TEXT("Score: Loading...")))
                                 .Justification(ETextJustify::Right).TextStyle(FBattlegroundStyles::GetTextBlockStyle(WidgetKeys::FONT_NORMAL_BUTTON))
                         ]
 
                         + SVerticalBox::Slot()
                         [
-                            SAssignNew(this->PlayerNameTextBlock, STextBlock).Text(FText::FromString(TEXT("Bijay Adhikari")))
+                            SAssignNew(this->PlayerNameTextBlock, STextBlock).Text(FText::FromString(TEXT("Loading...")))
                                 .Justification(ETextJustify::Right).TextStyle(FBattlegroundStyles::GetTextBlockStyle(WidgetKeys::FONT_Medium_TITLE))
                         ]
                 ]
@@ -42,13 +42,13 @@ void SBattlegroundWidgetMenuTop::Construct(const FArguments& args)
                         + SOverlay::Slot()
                         [
                             SAssignNew(this->PlayerLevelIndicatorImage, SImage).DesiredSizeOverride(FVector2D(100, 100))
-                                .Image(FBattlegroundStyles::GetBrushStyle(WidgetKeys::BORDER_PROGRESS_10))
+                                .Image(FBattlegroundStyles::GetBrushStyle(WidgetKeys::BORDER_PROGRESS_00))
                         ]
 
                         // Text on top of the image
                         + SOverlay::Slot().HAlign(HAlign_Center).VAlign(VAlign_Center)
                         [
-                            SAssignNew(this->PlayerLevelTextBlock, STextBlock).Justification(ETextJustify::Center)
+                            SAssignNew(this->PlayerLevelTextBlock, STextBlock).Text(FText::FromString(TEXT("..."))).Justification(ETextJustify::Center)
                                 .TextStyle(FBattlegroundStyles::GetTextBlockStyle(WidgetKeys::FONT_Medium_TITLE))
                         ]
                 ]
@@ -73,7 +73,7 @@ void SBattlegroundWidgetMenuTop::RefreshPlayerInfo(UWorld* world)
 
     const int32 levelScore = GameScoreCalculator::GetScoreForLevel(playerLevel);
     if (this->PlayerScoreIndicatorTextBlock.IsValid())
-        this->PlayerScoreIndicatorTextBlock->SetText(FText::FromString(FString::Printf(TEXT("%d/%d"), levelScore, playerScore)));
+        this->PlayerScoreIndicatorTextBlock->SetText(FText::FromString(FString::Printf(TEXT("Score: %d/%d"), levelScore, playerScore)));
 
     // Update level indicator based on player level (0-100)
     if (this->PlayerLevelIndicatorImage.IsValid())

@@ -31,9 +31,6 @@ void ABattlegroundMenuGameMode::BeginPlay()
 	// Only create the menu widget on clients and listen servers
     if (AActor::GetWorld() && !AActor::GetWorld()->IsNetMode(NM_DedicatedServer))
     {
-        SAssignNew(this->MainMenuWidget, SBattlegroundMenu).AnimationType(EAnimationTypes::MoveLeft_Right).World(AActor::GetWorld());
-        this->MainMenuWidget->SetVisibility(EVisibility::Collapsed);
-
         FTimerHandle timerHandle;
         GetWorldTimerManager().SetTimer(timerHandle, this, &ABattlegroundMenuGameMode::ShowMainMenu, DEFAULT_MAIN_MENU_DELAY, false);
     }
@@ -53,8 +50,9 @@ void ABattlegroundMenuGameMode::BeginPlay()
 #pragma region Private Helper Methods
 void ABattlegroundMenuGameMode::ShowMainMenu()
 {
+    SAssignNew(this->MainMenuWidget, SBattlegroundMenu).AnimationType(EAnimationTypes::MoveLeft_Right).World(AActor::GetWorld());
     GEngine->GameViewport->AddViewportWidgetContent(MainMenuWidget.ToSharedRef());
-	this->MainMenuWidget->OverrideVisibility(true);
+	this->MainMenuWidget->OverrideVisibility(true, true);
 }
 #pragma endregion Private Helper Methods
 

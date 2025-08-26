@@ -15,6 +15,11 @@ public:
     void Construct(const FArguments& args);
 #pragma endregion Constructors and Overrides
 
+    
+#pragma region Lifecycle Overrides
+    virtual void DestroyWidget() override {};
+#pragma endregion Lifecycle Overrides
+
 
 private:
 #pragma region Components

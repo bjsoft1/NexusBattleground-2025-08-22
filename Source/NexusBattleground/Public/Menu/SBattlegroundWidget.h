@@ -30,6 +30,8 @@ private:
 protected:
 #pragma region Lifecycle Overrides
 	virtual void Tick(const FGeometry& allottedGeometry, const double currentTime, const float deltaTime) override;
+	virtual void DestroyWidget() = 0;
+
 #pragma endregion Lifecycle Overrides
 
 

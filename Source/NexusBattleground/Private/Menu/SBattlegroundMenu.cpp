@@ -67,21 +67,26 @@ void SBattlegroundMenu::Construct(const FArguments& args)
 
     if (UBattlegroundSettingsManager* settingsManager = BattlegroundUtilities::GetSettingsManager(this->GetWorld()))
     {
-        UE_LOG(LogTemp, Warning, TEXT("BINDING ERVENT"));
-        UE_LOG(LogTemp, Warning, TEXT("BINDING ERVENT"));
         this->MenuTopWidget->RefreshPlayerInfo(this->GetWorld());
         settingsManager->OnSaveGameTypeUpdated.AddRaw(this, &SBattlegroundMenu::OnSettingsUpdated);
     }
-
 
 }
 
 #pragma endregion Constructors and Overrides
 
+
+#pragma region Lifecycle Overrides
+void SBattlegroundMenu::DestroyWidget()
+{
+    if (UBattlegroundSettingsManager* settingsManager = BattlegroundUtilities::GetSettingsManager(this->GetWorld()))
+        settingsManager->OnSaveGameTypeUpdated.RemoveAll(this);
+}
+#pragma endregion Lifecycle Overrides
+
 #pragma region Callbacks
 void SBattlegroundMenu::OnSettingsUpdated(ESaveGameTypes type)
 {
-    UE_LOG(LogTemp, Warning, TEXT("CALLING HERE:::%d"), type);
     if (type == ESaveGameTypes::PlayerData || type == ESaveGameTypes::MAX) this->MenuTopWidget->RefreshPlayerInfo(this->GetWorld());
 }
 #pragma endregion Callbacks

@@ -31,6 +31,7 @@ public:
 #pragma endregion Constructors and Overrides
 
 
+
 private:
 #pragma region Components
 	UWorld* world;
@@ -49,12 +50,16 @@ public:
 #pragma region Public Methods
 
 
+#pragma region Lifecycle Overrides
+	virtual void DestroyWidget() override;
+#pragma region Lifecycle Overrides
+
+
 #pragma region Private Helper Methods
 	//TSharedPtr<SBattlegroundWidget> GetChildWidget(EChildrenMenus menuType);
     //TSharedPtr<SBattlegroundWidget> CreateChildWidget(EChildrenMenus menuType);
     //TSharedPtr<SBattlegroundWidget> GetOrCreateChildWidget(EChildrenMenus menuType);
-
-#pragma endregion Private Helper Methods
+	#pragma endregion Private Helper Methods
 
 
 #pragma region Callbacks
