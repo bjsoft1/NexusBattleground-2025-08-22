@@ -12,9 +12,9 @@ class SBattlegroundWidgetMenuTop;
 
 enum class EMenuScreens : uint8
 {
-	Gameplay = 0,
-	MainMenu = 1,
-
+	Unknown = 0,
+	Gameplay = 1,
+	MainMenu = 2,
 };
 
 class NEXUSBATTLEGROUND_API SBattlegroundMenu : public SBattlegroundWidget
@@ -36,47 +36,53 @@ private:
 #pragma region Components
 	UWorld* world;
 
+	/** Current Active Menu Button */
+	TSharedPtr<SButton> CurrentActiveButton;
+	
+	/** Current Active Menu Widget */
+	TSharedPtr<SBattlegroundWidget> CurrentActiveWidget;
+
 	/** Static Top Child Menu (Logo, Player's Name, Score ) */
 	TSharedPtr<SBattlegroundWidgetMenuTop> MenuTopWidget;
 
 	/** Default Welcome Screend | Default Home Screen */
-	TSharedPtr<SCompoundWidget> AbountGameMenu;
+	TSharedPtr<SBattlegroundWidget> AbountGameMenu;
 	TSharedPtr<SButton> AbountGameButton;
 	
 	/** User can host a new game */
-	TSharedPtr<SCompoundWidget> HostGameMenu;
+	TSharedPtr<SBattlegroundWidget> HostGameMenu;
 	TSharedPtr<SButton> HostGameButton;
 	
 	/** User can see and join available games */
-	TSharedPtr<SCompoundWidget> JoinGameMenu;
+	TSharedPtr<SBattlegroundWidget> JoinGameMenu;
 	TSharedPtr<SButton> JoinGameButton;
 	
 	/** User can see and manage inventory items */
-	TSharedPtr<SCompoundWidget> InventoryMenu;
+	TSharedPtr<SBattlegroundWidget> InventoryMenu;
 	TSharedPtr<SButton> InventoryButton;
 	
 	/** User can change display resolution and quality */
-	TSharedPtr<SCompoundWidget> DisplaySettingsMenu;
+	TSharedPtr<SBattlegroundWidget> DisplaySettingsMenu;
 	TSharedPtr<SButton> DisplaySettingsButton;
 	
 	/** User can change sound volume */
-	TSharedPtr<SCompoundWidget> SoundSettingsMenu;
+	TSharedPtr<SBattlegroundWidget> SoundSettingsMenu;
 	TSharedPtr<SButton> SoundSettingsButton;
 
 	/** User can change key bindings */
-	TSharedPtr<SCompoundWidget> ControlSettingsMenu;
+	TSharedPtr<SBattlegroundWidget> ControlSettingsMenu;
 	TSharedPtr<SButton> ControlSettingsButton;
 
 	/** User can see leaderboards */
-	TSharedPtr<SCompoundWidget> LeaderboardMenu;
+	TSharedPtr<SBattlegroundWidget> LeaderboardMenu;
 	TSharedPtr<SButton> LeaderboardButton;
 
 	/** User can see saved game lists */
-	TSharedPtr<SCompoundWidget> RecordedGameMenu;
+	TSharedPtr<SBattlegroundWidget> RecordedGameMenu;
 	TSharedPtr<SButton> RecordedGameButton;
 
 	/** Yes | No | Cancel Dialogbox */
-	TSharedPtr<SCompoundWidget> MessageboxMenu;
+	TSharedPtr<SBattlegroundWidget> MessageboxMenu;
 	TSharedPtr<SButton> ExitGameButton;
 	
 	/** Return to game | just hide widget */
@@ -91,7 +97,8 @@ private:
 
 private:
 #pragma region Configurable & Internal Properties
-	EMenuScreens CurrentScreen = EMenuScreens::MainMenu;
+	EMenuScreens CurrentScreen;
+	EChildrenMenus CurrentMenuType;
 #pragma endregion Configurable & Internal Properties
 
 
@@ -109,10 +116,12 @@ public:
 
 #pragma region Private Helper Methods
 	void RefreshButtons();
+	void BindMenuButtonEvents();
 	#pragma endregion Private Helper Methods
 
 
 #pragma region Callbacks
 	UFUNCTION() void OnSettingsUpdated(ESaveGameTypes type);
+	FReply OnMenuButtonClicked(TSharedPtr<SButton> clickedButton, EChildrenMenus menuType);
 #pragma endregion Callbacks
 };

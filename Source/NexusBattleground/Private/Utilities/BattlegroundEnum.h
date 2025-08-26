@@ -114,20 +114,20 @@ enum class EWidgetStates : uint8
 	AnimatingOut = 2,
 };
 
-//enum class EChildrenMenus : uint8
-//{
-//	Dashboard = 0,
-//	HostGame = 1,
-//	JoinGame = 2,
-//	Inventory = 3,
-//	DisplaySettings = 4,
-//	SoundSettings = 5,
-//	ControlsSettings = 6,
-//	Leaderboards = 7,
-//	SaveGame = 8,
-//	ExitGame = 9,
-//	MAX = 10
-//};
+enum class EChildrenMenus : uint8
+{
+	MAX = 0,
+	AbountGame = 1,
+	HostGame = 2,
+	JoinGame = 3,
+	Inventory = 4,
+	DisplaySettings = 5,
+	SoundSettings = 6,
+	ControlSettings = 7,
+	Leaderboard = 8,
+	RecordedGame = 9,
+	ExitGame = 10,
+};
 
 enum class ESaveGameTypes : uint8
 {

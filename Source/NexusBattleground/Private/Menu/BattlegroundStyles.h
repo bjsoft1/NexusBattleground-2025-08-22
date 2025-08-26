@@ -98,7 +98,7 @@ namespace SlateHelpers
 		{
 		case EButtonTypes::Menu_Normal:
 			normalColor = NORMAL_BUTTON_COLOR;
-			hoveredColor = FLinearColor(0.1f, 0.1f, 0.1f, 1.0f);
+			hoveredColor = HOVER_BUTTON_COLOR;
 			clickedColor = CLICK_BUTTON_COLOR;
 			break;
 
