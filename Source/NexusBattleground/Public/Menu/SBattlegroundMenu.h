@@ -49,6 +49,7 @@ public:
 	//TSharedPtr<SBattlegroundWidget> GetChildWidget(EChildrenMenus menuType);
     //TSharedPtr<SBattlegroundWidget> CreateChildWidget(EChildrenMenus menuType);
     //TSharedPtr<SBattlegroundWidget> GetOrCreateChildWidget(EChildrenMenus menuType);
+
 #pragma endregion Private Helper Methods
 
 };

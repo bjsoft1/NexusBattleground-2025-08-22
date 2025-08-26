@@ -21,21 +21,20 @@ private:
 #pragma region Components
 	TSharedPtr<STextBlock> PlayerNameTextBlock;
 	TSharedPtr<STextBlock> PlayerLevelTextBlock;
+	TSharedPtr<STextBlock> PlayerScoreIndicatorTextBlock;
 	TSharedPtr<SImage> PlayerLevelIndicatorImage;
 #pragma endregion Components
 
 
 private:
 #pragma region Configurable & Internal Properties
-    FText PlayerName;
-    int32 PlayerLevel;
-    int32 PlayerScore;
 #pragma endregion Configurable & Internal Properties
 
 
 
 public:
 #pragma region Public Methods
+	void RefreshPlayerInfo(UWorld* world);
 #pragma region Public Methods
 
 

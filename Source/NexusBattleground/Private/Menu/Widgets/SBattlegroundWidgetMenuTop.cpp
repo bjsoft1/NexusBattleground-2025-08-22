@@ -2,6 +2,8 @@
 
 #include "SBattlegroundWidgetMenuTop.h"
 #include "BattlegroundStyles.h"
+#include "BattlegroundUtilities.h"
+#include "BattlegroundSaveGame.h"
 
 
 void SBattlegroundWidgetMenuTop::Construct(const FArguments& args)
@@ -19,8 +21,18 @@ void SBattlegroundWidgetMenuTop::Construct(const FArguments& args)
                 // Player Name
                 + SHorizontalBox::Slot().HAlign(HAlign_Fill).VAlign(VAlign_Center).Padding(0.0f, 0.0f, 20.0f, 0.0f)
                 [
-                    SAssignNew(this->PlayerNameTextBlock, STextBlock).Text(FText::FromString(TEXT("Bijay Adhikari")))
-                        .Justification(ETextJustify::Right).TextStyle(FBattlegroundStyles::GetTextBlockStyle(WidgetKeys::FONT_Medium_TITLE))
+                    SNew(SVerticalBox)
+                        + SVerticalBox::Slot()
+                        [
+                            SAssignNew(this->PlayerScoreIndicatorTextBlock, STextBlock).Text(FText::FromString(TEXT("Score: 500/1000")))
+                                .Justification(ETextJustify::Right).TextStyle(FBattlegroundStyles::GetTextBlockStyle(WidgetKeys::FONT_NORMAL_BUTTON))
+                        ]
+
+                        + SVerticalBox::Slot()
+                        [
+                            SAssignNew(this->PlayerNameTextBlock, STextBlock).Text(FText::FromString(TEXT("Bijay Adhikari")))
+                                .Justification(ETextJustify::Right).TextStyle(FBattlegroundStyles::GetTextBlockStyle(WidgetKeys::FONT_Medium_TITLE))
+                        ]
                 ]
 
                 // Level Indicator
@@ -30,7 +42,7 @@ void SBattlegroundWidgetMenuTop::Construct(const FArguments& args)
                         + SOverlay::Slot()
                         [
                             SAssignNew(this->PlayerLevelIndicatorImage, SImage).DesiredSizeOverride(FVector2D(100, 100))
-                                .Image(FBattlegroundStyles::GetBrushStyle(WidgetKeys::BORDER_PROGRESS_00))
+                                .Image(FBattlegroundStyles::GetBrushStyle(WidgetKeys::BORDER_PROGRESS_10))
                         ]
 
                         // Text on top of the image
@@ -43,3 +55,32 @@ void SBattlegroundWidgetMenuTop::Construct(const FArguments& args)
 
         ];
 }
+//
+
+#pragma region Public Methods
+void SBattlegroundWidgetMenuTop::RefreshPlayerInfo(UWorld* world)
+{
+	const UBattlegroundSettingsManager* settingsManager = BattlegroundUtilities::GetSettingsManager(world);
+	if (!settingsManager) return;
+
+    const FString& playerName =  settingsManager->GetPlayerName();
+    int32 playerLevel = settingsManager->GetPlayerLevel();
+    int32 playerScore = settingsManager->GetPlayerScore();
+    playerLevel = playerLevel <= 0 ? 1 : playerLevel;
+
+    if (this->PlayerNameTextBlock.IsValid()) this->PlayerNameTextBlock->SetText(FText::FromString(playerName));
+    if (this->PlayerLevelTextBlock.IsValid()) this->PlayerLevelTextBlock->SetText(FText::AsNumber(playerLevel));
+
+    const int32 levelScore = GameScoreCalculator::GetScoreForLevel(playerLevel);
+    if (this->PlayerScoreIndicatorTextBlock.IsValid())
+        this->PlayerScoreIndicatorTextBlock->SetText(FText::FromString(FString::Printf(TEXT("%d/%d"), levelScore, playerScore)));
+
+    // Update level indicator based on player level (0-100)
+    if (this->PlayerLevelIndicatorImage.IsValid())
+    {
+        const uint8 percent = GameScoreCalculator::GetLevelCompletionPercent(levelScore, playerLevel, playerScore);
+        FName progressKey = WidgetKeys::GetProgressBorderKey(percent);
+        this->PlayerLevelIndicatorImage->SetImage(FBattlegroundStyles::GetBrushStyle(progressKey));
+	}
+}
+#pragma endregion Public Methods

@@ -9,6 +9,7 @@
 #include "BattlegroundMenuController.h"
 #include "SBattlegroundMenu.h"
 #include "BattlegroundUtilities.h"
+#include "BattlegroundSaveGame.h"
 #pragma endregion NexusBattleground Header Files
 
 

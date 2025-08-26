@@ -128,3 +128,12 @@ enum class EChildrenMenus : uint8
 	ExitGame = 9,
 	MAX = 10
 };
+
+enum class ESaveGameTypes : uint8
+{
+	PlayerData = 1,
+	GraphicSettings = 2,
+	AudioSettings = 3,
+	ControlSettings = 4,
+	GameSettings = 5,
+};

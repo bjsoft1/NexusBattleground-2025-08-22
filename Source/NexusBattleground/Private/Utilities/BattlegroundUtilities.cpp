@@ -1,4 +1,5 @@
 #include "BattlegroundUtilities.h"
+#include "BattlegroundGameInstance.h"
 
 DEFINE_LOG_CATEGORY(LogNexus);
 
@@ -12,3 +13,14 @@ const FString AssetsPaths::ANIM_FEMALE_PATH = ASSET_PATH(TEXT("Blueprints/Animat
 const FString AssetsPaths::CLS_PICKUP_MANAGER_PATH = ASSET_PATH(TEXT("Blueprints/Pickups/BP_BattlegroundPickupManager"));
 
 const FString AssetsPaths::TX2D_MAIN_HUD_PATH = ASSET_PATH(TEXT("Assets/HUD/TX_HUDMain"));
+
+UBattlegroundSettingsManager* BattlegroundUtilities::GetSettingsManager(const UWorld* world)
+{
+	if (!world) return nullptr;
+
+	UBattlegroundGameInstance* gameInstance = Cast<UBattlegroundGameInstance>(world->GetGameInstance());
+	if (!gameInstance) return nullptr;
+
+	return gameInstance->GetSettingsManager();
+
+}

@@ -35,6 +35,13 @@ namespace WidgetKeys
 	const FName BORDER_PROGRESS_80("Border.Progress_80");
 	const FName BORDER_PROGRESS_90("Border.Progress_90");
 	const FName BORDER_PROGRESS_100("Border.Progress_100");
+
+	FORCEINLINE FName GetProgressBorderKey(uint8 progressPercentage)
+	{
+		int32 LevelStep = (progressPercentage / 10) * 10;
+		return FName(*FString::Printf(TEXT("%s%02d"), *BORDER_PROGRESS.ToString(), LevelStep));
+	}
+
 };
 
 class FBattlegroundStyles

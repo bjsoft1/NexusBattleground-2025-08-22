@@ -84,7 +84,6 @@ public:
 	}
 
 
-
 	/**
 	 * Checks whether the current UWorld is running as a listen server.
 	 *
@@ -100,4 +99,61 @@ public:
 		return world && world->GetNetMode() == NM_ListenServer;
 	}
 
+	static class UBattlegroundSettingsManager* GetSettingsManager(const UWorld* world);
 };
+
+static class GameScoreCalculator
+{
+public:
+	static int32 GetScoreForLevel(int32 currentLevel)
+	{
+		// Base starting score for level 1
+		float score = 10.0f;
+
+		// Starting increment percentage (50% for first levels)
+		float incrementPercent = 0.5f; // 50%  
+
+		// Decay factor: each level reduces increment percentage
+		float decayFactor = 0.95f; // 95% of previous increment
+
+		for (int32 i = 1; i < currentLevel; i++)
+		{
+			// Increase score by current percentage
+			score += score * incrementPercent;
+
+			// Reduce increment percentage for next level
+			incrementPercent *= decayFactor;
+
+			// Clamp min increment to 10% for higher levels
+			incrementPercent = FMath::Max(incrementPercent, 0.10f);
+		}
+
+		return FMath::RoundToInt(score);
+	}
+
+	static uint8 GetLevelCompletionPercent(int32 levelScore, int32 currentLevel, int32 currentScore)
+	{
+		const float percentage = (float)currentScore / (float)levelScore * 100.0f;
+
+		if (percentage >= 100.0f) return 100;
+
+		return (uint8)(percentage);
+	}
+	static uint8 GetLevelCompletionPercent(int32 currentLevel, int32 currentScore)
+	{
+		const int32 levelScore = GetScoreForLevel(currentLevel);
+
+		const float percentage = (float)currentScore / (float)levelScore * 100.0f;
+
+		if (percentage >= 100.0f) return 100;
+
+		return (uint8)(percentage);
+	}
+};
+
+namespace BattlegroundKeys
+{
+	const FString SAVE_GAME_DEFAULT_SLOT = TEXT("PlayerSaveSlot");
+}
+
+

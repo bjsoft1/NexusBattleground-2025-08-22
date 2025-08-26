@@ -79,7 +79,7 @@ TSharedRef<FSlateStyleSet> FBattlegroundStyles::Create()
 		.SetColorAndOpacity(FLinearColor::White).SetShadowOffset(FIntPoint(-1, 1)));
 
 	// NORMAL BUTTON FONT
-	slateStyleSet.Set(WidgetKeys::FONT_NORMAL_BUTTON, FTextBlockStyle().SetFont(TTF_FONT("Roboto-Regular", 18))
+	slateStyleSet.Set(WidgetKeys::FONT_NORMAL_BUTTON, FTextBlockStyle().SetFont(TTF_FONT("Roboto-Regular", 16))
 		.SetColorAndOpacity(FLinearColor::White).SetShadowOffset(FIntPoint(-1, 1)));
 
 	// HOVER BUTTON FONT
@@ -101,9 +101,6 @@ TSharedRef<FSlateStyleSet> FBattlegroundStyles::Create()
 		slateStyleSet.Set(FName(*FString::Printf(TEXT("%s%02d"), *WidgetKeys::BORDER_PROGRESS.ToString(), i * 10)), 
 			new IMAGE_BRUSH(FString::Printf(TEXT("Icons/progress_%02d"), i * 10), FVector2D(100, 100)));
 	}
-
-
-
 
 	return slateStyleSetRef;
 }
