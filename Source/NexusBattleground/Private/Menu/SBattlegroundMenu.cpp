@@ -2,6 +2,8 @@
 
 #pragma region Default System Header Files
 #include "SBattlegroundMenu.h"
+#include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/GameplayStatics.h"
 #pragma endregion Default System Header Files
 
 
@@ -121,6 +123,41 @@ void SBattlegroundMenu::DestroyWidget()
 {
     if (UBattlegroundSettingsManager* settingsManager = BattlegroundUtilities::GetSettingsManager(this->GetWorld()))
         settingsManager->OnSaveGameTypeUpdated.RemoveAll(this);
+
+    this->ParentPanel->ClearContent();
+    this->ParentPanel = nullptr;
+    this->CurrentActiveWidget = nullptr;
+
+    this->AbountGameMenu = nullptr;
+    this->HostGameMenu = nullptr;
+    this->JoinGameMenu = nullptr;
+    this->InventoryMenu = nullptr;
+    this->DisplaySettingsMenu = nullptr;
+    this->SoundSettingsMenu = nullptr;
+    this->ControlSettingsMenu = nullptr;
+    this->LeaderboardMenu = nullptr;
+    this->RecordedGameMenu = nullptr;
+    this->MessageboxMenu = nullptr;
+
+    this->CurrentActiveButton = nullptr;
+    this->MenuTopWidget = nullptr;
+    this->AbountGameButton = nullptr;
+    this->HostGameButton = nullptr;
+    this->JoinGameButton = nullptr;
+    this->InventoryButton = nullptr;
+    this->DisplaySettingsButton = nullptr;
+    this->SoundSettingsButton = nullptr;
+    this->ControlSettingsButton = nullptr;
+    this->LeaderboardButton = nullptr;
+    this->RecordedGameButton = nullptr;
+    this->ExitGameButton = nullptr;
+    this->BackButton = nullptr;
+
+    if (this->GetWorld() && this->GetWorld()->GetGameViewport())
+    {
+        this->GetWorld()->GetGameViewport()->RemoveViewportWidgetContent(SharedThis(this));
+        this->world = nullptr;
+    }
 }
 #pragma endregion Lifecycle Overrides
 
@@ -182,7 +219,6 @@ void SBattlegroundMenu::OnSettingsUpdated(ESaveGameTypes type)
 {
     if (type == ESaveGameTypes::PlayerData || type == ESaveGameTypes::MAX) this->MenuTopWidget->RefreshPlayerInfo(this->GetWorld());
 }
-
 FReply SBattlegroundMenu::OnMenuButtonClicked(TSharedPtr<SButton> clickedButton, EChildrenMenus menuType)
 {
     if (menuType == this->CurrentMenuType) return FReply::Handled();
@@ -197,6 +233,38 @@ FReply SBattlegroundMenu::OnMenuButtonClicked(TSharedPtr<SButton> clickedButton,
     if (clickedButton) clickedButton->SetButtonStyle(activeButtonStyle);
 
     this->CurrentActiveButton = clickedButton;
+
+    switch (menuType)
+    {
+    case EChildrenMenus::MAX:
+        break;
+    case EChildrenMenus::AbountGame:
+        break;
+    case EChildrenMenus::HostGame:
+        break;
+    case EChildrenMenus::JoinGame:
+        break;
+    case EChildrenMenus::Inventory:
+        break;
+    case EChildrenMenus::DisplaySettings:
+        break;
+    case EChildrenMenus::SoundSettings:
+        break;
+    case EChildrenMenus::ControlSettings:
+        break;
+    case EChildrenMenus::Leaderboard:
+        break;
+    case EChildrenMenus::RecordedGame:
+        break;
+    case EChildrenMenus::ExitGame:
+
+
+		this->DestroyWidget();
+		UKismetSystemLibrary::QuitGame(this->GetWorld(), UGameplayStatics::GetPlayerController(this->GetWorld(), 0), EQuitPreference::Quit, false);
+        break;
+    default:
+        break;
+    }
 
     return FReply::Handled();
 }

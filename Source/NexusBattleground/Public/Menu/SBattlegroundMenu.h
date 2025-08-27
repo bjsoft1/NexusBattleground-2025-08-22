@@ -36,6 +36,9 @@ private:
 #pragma region Components
 	UWorld* world;
 
+	/** Parent Panel to hold current active menu widget */
+	TSharedPtr<SBorder> ParentPanel;
+
 	/** Current Active Menu Button */
 	TSharedPtr<SButton> CurrentActiveButton;
 	
