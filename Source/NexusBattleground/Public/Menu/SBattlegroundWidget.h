@@ -1,7 +1,7 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "Widgets/SCompoundWidget.h"
-#include "BattlegroundUtilities.h"
+#include "BattlegroundStyles.h"
 
 
 class NEXUSBATTLEGROUND_API SBattlegroundWidget : public SCompoundWidget

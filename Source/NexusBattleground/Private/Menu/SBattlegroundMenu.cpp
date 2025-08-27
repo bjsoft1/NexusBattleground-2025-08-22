@@ -103,6 +103,8 @@ void SBattlegroundMenu::Construct(const FArguments& args)
         settingsManager->OnSaveGameTypeUpdated.AddRaw(this, &SBattlegroundMenu::OnSettingsUpdated);
     }
     this->BindMenuButtonEvents();
+
+    BattlegroundUtilities::SetUpdateMouseFocus(this->GetWorld(), true);
 }
 #pragma endregion Constructors and Overrides
 
@@ -208,14 +210,19 @@ void SBattlegroundMenu::BindMenuButtonEvents()
 void SBattlegroundMenu::BackToGame()
 {
     this->OverrideVisibility(false);
+    BattlegroundUtilities::SetUpdateMouseFocus(this->GetWorld(), false);
 }
 void SBattlegroundMenu::ExitApplication()
 {
-    if (GEngine->GameViewport)
-    {
-        this->IsControlsLocked = true;
-        GEngine->GameViewport->ConsoleCommand("quit");
-    }
+    this->IsControlsLocked = true;
+    SBattlegroundWidget::OverrideVisibility(false);
+
+    // Delay a bit to allow the menu to hide before quitting
+    FTimerHandle timerHandle;
+    FTimerDelegate timerDel;
+    timerDel.BindLambda([this]() { if (this->GetWorld()) UKismetSystemLibrary::QuitGame(GetWorld(), nullptr, EQuitPreference::Quit, false); });
+
+    if (this->GetWorld()) this->GetWorld()->GetTimerManager().SetTimer(timerHandle, timerDel, DEFAULT_QUIT_GAME_DELAY, false);
 }
 #pragma endregion Private Helper Methods
 

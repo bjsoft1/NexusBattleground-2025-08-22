@@ -5,7 +5,6 @@
 #include "Slate/SlateGameResources.h"
 #include "Widgets/SCompoundWidget.h"
 //---------------------
-#include "BattlegroundUtilities.h"
 
 TSharedPtr<FSlateStyleSet> FBattlegroundStyles::StyleInstance = nullptr;
 

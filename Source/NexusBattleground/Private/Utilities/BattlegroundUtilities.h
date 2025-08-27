@@ -20,6 +20,7 @@ DECLARE_LOG_CATEGORY_EXTERN(LogNexus, Log, All);
 #define NEXUS_ERROR(Format, ...)   UE_LOG(LogNexus, Error, TEXT(Format), ##__VA_ARGS__)
 
 #define DEFAULT_MAIN_MENU_DELAY 0.3f
+#define DEFAULT_QUIT_GAME_DELAY 1.0f
 #endif
 
 static class AssetsPaths
@@ -100,6 +101,8 @@ public:
 	}
 
 	static class UBattlegroundSettingsManager* GetSettingsManager(const UWorld* world);
+
+	static void SetUpdateMouseFocus(UWorld* world, bool isMenu, bool isNeedMouseEvent = true);
 };
 
 static class GameScoreCalculator

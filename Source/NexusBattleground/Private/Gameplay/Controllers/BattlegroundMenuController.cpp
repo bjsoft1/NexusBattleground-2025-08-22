@@ -35,15 +35,6 @@ void ABattlegroundMenuController::BeginPlay()
             break;
         }
     }
-
-    // Enable mouse cursor and UI-only input
-    APlayerController::bShowMouseCursor = true;
-    APlayerController::bEnableClickEvents = true;
-    APlayerController::bEnableMouseOverEvents = true;
-
-    FInputModeUIOnly inputMode;
-    inputMode.SetLockMouseToViewportBehavior(EMouseLockMode::LockInFullscreen);
-    APlayerController::SetInputMode(inputMode);
 }
 #pragma endregion Lifecycle Overrides
 

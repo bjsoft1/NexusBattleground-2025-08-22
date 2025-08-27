@@ -9,7 +9,6 @@
 
 
 #pragma region NexusBattleground Header Files
-#include "BattlegroundStyles.h"
 #pragma endregion NexusBattleground Header Files
 
 

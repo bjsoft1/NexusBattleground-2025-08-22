@@ -2,7 +2,6 @@
 
 #include "SBattlegroundWidgetMenuTop.h"
 #include "BattlegroundStyles.h"
-#include "BattlegroundUtilities.h"
 #include "BattlegroundSaveGame.h"
 
 
