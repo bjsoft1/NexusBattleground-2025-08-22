@@ -8,6 +8,7 @@
 
 #pragma region Forward declaretions
 enum class EGameModes : uint8;
+class ABattlegroundPickup;
 #pragma endregion Forward declaretions
 
 
@@ -36,8 +37,10 @@ protected:
 
 protected:
 #pragma region Components
-	TSubclassOf<class ABattlegroundPickupManager> PickupManagerClass;
-	TSubclassOf<APawn> ComputerCharacterClass;
+	UPROPERTY() TSubclassOf<class ABattlegroundPickupManager> PickupManagerClass;
+	UPROPERTY() TSubclassOf<APawn> ComputerCharacterClass;
+
+	UPROPERTY() TArray<ABattlegroundPickup*> SpawnedPickups;
 #pragma endregion Components
 
 
@@ -51,11 +54,15 @@ private:
 
 public:
 #pragma region Public Inline Methods
+
 #pragma endregion Public Inline Methods
 
 
 public:
 #pragma region Public Methods
+	void RegisterPickup(ABattlegroundPickup* pickupItem);
+	void UnregisterPickup(ABattlegroundPickup* pickupItem);
+	bool IsPickupRegistered(ABattlegroundPickup* pickupItem) const;
 #pragma endregion Public Methods
 
 

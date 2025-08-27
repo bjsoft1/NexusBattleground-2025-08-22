@@ -121,6 +121,8 @@ private:
 	void DetectPickupItem();
 	void GetCrosshairTrace(FVector& outStart, FVector& outEnd);
 	void SetHoverPickupItem(ABattlegroundPickup* pickup);
+	bool CanPickupItem(ABattlegroundPickup* pickupItem);
+	bool HasInventorySpace();
 #pragma endregion Private Helper Methods
 
 
@@ -142,7 +144,8 @@ private:
 
 private:
 #pragma region Server/Multicast RPC
-	UFUNCTION(Server, Reliable) void ServerSetControllerYaw(bool isEnabled);
+	UFUNCTION(Server, Reliable) void Server_PickupItem(ABattlegroundPickup* pickupItem);
+	UFUNCTION(Server, Reliable) void Server_SetControllerYaw(bool isEnabled);
 #pragma endregion Server/Multicast RPC
 
 

@@ -13,6 +13,7 @@
 #include "BattlegroundPlayerState.h"
 #include "BattlegroundGameState.h"
 #include "BattlegroundPickupManager.h"
+#include "BattlegroundPickup.h"
 #pragma endregion NexusBattleground Header Files
 
 
@@ -63,6 +64,25 @@ void ABattlegroundGameMode::BeginPlay()
 
 
 #pragma region Public Methods
+void ABattlegroundGameMode::RegisterPickup(ABattlegroundPickup* pickupItem)
+{
+	// checkf will crash in debug if called on a client, which is useful for catching mistakes early.
+	// In shipping builds, checkf is compiled out, so it won’t affect performance.
+	checkf(HasAuthority(), TEXT("Warning! RegisterPickup called on client!"));
+	if (!pickupItem) return;
+	SpawnedPickups.Add(pickupItem);
+}
+void ABattlegroundGameMode::UnregisterPickup(ABattlegroundPickup* pickupItem)
+{
+	checkf(HasAuthority(), TEXT("Warning! UnregisterPickup called on client!"));
+	if (!pickupItem) return;
+	SpawnedPickups.RemoveAll([](ABattlegroundPickup* pickup) { return !pickup || pickup->IsPendingKillPending(); });
+}
+bool ABattlegroundGameMode::IsPickupRegistered(ABattlegroundPickup* pickupItem) const
+{
+	if (!pickupItem) return false;
+	return SpawnedPickups.Contains(pickupItem) && !pickupItem->IsPendingKillPending();
+}
 #pragma endregion Public Methods
 
 

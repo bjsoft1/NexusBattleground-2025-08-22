@@ -17,8 +17,7 @@
 ABattlegroundCharacter::ABattlegroundCharacter(const FObjectInitializer& objectInitializer) : Super(objectInitializer),
 WeaponType(EWeaponTypes::WT_None)
 {
-
-	// Setup Character Mesh
+		// Setup Character Mesh
 	ConstructorHelpers::FObjectFinder<USkeletalMesh> characterMesh(*AssetsPaths::SKM_FEMALE_PATH);
 	ConstructorHelpers::FClassFinder<UAnimInstance> characterAnimation(*AssetsPaths::ANIM_FEMALE_PATH);
 
@@ -68,8 +67,8 @@ void ABattlegroundCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ABattlegroundCharacter, AnimationStates);
+	DOREPLIFETIME(ABattlegroundCharacter, WeaponType);
 }
-
 #pragma endregion Lifecycle Overrides
 
 

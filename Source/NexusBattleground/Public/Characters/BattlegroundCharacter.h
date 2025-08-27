@@ -42,7 +42,7 @@ protected:
 private:
 #pragma region Configurable & Internal Properties
 	UPROPERTY(ReplicatedUsing = OnRepAnimationStates) EAnimationStates AnimationStates = EAnimationStates::None;
-public: EWeaponTypes WeaponType;
+	UPROPERTY(Replicated) EWeaponTypes WeaponType;
 #pragma endregion Configurable & Internal Properties
 
 

@@ -6,6 +6,7 @@
 
 
 #pragma region NexusBattleground Header Files
+#include "BattlegroundGameMode.h"
 #include "BattlegroundUtilities.h"
 #include "BattlegroundItemPickup.h"
 #include "BattlegroundWeaponPickup.h"
@@ -119,6 +120,9 @@ void ABattlegroundPickupManager::SpawnRandomPickup()
 {
     if (!HasAuthority()) return;
 
+    ABattlegroundGameMode* gameMode = GetWorld()->GetAuthGameMode<ABattlegroundGameMode>();
+	if (!gameMode) return;
+
     bool bUseLine1 = FMath::RandBool();
     FVector startLocation, endLocation;
     float* progress;
@@ -165,7 +169,11 @@ void ABattlegroundPickupManager::SpawnRandomPickup()
             FActorSpawnParameters spawnParams;
             spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
             ABattlegroundPickup* newPickup = GetWorld()->SpawnActor<ABattlegroundPickup>(pickupClass, spawnLocation, FRotator::ZeroRotator, spawnParams);
-            if (newPickup) newPickup->InitializePickup(pickupRowName, GetDefaultQuantity(pickupType, subType));
+            if (newPickup)
+            {
+                newPickup->InitializePickup(pickupRowName, GetDefaultQuantity(pickupType, subType));
+				gameMode->RegisterPickup(newPickup);
+            }
         }
 
         // Move progress forward
