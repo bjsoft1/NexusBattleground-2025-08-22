@@ -127,6 +127,7 @@ enum class EChildrenMenus : uint8
 	Leaderboard = 8,
 	RecordedGame = 9,
 	ExitGame = 10,
+	BackToGame = 11,
 };
 
 enum class ESaveGameTypes : uint8

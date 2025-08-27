@@ -30,6 +30,7 @@ public:
 protected:
 #pragma region Lifecycle Overrides
 	virtual void BeginPlay() override;
+	virtual void EndPlay(EEndPlayReason::Type type) override;
 #pragma endregion Lifecycle Overrides
 
 

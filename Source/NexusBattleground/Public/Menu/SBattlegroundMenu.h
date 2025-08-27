@@ -89,7 +89,7 @@ private:
 	TSharedPtr<SButton> ExitGameButton;
 	
 	/** Return to game | just hide widget */
-	TSharedPtr<SButton> BackButton;
+	TSharedPtr<SButton> BackToGameButton;
 
 	
 	// -------------
@@ -102,6 +102,7 @@ private:
 #pragma region Configurable & Internal Properties
 	EMenuScreens CurrentScreen;
 	EChildrenMenus CurrentMenuType;
+	bool IsControlsLocked = false;
 #pragma endregion Configurable & Internal Properties
 
 
@@ -120,6 +121,8 @@ public:
 #pragma region Private Helper Methods
 	void RefreshButtons();
 	void BindMenuButtonEvents();
+	void BackToGame();
+	void ExitApplication();
 	#pragma endregion Private Helper Methods
 
 

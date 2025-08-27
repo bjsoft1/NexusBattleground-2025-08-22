@@ -81,21 +81,17 @@ void SBattlegroundMenu::Construct(const FArguments& args)
                                 ]
                                 + SScrollBox::Slot().Padding(DEFAULT_BUTTON_PADDING)
                                 [
-                                    SlateHelpers::CreateMenuButton(this->BackButton, FText::FromString("Back to Game"), EButtonTypes::Menu_Normal)
+                                    SlateHelpers::CreateMenuButton(this->BackToGameButton, FText::FromString("Back to Game"), EButtonTypes::Menu_Normal)
                                 ]
                         ]
 
                     // Right side body
-                    + SHorizontalBox::Slot()
-                        .FillWidth(1.0f)
-                        .Padding(10)
+                    + SHorizontalBox::Slot().FillWidth(1.0f).Padding(DEFAULT_PADDING)
                         [
-                            SNew(SBorder)
-                                .Padding(10)
+                            SAssignNew(this->ParentPanel, SBorder)
                                 [
-                                    SNew(STextBlock)
-                                        .Text(FText::FromString("Right Body Content"))
-                                        .Justification(ETextJustify::Left)
+                                    SNew(STextBlock).Text(FText::FromString("Right Body Content"))
+                                        .TextStyle(SlateHelpers::GetTextBlockStyle(WidgetKeys::FONT_LARGE_TITLE)).Justification(ETextJustify::Left)
                                 ]
                         ]
                 ]
@@ -124,6 +120,9 @@ void SBattlegroundMenu::DestroyWidget()
     if (UBattlegroundSettingsManager* settingsManager = BattlegroundUtilities::GetSettingsManager(this->GetWorld()))
         settingsManager->OnSaveGameTypeUpdated.RemoveAll(this);
 
+    if (GEngine->GetWorld() && GEngine->GetWorld()->GetGameViewport())
+        GEngine->GetWorld()->GetGameViewport()->RemoveViewportWidgetContent(SharedThis(this));
+
     this->ParentPanel->ClearContent();
     this->ParentPanel = nullptr;
     this->CurrentActiveWidget = nullptr;
@@ -151,13 +150,7 @@ void SBattlegroundMenu::DestroyWidget()
     this->LeaderboardButton = nullptr;
     this->RecordedGameButton = nullptr;
     this->ExitGameButton = nullptr;
-    this->BackButton = nullptr;
-
-    if (this->GetWorld() && this->GetWorld()->GetGameViewport())
-    {
-        this->GetWorld()->GetGameViewport()->RemoveViewportWidgetContent(SharedThis(this));
-        this->world = nullptr;
-    }
+    this->BackToGameButton = nullptr;
 }
 #pragma endregion Lifecycle Overrides
 
@@ -167,30 +160,30 @@ void SBattlegroundMenu::RefreshButtons()
 {
     if (this->CurrentScreen == EMenuScreens::Gameplay)
     {
-        this->MenuTopWidget->SetVisibility(EVisibility::Collapsed);
-        this->AbountGameButton->SetVisibility(EVisibility::Collapsed);
-        this->HostGameButton->SetVisibility(EVisibility::Collapsed);
-        this->JoinGameButton->SetVisibility(EVisibility::Collapsed);
-        this->InventoryButton->SetVisibility(EVisibility::Collapsed);
-        this->LeaderboardButton->SetVisibility(EVisibility::Collapsed);
-        this->RecordedGameButton->SetVisibility(EVisibility::Collapsed);
-
-        this->BackButton->SetVisibility(EVisibility::Visible);
+        //this->MenuTopWidget->SetVisibility(EVisibility::Collapsed);
+        //this->AbountGameButton->SetVisibility(EVisibility::Collapsed);
+        //this->HostGameButton->SetVisibility(EVisibility::Collapsed);
+        //this->JoinGameButton->SetVisibility(EVisibility::Collapsed);
+        //this->InventoryButton->SetVisibility(EVisibility::Collapsed);
+        //this->LeaderboardButton->SetVisibility(EVisibility::Collapsed);
+        //this->RecordedGameButton->SetVisibility(EVisibility::Collapsed);
+        //
+        //this->BackToGameButton->SetVisibility(EVisibility::Visible);
 
 		// Default to display settings when in-game
         this->OnMenuButtonClicked(this->DisplaySettingsButton, EChildrenMenus::DisplaySettings);
     }
     else
     {
-        this->AbountGameButton->SetVisibility(EVisibility::Visible);
-        this->MenuTopWidget->SetVisibility(EVisibility::Visible);
-        this->HostGameButton->SetVisibility(EVisibility::Visible);
-        this->JoinGameButton->SetVisibility(EVisibility::Visible);
-        this->InventoryButton->SetVisibility(EVisibility::Visible);
-        this->LeaderboardButton->SetVisibility(EVisibility::Visible);
-        this->RecordedGameButton->SetVisibility(EVisibility::Visible);
-
-        this->BackButton->SetVisibility(EVisibility::Collapsed);
+        //this->AbountGameButton->SetVisibility(EVisibility::Visible);
+        //this->MenuTopWidget->SetVisibility(EVisibility::Visible);
+        //this->HostGameButton->SetVisibility(EVisibility::Visible);
+        //this->JoinGameButton->SetVisibility(EVisibility::Visible);
+        //this->InventoryButton->SetVisibility(EVisibility::Visible);
+        //this->LeaderboardButton->SetVisibility(EVisibility::Visible);
+        //this->RecordedGameButton->SetVisibility(EVisibility::Visible);
+        //
+        //this->BackToGameButton->SetVisibility(EVisibility::Collapsed);
 
 		// Default to AbountGame when in main menu
         this->OnMenuButtonClicked(this->AbountGameButton, EChildrenMenus::AbountGame);
@@ -208,8 +201,21 @@ void SBattlegroundMenu::BindMenuButtonEvents()
     this->LeaderboardButton->SetOnClicked(FOnClicked::CreateSP(this, &SBattlegroundMenu::OnMenuButtonClicked, this->LeaderboardButton, EChildrenMenus::Leaderboard));
     this->RecordedGameButton->SetOnClicked(FOnClicked::CreateSP(this, &SBattlegroundMenu::OnMenuButtonClicked, this->RecordedGameButton, EChildrenMenus::RecordedGame));
     this->ExitGameButton->SetOnClicked(FOnClicked::CreateSP(this, &SBattlegroundMenu::OnMenuButtonClicked, this->ExitGameButton, EChildrenMenus::ExitGame));
+    this->BackToGameButton->SetOnClicked(FOnClicked::CreateSP(this, &SBattlegroundMenu::OnMenuButtonClicked, this->BackToGameButton, EChildrenMenus::BackToGame));
            
     this->SetCurrentScreen(EMenuScreens::MainMenu);
+}
+void SBattlegroundMenu::BackToGame()
+{
+    this->OverrideVisibility(false);
+}
+void SBattlegroundMenu::ExitApplication()
+{
+    if (GEngine->GameViewport)
+    {
+        this->IsControlsLocked = true;
+        GEngine->GameViewport->ConsoleCommand("quit");
+    }
 }
 #pragma endregion Private Helper Methods
 
@@ -217,11 +223,24 @@ void SBattlegroundMenu::BindMenuButtonEvents()
 #pragma region Callbacks
 void SBattlegroundMenu::OnSettingsUpdated(ESaveGameTypes type)
 {
+    if (this->IsControlsLocked) return;
+
     if (type == ESaveGameTypes::PlayerData || type == ESaveGameTypes::MAX) this->MenuTopWidget->RefreshPlayerInfo(this->GetWorld());
 }
 FReply SBattlegroundMenu::OnMenuButtonClicked(TSharedPtr<SButton> clickedButton, EChildrenMenus menuType)
 {
-    if (menuType == this->CurrentMenuType) return FReply::Handled();
+    if (this->IsControlsLocked || menuType == this->CurrentMenuType) return FReply::Handled();
+
+    if (menuType == EChildrenMenus::ExitGame)
+    {
+        this->ExitApplication();
+        return FReply::Handled();
+    }
+    else if (menuType == EChildrenMenus::BackToGame)
+    {
+        this->BackToGame();
+        return FReply::Handled();
+	}
 
     this->CurrentMenuType = menuType;
     if (this->CurrentActiveWidget.IsValid()) this->CurrentActiveWidget->OverrideVisibility(false);
@@ -255,12 +274,6 @@ FReply SBattlegroundMenu::OnMenuButtonClicked(TSharedPtr<SButton> clickedButton,
     case EChildrenMenus::Leaderboard:
         break;
     case EChildrenMenus::RecordedGame:
-        break;
-    case EChildrenMenus::ExitGame:
-
-
-		this->DestroyWidget();
-		UKismetSystemLibrary::QuitGame(this->GetWorld(), UGameplayStatics::GetPlayerController(this->GetWorld(), 0), EQuitPreference::Quit, false);
         break;
     default:
         break;

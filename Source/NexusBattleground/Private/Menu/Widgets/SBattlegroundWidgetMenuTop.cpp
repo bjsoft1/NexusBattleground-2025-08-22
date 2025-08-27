@@ -60,6 +60,8 @@ void SBattlegroundWidgetMenuTop::Construct(const FArguments& args)
 #pragma region Public Methods
 void SBattlegroundWidgetMenuTop::RefreshPlayerInfo(UWorld* world)
 {
+	if (!world) return;
+
 	const UBattlegroundSettingsManager* settingsManager = BattlegroundUtilities::GetSettingsManager(world);
 	if (!settingsManager) return;
 

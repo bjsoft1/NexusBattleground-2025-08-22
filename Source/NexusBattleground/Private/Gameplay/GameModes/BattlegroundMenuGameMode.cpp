@@ -36,6 +36,12 @@ void ABattlegroundMenuGameMode::BeginPlay()
     }
 
 }
+void ABattlegroundMenuGameMode::EndPlay(EEndPlayReason::Type type)
+{
+    Super::EndPlay(type);
+
+    if (this->MainMenuWidget && GEngine->GameViewport) this->MainMenuWidget->DestroyWidget();
+}
 #pragma endregion Lifecycle Overrides
 
 
