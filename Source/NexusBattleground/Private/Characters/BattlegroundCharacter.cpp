@@ -97,6 +97,17 @@ bool ABattlegroundCharacter::HasEnoughSpaceForPickup(ABattlegroundPickup* pickup
 
 
 #pragma region Protected Methods
+bool ABattlegroundCharacter::CanPickupItem(ABattlegroundPickup* pickupItem)
+{
+	if (!pickupItem) return false;
+
+	if (!HasEnoughSpaceForPickup(pickupItem)) return false;
+
+	const ABattlegroundGameMode* gameMode = Cast<ABattlegroundGameMode>(GetWorld()->GetAuthGameMode());
+
+	if (!gameMode) return false;
+	return gameMode->IsPickupRegistered(pickupItem);
+}
 #pragma endregion Protected Methods
 
 
@@ -120,17 +131,6 @@ void ABattlegroundCharacter::AttachItemToCharacter(const FInventoryClient& inven
 		meshComponent->AttachToComponent(charecterMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale, inventoryItem.AttachedSocket);
 		meshComponent->RegisterComponent();
 	}
-}
-bool ABattlegroundCharacter::CanPickupItem(ABattlegroundPickup* pickupItem)
-{
-	if (!pickupItem) return false;
-
-	if (!HasEnoughSpaceForPickup(pickupItem)) return false;
-
-	const ABattlegroundGameMode* gameMode = Cast<ABattlegroundGameMode>(GetWorld()->GetAuthGameMode());
-
-	if (!gameMode) return false;
-	return gameMode->IsPickupRegistered(pickupItem);
 }
 #pragma endregion Private Helper Methods
 

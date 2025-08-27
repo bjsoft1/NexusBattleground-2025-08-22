@@ -46,17 +46,17 @@ private:
 
 private:
 #pragma region Configurable & Internal Properties
-	const float SpawnInterval = 0.001f;	// Spawn interval
+	const float SpawnInterval = 0.0001f;	// Spawn interval
 	const float SpawnMargin = 100.f;	//  Random offset margin left/right
 	const float SpawnStep = 100.f;		// Distance between pickups
 	float Line1Progress = 0.f;
 	float Line2Progress = 0.f;
 	FTimerHandle SpawnTimerHandle;
 
-	FVector StartPoint1 = FVector(-7050.000000, 670.000000, 570.000000);
-	FVector EndPoint1 = FVector(2980.0f, 670.0f, 1000.f);
-	FVector StartPoint2 = FVector(-7050.0f, 1130.0f, 1000.f);
-	FVector EndPoint2 = FVector(2980.0f, 1130.0f, 1000.f);
+	FVector StartPoint1 = FVector(1000.f, 670.f, 1000.f);
+	FVector EndPoint1 = FVector(3000.0f, 670.0f, 1000.f);
+	FVector StartPoint2 = FVector(1100.0f, 800.0f, 1000.f);
+	FVector EndPoint2 = FVector(3000.0f, 800.0f, 1000.f);
 
 #pragma endregion Configurable & Internal Properties
 

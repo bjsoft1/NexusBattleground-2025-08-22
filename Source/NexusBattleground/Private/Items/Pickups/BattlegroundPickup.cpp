@@ -18,8 +18,9 @@
 #pragma region Constructors and Overrides
 ABattlegroundPickup::ABattlegroundPickup(const FObjectInitializer& objectInitializer) : Super(objectInitializer)
 {
-    AActor::SetReplicates(true);
+    AActor::bReplicates = true;
     AActor::SetReplicateMovement(true);
+
     AActor::PrimaryActorTick.bCanEverTick = false;
     AActor::RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 }
@@ -36,6 +37,8 @@ void ABattlegroundPickup::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 #pragma region Lifecycle Overrides
 void ABattlegroundPickup::BeginPlay()
 {
+    Super::BeginPlay();
+
     if (AActor::HasAuthority())
     {
         FVector traceStart = GetActorLocation();

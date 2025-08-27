@@ -83,13 +83,13 @@ public:
 
 protected:
 #pragma region Protected Methods
+	bool CanPickupItem(ABattlegroundPickup* pickupItem);
 #pragma endregion Protected Methods
 
 
 private:
 #pragma region Private Helper Methods
 	void AttachItemToCharacter(const FInventoryClient& Item);
-	bool CanPickupItem(ABattlegroundPickup* pickupItem);
 
 	FORCEINLINE const FInventoryServer* FindServerInventoryByType(EPickupTypes pickupType) const { return this->ServerInventory.FindByPredicate([&](FInventoryServer& item) { return item.PickupType == pickupType; }); }
 

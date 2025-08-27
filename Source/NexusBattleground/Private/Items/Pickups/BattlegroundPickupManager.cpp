@@ -22,7 +22,8 @@ TMap<UWorld*, ABattlegroundPickupManager*> ABattlegroundPickupManager::PickupMan
 #pragma region Constructors and Overrides
 ABattlegroundPickupManager::ABattlegroundPickupManager(const FObjectInitializer& objectInitializer) : Super(objectInitializer)
 {
-    AActor::SetReplicates(true);
+    AActor::bReplicates = true;
+
     AActor::PrimaryActorTick.bCanEverTick = false;
     AActor::RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 
@@ -41,7 +42,7 @@ void ABattlegroundPickupManager::BeginPlay()
     PickupManagers.Add(GetWorld(), this);
 
     if(AActor::HasAuthority()) 
-        GetWorld()->GetTimerManager().SetTimer(this->SpawnTimerHandle, this, &ABattlegroundPickupManager::SpawnRandomPickup, this->SpawnInterval, true);
+        GetWorld()->GetTimerManager().SetTimer(this->SpawnTimerHandle, this, &ABattlegroundPickupManager::SpawnRandomPickup, this->SpawnInterval, true, 2.0f);
 
 }
 void ABattlegroundPickupManager::EndPlay(const EEndPlayReason::Type endPlayReason)
