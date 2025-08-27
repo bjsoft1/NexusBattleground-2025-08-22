@@ -70,7 +70,6 @@ public:
 	FORCEINLINE FString GetPickupName() const { return this->PickupData.PickupName; }
 	FORCEINLINE uint8 GetAmount() const { return this->PickupAmount; }
 	FORCEINLINE uint8 GetAffectValue() const { return this->PickupData.AffectValue; }
-	FORCEINLINE uint8 GetSpaceRequired() const { return this->PickupData.SpaceRequired; }
 	FORCEINLINE float GetDefaultScale() const { return this->PickupData.DefaultScale; }
 	FORCEINLINE UTexture2D* GetPickupIcon() const 
 	{ 

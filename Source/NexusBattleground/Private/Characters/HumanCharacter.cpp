@@ -15,7 +15,6 @@
 
 
 #pragma region NexusBattleground Header Files
-#include "BattlegroundGameMode.h"
 #include "BattlegroundCharacterMovementComponent.h"
 #include "BattlegroundPickup.h"
 #include "SPickupHoverWidget.h"
@@ -190,22 +189,6 @@ void AHumanCharacter::SetHoverPickupItem(ABattlegroundPickup* pickup)
 	}
 	else if (this->PickupHoverWidget) this->PickupHoverWidget->OverrideVisibility(false);
 }
-bool AHumanCharacter::CanPickupItem(ABattlegroundPickup* pickupItem)
-{
-	if (!pickupItem) return false;
-	
-	if (!HasInventorySpace()) return false;
-
-	const ABattlegroundGameMode* gameMode = Cast<ABattlegroundGameMode>(GetWorld()->GetAuthGameMode());
-
-	if (!gameMode) return false;
-	return gameMode->IsPickupRegistered(pickupItem);
-}
-bool AHumanCharacter::HasInventorySpace()
-{
-	// TODO : Check inventory space
-	return true;
-}
 void AHumanCharacter::GetCrosshairTrace(FVector& outStart, FVector& outEnd)
 {
 	if (!IsLocallyControlled()) return;
@@ -229,14 +212,6 @@ void AHumanCharacter::GetCrosshairTrace(FVector& outStart, FVector& outEnd)
 	}
 }
 #pragma endregion Private Helper Methods
-
-
-#pragma region Pickup Helper Methods
-void AHumanCharacter::PickBackpack(ABattlegroundPickup* pickupItem, EPickupTypes pickupType, uint8 subType)
-{
-
-}
-#pragma endregion Pickup Helper Methods
 
 
 #pragma region Input Bindings
@@ -331,25 +306,6 @@ void AHumanCharacter::IE_PickupItem()
 
 
 #pragma region Server/Multicast RPC
-void AHumanCharacter::Server_PickupItem_Implementation(ABattlegroundPickup* pickupItem)
-{
-	if (!pickupItem || !AActor::HasAuthority()) return;
-
-	if (CanPickupItem(pickupItem))
-	{
-		const EPickupTypes pickupType = pickupItem->GetPickupType();
-		const uint8 subType = pickupItem->GetPickupSubType();
-
-		switch (pickupType)
-		{
-		case EPickupTypes::Backpack:
-			this->PickBackpack(pickupItem, pickupType, subType);
-			break;
-		default:
-			break;
-		}
-	}
-}
 void AHumanCharacter::Server_SetControllerYaw_Implementation(bool isEnabled)
 {
 	this->IsUseControllerYaw = isEnabled;

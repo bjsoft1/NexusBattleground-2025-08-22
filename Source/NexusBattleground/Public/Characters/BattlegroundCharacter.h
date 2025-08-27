@@ -45,8 +45,8 @@ private:
 	UPROPERTY(Replicated) EWeaponTypes WeaponType;
 
 	// Inventory Helpers
-	UPROPERTY(ReplicatedUsing = OnRep_InventoryUpdated) TArray<FInventoryItemServer> ServerInventory;
-	UPROPERTY() TArray<FInventoryItemClient> ClientInventory;
+	UPROPERTY(ReplicatedUsing = OnRep_InventoryUpdated) TArray<FInventoryServer> ServerInventory;
+	UPROPERTY() TArray<FInventoryClient> ClientInventory;
 
 #pragma endregion Configurable & Internal Properties
 
@@ -73,6 +73,10 @@ public:
 
 public:
 #pragma region Public Methods
+	int16 GetBackpackCapacity() const;
+	int16 GetBackpackUsedSpace() const;
+	int16 GetBackpackFreeSpace() const;
+	bool IsEnoughSpaceForPickup(ABattlegroundPickup* pickupItem) const;
 #pragma endregion Public Methods
 
 
@@ -83,7 +87,16 @@ protected:
 
 private:
 #pragma region Private Helper Methods
+	void AttachItemToCharacter(const FInventoryClient& Item);
+	bool CanPickupItem(ABattlegroundPickup* pickupItem);
+	bool HasInventorySpace();
 #pragma endregion Private Helper Methods
+
+
+private:
+#pragma region Pickup Helper Methods
+	void PickBackpack(ABattlegroundPickup* pickupItem, EPickupTypes pickupType, uint8 subType);
+#pragma endregion Pickup Helper Methods
 
 
 private:
@@ -97,6 +110,7 @@ private:
 
 private:
 #pragma region Server/Multicast RPC
+	UFUNCTION(Server, Reliable) void Server_PickupItem(ABattlegroundPickup* pickupItem);
 #pragma endregion Server/Multicast RPC
 
 

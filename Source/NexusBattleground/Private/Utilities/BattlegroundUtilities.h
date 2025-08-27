@@ -42,7 +42,7 @@ static class BattlegroundUtilities
 {
 public:
 
-	/**
+		/**
 	* Parses a DataTable row name to extract the PickupType and SubType.
 	*
 	* Row names are expected in the format: "<PickupTypeEnumName>_<SubType>"
@@ -103,6 +103,20 @@ public:
 	static class UBattlegroundSettingsManager* GetSettingsManager(const UWorld* world);
 
 	static void SetUpdateMouseFocus(UWorld* world, bool isMenu, bool isNeedMouseEvent = true);
+
+	FORCEINLINE static bool IsStaticMeshPickup(const FName& rowName)
+	{
+		return !rowName.ToString().StartsWith("Weapon_");
+	}
+	FORCEINLINE static bool IsBackpackPickup(const FName& rowName)
+	{
+		return rowName.ToString().StartsWith("Backpack_");
+	}
+	FORCEINLINE static bool IsPickupNeedAttachIntoCharecter(const FName& rowName)
+	{
+		FString rowString = rowName.ToString();
+		return rowString.StartsWith("Helmet_") || rowString.StartsWith("Weapon_") || rowString.StartsWith("Backpack_");
+	}
 };
 
 static class GameScoreCalculator

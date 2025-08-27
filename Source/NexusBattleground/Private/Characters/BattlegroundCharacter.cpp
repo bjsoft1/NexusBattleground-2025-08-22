@@ -11,6 +11,8 @@
 
 #pragma region NexusBattleground Header Files
 #include "BattlegroundPickupManager.h"
+#include "BattlegroundGameMode.h"
+#include "BattlegroundPickup.h"
 #pragma endregion NexusBattleground Header Files
 
 
@@ -75,6 +77,26 @@ void ABattlegroundCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 
 
 #pragma region Public Methods
+int16 ABattlegroundCharacter::GetBackpackCapacity() const
+{
+	FInventoryClient;
+	const bool isHavePackpack = ClientInventory.ContainsByPredicate([](const FInventoryClient& item) { return BattlegroundUtilities::IsBackpackPickup(item.RowName); });
+
+	return 0;
+}
+int16 ABattlegroundCharacter::GetBackpackUsedSpace() const 
+{
+	return 0;
+}
+int16 ABattlegroundCharacter::GetBackpackFreeSpace() const
+{
+	return 0;
+}
+bool ABattlegroundCharacter::IsEnoughSpaceForPickup(ABattlegroundPickup* pickupItem) const
+{
+	return true;
+}
+
 #pragma endregion Public Methods
 
 
@@ -83,7 +105,51 @@ void ABattlegroundCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 
 
 #pragma region Private Helper Methods
+void ABattlegroundCharacter::AttachItemToCharacter(const FInventoryClient& inventoryItem)
+{
+	USceneComponent* charecterMesh = ACharacter::GetMesh();
+	const bool isStaticMesh = BattlegroundUtilities::IsStaticMeshPickup(inventoryItem.RowName);
+
+	if (isStaticMesh && inventoryItem.StaticMesh)
+	{
+		UStaticMeshComponent* meshComponent = NewObject<UStaticMeshComponent>(this);
+		meshComponent->SetStaticMesh(inventoryItem.StaticMesh);
+		meshComponent->AttachToComponent(charecterMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale, inventoryItem.AttachedSocket);
+		meshComponent->RegisterComponent();
+	}
+	else if (!isStaticMesh && inventoryItem.SkeletalMesh)
+	{
+		USkeletalMeshComponent* meshComponent = NewObject<USkeletalMeshComponent>(this);
+		meshComponent->SetSkeletalMesh(inventoryItem.SkeletalMesh);
+		meshComponent->AttachToComponent(charecterMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale, inventoryItem.AttachedSocket);
+		meshComponent->RegisterComponent();
+	}
+}
+bool ABattlegroundCharacter::CanPickupItem(ABattlegroundPickup* pickupItem)
+{
+	if (!pickupItem) return false;
+
+	if (!HasInventorySpace()) return false;
+
+	const ABattlegroundGameMode* gameMode = Cast<ABattlegroundGameMode>(GetWorld()->GetAuthGameMode());
+
+	if (!gameMode) return false;
+	return gameMode->IsPickupRegistered(pickupItem);
+}
+bool ABattlegroundCharacter::HasInventorySpace()
+{
+	// TODO : Check inventory space
+	return true;
+}
 #pragma endregion Private Helper Methods
+
+
+#pragma region Pickup Helper Methods
+void ABattlegroundCharacter::PickBackpack(ABattlegroundPickup* pickupItem, EPickupTypes pickupType, uint8 subType)
+{
+
+}
+#pragma endregion Pickup Helper Methods
 
 
 #pragma region Input Bindings
@@ -94,6 +160,25 @@ void ABattlegroundCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 
 
 #pragma region Server/Multicast RPC
+void ABattlegroundCharacter::Server_PickupItem_Implementation(ABattlegroundPickup* pickupItem)
+{
+	if (!pickupItem || !AActor::HasAuthority()) return;
+
+	if (CanPickupItem(pickupItem))
+	{
+		const EPickupTypes pickupType = pickupItem->GetPickupType();
+		const uint8 subType = pickupItem->GetPickupSubType();
+
+		switch (pickupType)
+		{
+		case EPickupTypes::Backpack:
+			this->PickBackpack(pickupItem, pickupType, subType);
+			break;
+		default:
+			break;
+		}
+	}
+}
 #pragma endregion Server/Multicast RPC
 
 
@@ -103,32 +188,31 @@ void ABattlegroundCharacter::OnRep_AnimationStates()
 }
 void ABattlegroundCharacter::OnRep_InventoryUpdated()
 {
-	for (auto& Item : this->ServerInventory)
+	for (auto& serverInventory : this->ServerInventory)
 	{
 		// Check if we already have this item attached
-		if (ClientInventory.ContainsByPredicate([&](const FInventoryItemClient& Existing) { return Existing.RowName == Item.RowName; })) continue;
+		if (ClientInventory.ContainsByPredicate([&](const FInventoryClient& existing) { return existing.RowName == serverInventory.RowName; })) continue;
+		else if (!BattlegroundUtilities::IsPickupNeedAttachIntoCharecter(serverInventory.RowName)) continue;
 
 		// Reconstruct full client-side data
-		FInventoryItemClient FullItem;
-		FullItem.RowName = Item.RowName;
-		FullItem.AttachedSocket = Item.AttachedSocket;
+		FInventoryClient clientInventory;
+		clientInventory.RowName = serverInventory.RowName;
+		clientInventory.AttachedSocket = serverInventory.AttachedSocket;
 
 		ABattlegroundPickupManager* pickupManager = ABattlegroundPickupManager::GetManager(GetWorld());
 		if (!pickupManager) return;
 
-		FPickupData pickupData = pickupManager->GetPickupData(Item.RowName);
-		//if (pickupData.)
-		//{
-		//	FullItem.IsStaticMesh = DataRow->bIsStaticMesh;
-		//	FullItem.SkeletalMesh = DataRow->SkeletalMesh;
-		//	FullItem.StaticMesh = DataRow->StaticMesh;
-		//}
+		FPickupData pickupData = pickupManager->GetPickupData(serverInventory.RowName);
+		if (!pickupData.IsValid) return;
+
+		if(!pickupData.SkeletalMesh.IsNull()) clientInventory.SkeletalMesh = pickupData.SkeletalMesh.LoadSynchronous();
+		if (!pickupData.StaticMesh.IsNull()) clientInventory.StaticMesh = pickupData.StaticMesh.LoadSynchronous();
 
 		// Attach item mesh
-		//AttachItemToCharacter(FullItem);
+		AttachItemToCharacter(clientInventory);
 
 		// Save in client inventory
-		//ClientInventory.Add(FullItem);
+		ClientInventory.Add(clientInventory);
 	}
 }
 #pragma endregion Client/OnRep RPC

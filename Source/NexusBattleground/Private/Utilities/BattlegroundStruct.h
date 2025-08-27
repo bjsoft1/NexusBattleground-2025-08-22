@@ -15,7 +15,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) bool IsValid = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) FString PickupName;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) uint8 AffectValue = 0;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite) uint8 SpaceRequired = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) uint8 SpawnChance = 5;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) float DefaultScale = 1.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) FName RowName;
@@ -60,17 +59,11 @@ public:
 	*
 */
 USTRUCT(BlueprintType)
-struct FInventoryItemServer
+struct FInventoryServer
 {
 	GENERATED_BODY()
-
-	// ID in DataTable
 	UPROPERTY() FName RowName;
-
-	// Where to attach on the character
 	UPROPERTY() FName AttachedSocket;
-
-	// Quantity of this item
 	UPROPERTY() int32 Quantity = 1;
 };
 
@@ -80,20 +73,16 @@ struct FInventoryItemServer
 	* It uses the RowName to look up additional data if needed.
 */
 USTRUCT(BlueprintType)
-struct FInventoryItemClient
+struct FInventoryClient
 {
 	GENERATED_BODY()
 
 	UPROPERTY() FName RowName;
-
 	UPROPERTY() FName AttachedSocket;
-
 	UPROPERTY() USkeletalMesh* SkeletalMesh;
-
 	UPROPERTY() UStaticMesh* StaticMesh;
-
-	UPROPERTY() bool IsStaticMesh;
-
 	UPROPERTY() int32 Quantity = 1;
+	UPROPERTY() EPickupTypes PickupType;
+	UPROPERTY() uint8 Subtype = 1;
 };
 
