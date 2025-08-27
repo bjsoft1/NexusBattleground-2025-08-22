@@ -65,6 +65,8 @@ struct FInventoryServer
 	UPROPERTY() FName RowName;
 	UPROPERTY() FName AttachedSocket;
 	UPROPERTY() int32 Quantity = 1;
+	UPROPERTY() uint8 Subtype = 1;
+	UPROPERTY() EPickupTypes PickupType = EPickupTypes::Unknown;
 };
 
 

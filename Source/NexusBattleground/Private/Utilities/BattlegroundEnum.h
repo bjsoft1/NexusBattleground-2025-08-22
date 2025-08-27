@@ -73,6 +73,7 @@ enum class EGameModes : uint8
 UENUM(BlueprintType)
 enum class EPickupTypes : uint8
 {
+	Unknown			UMETA(DisplayName = "Unknown"),
 	Ammo			UMETA(DisplayName = "Ammo"),
 	Sight			UMETA(DisplayName = "Sight"),
 	Armor			UMETA(DisplayName = "Armor"),

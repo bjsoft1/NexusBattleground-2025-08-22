@@ -21,6 +21,11 @@ DECLARE_LOG_CATEGORY_EXTERN(LogNexus, Log, All);
 
 #define DEFAULT_MAIN_MENU_DELAY 0.3f
 #define DEFAULT_QUIT_GAME_DELAY 1.0f
+
+#define DEFAULT_CHARECTER_BACKPACK_CAPACITY 200
+#define DEFAULT_BACKPACK_V1_CAPACITY 500
+#define DEFAULT_BACKPACK_V2_CAPACITY 1000
+#define DEFAULT_BACKPACK_V3_CAPACITY 2000
 #endif
 
 static class AssetsPaths
@@ -42,22 +47,22 @@ static class BattlegroundUtilities
 {
 public:
 
-		/**
-	* Parses a DataTable row name to extract the PickupType and SubType.
-	*
-	* Row names are expected in the format: "<PickupTypeEnumName>_<SubType>"
-	* For example: "Ammo_1", "Weapon_3", etc.
-	*
-	* This function:
-	* - Splits the row name by underscore ('_')
-	* - Maps the first part to the corresponding EPickupTypes enum
-	* - Converts the second part to a uint8 SubType
-	*
-	* @param rowName        The FName of the DataTable row to parse
-	* @param outPickupType  Output parameter to receive the parsed EPickupTypes value
-	* @param outSubType     Output parameter to receive the parsed sub-type as uint8
-	* @return true if parsing succeeded and both PickupType and SubType were valid, false otherwise
-	*/
+	/**
+* Parses a DataTable row name to extract the PickupType and SubType.
+*
+* Row names are expected in the format: "<PickupTypeEnumName>_<SubType>"
+* For example: "Ammo_1", "Weapon_3", etc.
+*
+* This function:
+* - Splits the row name by underscore ('_')
+* - Maps the first part to the corresponding EPickupTypes enum
+* - Converts the second part to a uint8 SubType
+*
+* @param rowName        The FName of the DataTable row to parse
+* @param outPickupType  Output parameter to receive the parsed EPickupTypes value
+* @param outSubType     Output parameter to receive the parsed sub-type as uint8
+* @return true if parsing succeeded and both PickupType and SubType were valid, false otherwise
+*/
 	static bool ParsePickupRowName(const FName& rowName, EPickupTypes& outPickupType, uint8& outSubType)
 	{
 		FString rowString = rowName.ToString();
@@ -67,8 +72,7 @@ public:
 		if (parts.Num() != 2) return false;
 
 		FString typeString = parts[0];
-		outPickupType = EPickupTypes::Ammo;
-
+		outPickupType = EPickupTypes::Unknown;
 
 		for (uint8 i = 0; i < static_cast<int32>(6u) + 1u; i++)
 		{
@@ -116,6 +120,59 @@ public:
 	{
 		FString rowString = rowName.ToString();
 		return rowString.StartsWith("Helmet_") || rowString.StartsWith("Weapon_") || rowString.StartsWith("Backpack_");
+	}
+
+	FORCEINLINE static uint16 GetBackpackCapacity(const FInventoryServer* inventoryItem)
+	{
+		if (inventoryItem == nullptr || inventoryItem->PickupType != EPickupTypes::Backpack) return DEFAULT_CHARECTER_BACKPACK_CAPACITY;
+
+		switch (inventoryItem->Subtype)
+		{
+		case 1: return DEFAULT_BACKPACK_V1_CAPACITY + DEFAULT_CHARECTER_BACKPACK_CAPACITY;
+		case 2: return DEFAULT_BACKPACK_V2_CAPACITY + DEFAULT_CHARECTER_BACKPACK_CAPACITY;
+		case 3: return DEFAULT_BACKPACK_V3_CAPACITY + DEFAULT_CHARECTER_BACKPACK_CAPACITY;
+		default: return DEFAULT_CHARECTER_BACKPACK_CAPACITY;
+		}
+	}
+	
+	FORCEINLINE static uint8 GetPickupWight(const FName& rowName)
+	{
+		EPickupTypes pickupType;
+		uint8 subType;
+		if (!ParsePickupRowName(rowName, pickupType, subType)) return 0;
+
+		return GetPickupWight(pickupType, subType);
+	}
+	FORCEINLINE static uint8 GetPickupWight(const FInventoryServer& inventoryItem)
+	{
+		return GetPickupWight(inventoryItem.PickupType, inventoryItem.Subtype);
+	}
+	FORCEINLINE static uint8 GetPickupWight(const EPickupTypes& pickupType, const uint8& subType)
+	{
+		switch (pickupType)
+		{
+		case EPickupTypes::Ammo: return 3;
+		case EPickupTypes::Medkit:
+		{
+			EPickupMedkitTypes medkitType = static_cast<EPickupMedkitTypes>(subType);
+			switch (medkitType)
+			{
+			case EPickupMedkitTypes::FirstAidKit:
+			case EPickupMedkitTypes::Medkit:
+			case EPickupMedkitTypes::AdrenalineSyringe: return 100;
+			case EPickupMedkitTypes::Painkiller: return 50;
+			case EPickupMedkitTypes::EnergyDrink:
+			case EPickupMedkitTypes::Bandage:
+			default: return 20;
+			}
+		}
+		case EPickupTypes::Sight:
+			// TODO: More (Red Dot | 2X | 4X | 6X | 8X)
+			return subType == 1 ? 80 : 100;
+
+			// Helmet, Backpack, Armor, Weapon it attached to character - no weight
+		default: return 0;
+		}
 	}
 };
 

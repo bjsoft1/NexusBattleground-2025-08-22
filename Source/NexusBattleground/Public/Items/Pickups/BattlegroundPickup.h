@@ -71,6 +71,7 @@ public:
 	FORCEINLINE uint8 GetAmount() const { return this->PickupAmount; }
 	FORCEINLINE uint8 GetAffectValue() const { return this->PickupData.AffectValue; }
 	FORCEINLINE float GetDefaultScale() const { return this->PickupData.DefaultScale; }
+	FORCEINLINE FName GetRowId() const { return this->DatatableRowId; }
 	FORCEINLINE UTexture2D* GetPickupIcon() const 
 	{ 
 		return this->PickupIcon ? this->PickupIcon : (this->PickupData.PickupIcon.IsNull()

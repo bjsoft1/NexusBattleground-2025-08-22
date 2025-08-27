@@ -68,15 +68,16 @@ public:
 	FORCEINLINE bool IsPlayingMontage() const { return (this->AnimationStates & EAnimationStates::IsPlayingMontage) != EAnimationStates::None; }
 	FORCEINLINE bool IsFreeFalling() const { return (this->AnimationStates & EAnimationStates::IsFreeFalling) != EAnimationStates::None; }
 	FORCEINLINE bool IsParachuteOpen() const { return (this->AnimationStates & EAnimationStates::IsParachuteOpen) != EAnimationStates::None; }
+
+	FORCEINLINE int16 GetBackpackCapacity() const { return BattlegroundUtilities::GetBackpackCapacity(FindServerInventoryByType(EPickupTypes::Backpack)); }
+	FORCEINLINE int16 GetBackpackFreeSpace() const { return GetBackpackCapacity() - GetBackpackUsedSpace(); }
 #pragma endregion Public Inline Methods
 
 
 public:
 #pragma region Public Methods
-	int16 GetBackpackCapacity() const;
 	int16 GetBackpackUsedSpace() const;
-	int16 GetBackpackFreeSpace() const;
-	bool IsEnoughSpaceForPickup(ABattlegroundPickup* pickupItem) const;
+	bool HasEnoughSpaceForPickup(ABattlegroundPickup* pickupItem) const;
 #pragma endregion Public Methods
 
 
@@ -89,7 +90,10 @@ private:
 #pragma region Private Helper Methods
 	void AttachItemToCharacter(const FInventoryClient& Item);
 	bool CanPickupItem(ABattlegroundPickup* pickupItem);
-	bool HasInventorySpace();
+
+	FORCEINLINE const FInventoryServer* FindServerInventoryByType(EPickupTypes pickupType) const { return this->ServerInventory.FindByPredicate([&](FInventoryServer& item) { return item.PickupType == pickupType; }); }
+
+	FORCEINLINE FInventoryClient* FindInventoryByType_Subtype(EPickupTypes pickupType, uint8 subType) { return this->ClientInventory.FindByPredicate([&](FInventoryClient& item) { return item.PickupType == pickupType && item.Subtype == subType; }); }
 #pragma endregion Private Helper Methods
 
 
@@ -108,7 +112,7 @@ private:
 #pragma endregion Callbacks
 
 
-private:
+protected:
 #pragma region Server/Multicast RPC
 	UFUNCTION(Server, Reliable) void Server_PickupItem(ABattlegroundPickup* pickupItem);
 #pragma endregion Server/Multicast RPC

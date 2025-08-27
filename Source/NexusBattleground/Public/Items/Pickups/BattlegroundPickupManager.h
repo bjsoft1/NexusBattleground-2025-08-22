@@ -46,7 +46,7 @@ private:
 
 private:
 #pragma region Configurable & Internal Properties
-	const float SpawnInterval = 0.1f;	// Spawn interval
+	const float SpawnInterval = 0.001f;	// Spawn interval
 	const float SpawnMargin = 100.f;	//  Random offset margin left/right
 	const float SpawnStep = 100.f;		// Distance between pickups
 	float Line1Progress = 0.f;

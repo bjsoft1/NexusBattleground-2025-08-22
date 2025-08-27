@@ -77,26 +77,22 @@ void ABattlegroundCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 
 
 #pragma region Public Methods
-int16 ABattlegroundCharacter::GetBackpackCapacity() const
-{
-	FInventoryClient;
-	const bool isHavePackpack = ClientInventory.ContainsByPredicate([](const FInventoryClient& item) { return BattlegroundUtilities::IsBackpackPickup(item.RowName); });
-
-	return 0;
-}
 int16 ABattlegroundCharacter::GetBackpackUsedSpace() const 
 {
-	return 0;
-}
-int16 ABattlegroundCharacter::GetBackpackFreeSpace() const
-{
-	return 0;
-}
-bool ABattlegroundCharacter::IsEnoughSpaceForPickup(ABattlegroundPickup* pickupItem) const
-{
-	return true;
-}
+	int16 usedSpace = 0;
+	const uint16 capacity = GetBackpackCapacity();
 
+	for (const auto& item : ServerInventory) usedSpace += item.Quantity * BattlegroundUtilities::GetPickupWight(item);
+
+	return usedSpace;
+}
+bool ABattlegroundCharacter::HasEnoughSpaceForPickup(ABattlegroundPickup* pickupItem) const
+{
+	if (!pickupItem) return false;
+	const uint16 itemWeight = BattlegroundUtilities::GetPickupWight(pickupItem->GetRowId()) * pickupItem->GetAmount();
+
+	return GetBackpackCapacity() >= (GetBackpackFreeSpace() + itemWeight);
+}
 #pragma endregion Public Methods
 
 
@@ -129,17 +125,12 @@ bool ABattlegroundCharacter::CanPickupItem(ABattlegroundPickup* pickupItem)
 {
 	if (!pickupItem) return false;
 
-	if (!HasInventorySpace()) return false;
+	if (!HasEnoughSpaceForPickup(pickupItem)) return false;
 
 	const ABattlegroundGameMode* gameMode = Cast<ABattlegroundGameMode>(GetWorld()->GetAuthGameMode());
 
 	if (!gameMode) return false;
 	return gameMode->IsPickupRegistered(pickupItem);
-}
-bool ABattlegroundCharacter::HasInventorySpace()
-{
-	// TODO : Check inventory space
-	return true;
 }
 #pragma endregion Private Helper Methods
 
@@ -147,7 +138,9 @@ bool ABattlegroundCharacter::HasInventorySpace()
 #pragma region Pickup Helper Methods
 void ABattlegroundCharacter::PickBackpack(ABattlegroundPickup* pickupItem, EPickupTypes pickupType, uint8 subType)
 {
+	//const auto backpackItem = FindInventoryByType(pickupType);
 
+	//TODO;
 }
 #pragma endregion Pickup Helper Methods
 
@@ -164,6 +157,8 @@ void ABattlegroundCharacter::Server_PickupItem_Implementation(ABattlegroundPicku
 {
 	if (!pickupItem || !AActor::HasAuthority()) return;
 
+	NEXUS_WARNING("Server Recived Request to pickup: %s", *pickupItem->GetName());
+
 	if (CanPickupItem(pickupItem))
 	{
 		const EPickupTypes pickupType = pickupItem->GetPickupType();
@@ -178,6 +173,8 @@ void ABattlegroundCharacter::Server_PickupItem_Implementation(ABattlegroundPicku
 			break;
 		}
 	}
+
+	pickupItem->Destroy(true);
 }
 #pragma endregion Server/Multicast RPC
 
@@ -192,12 +189,18 @@ void ABattlegroundCharacter::OnRep_InventoryUpdated()
 	{
 		// Check if we already have this item attached
 		if (ClientInventory.ContainsByPredicate([&](const FInventoryClient& existing) { return existing.RowName == serverInventory.RowName; })) continue;
-		else if (!BattlegroundUtilities::IsPickupNeedAttachIntoCharecter(serverInventory.RowName)) continue;
 
 		// Reconstruct full client-side data
 		FInventoryClient clientInventory;
 		clientInventory.RowName = serverInventory.RowName;
 		clientInventory.AttachedSocket = serverInventory.AttachedSocket;
+		
+		// Get pickup type and subtype
+		EPickupTypes pickupType;
+		uint8 subType;
+		BattlegroundUtilities::ParsePickupRowName(serverInventory.RowName, pickupType, subType);
+		clientInventory.PickupType = pickupType;
+		clientInventory.Subtype = subType;
 
 		ABattlegroundPickupManager* pickupManager = ABattlegroundPickupManager::GetManager(GetWorld());
 		if (!pickupManager) return;
@@ -209,9 +212,9 @@ void ABattlegroundCharacter::OnRep_InventoryUpdated()
 		if (!pickupData.StaticMesh.IsNull()) clientInventory.StaticMesh = pickupData.StaticMesh.LoadSynchronous();
 
 		// Attach item mesh
-		AttachItemToCharacter(clientInventory);
+		if (BattlegroundUtilities::IsPickupNeedAttachIntoCharecter(serverInventory.RowName)) AttachItemToCharacter(clientInventory);
+		// TODO: Attachment for Weapon
 
-		// Save in client inventory
 		ClientInventory.Add(clientInventory);
 	}
 }
