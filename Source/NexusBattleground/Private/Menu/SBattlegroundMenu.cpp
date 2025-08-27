@@ -41,7 +41,7 @@ void SBattlegroundMenu::Construct(const FArguments& args)
                             SNew(SScrollBox).ConsumeMouseWheel(EConsumeMouseWheel::Always).ScrollBarStyle(FBattlegroundStyles::Get(), WidgetKeys::SCROLL_DEFAULT).ScrollBarVisibility(EVisibility::Collapsed).AnimateWheelScrolling(true).ScrollWhenFocusChanges(EScrollWhenFocusChanges::NoScroll).NavigationDestination(EDescendantScrollDestination::IntoView)
                                 + SScrollBox::Slot().Padding(DEFAULT_BUTTON_PADDING)
                                 [
-                                    SlateHelpers::CreateMenuButton(this->AbountGameButton, FText::FromString("Abount Game"), EButtonTypes::Menu_Normal)
+                                    SlateHelpers::CreateMenuButton(this->AboutGameButton, FText::FromString("Abount Game"), EButtonTypes::Menu_Normal)
                                 ]
                                 + SScrollBox::Slot().Padding(DEFAULT_BUTTON_PADDING)
                                 [
@@ -129,7 +129,7 @@ void SBattlegroundMenu::DestroyWidget()
     this->ParentPanel = nullptr;
     this->CurrentActiveWidget = nullptr;
 
-    this->AbountGameMenu = nullptr;
+    this->AboutGameMenu = nullptr;
     this->HostGameMenu = nullptr;
     this->JoinGameMenu = nullptr;
     this->InventoryMenu = nullptr;
@@ -142,7 +142,7 @@ void SBattlegroundMenu::DestroyWidget()
 
     this->CurrentActiveButton = nullptr;
     this->MenuTopWidget = nullptr;
-    this->AbountGameButton = nullptr;
+    this->AboutGameButton = nullptr;
     this->HostGameButton = nullptr;
     this->JoinGameButton = nullptr;
     this->InventoryButton = nullptr;
@@ -162,38 +162,38 @@ void SBattlegroundMenu::RefreshButtons()
 {
     if (this->CurrentScreen == EMenuScreens::Gameplay)
     {
-        //this->MenuTopWidget->SetVisibility(EVisibility::Collapsed);
-        //this->AbountGameButton->SetVisibility(EVisibility::Collapsed);
-        //this->HostGameButton->SetVisibility(EVisibility::Collapsed);
-        //this->JoinGameButton->SetVisibility(EVisibility::Collapsed);
-        //this->InventoryButton->SetVisibility(EVisibility::Collapsed);
-        //this->LeaderboardButton->SetVisibility(EVisibility::Collapsed);
-        //this->RecordedGameButton->SetVisibility(EVisibility::Collapsed);
-        //
-        //this->BackToGameButton->SetVisibility(EVisibility::Visible);
+        this->MenuTopWidget->SetVisibility(EVisibility::Collapsed);
+        this->AboutGameButton->SetVisibility(EVisibility::Collapsed);
+        this->HostGameButton->SetVisibility(EVisibility::Collapsed);
+        this->JoinGameButton->SetVisibility(EVisibility::Collapsed);
+        this->InventoryButton->SetVisibility(EVisibility::Collapsed);
+        this->LeaderboardButton->SetVisibility(EVisibility::Collapsed);
+        this->RecordedGameButton->SetVisibility(EVisibility::Collapsed);
+        
+        this->BackToGameButton->SetVisibility(EVisibility::Visible);
 
 		// Default to display settings when in-game
         this->OnMenuButtonClicked(this->DisplaySettingsButton, EChildrenMenus::DisplaySettings);
     }
     else
     {
-        //this->AbountGameButton->SetVisibility(EVisibility::Visible);
-        //this->MenuTopWidget->SetVisibility(EVisibility::Visible);
-        //this->HostGameButton->SetVisibility(EVisibility::Visible);
-        //this->JoinGameButton->SetVisibility(EVisibility::Visible);
-        //this->InventoryButton->SetVisibility(EVisibility::Visible);
-        //this->LeaderboardButton->SetVisibility(EVisibility::Visible);
-        //this->RecordedGameButton->SetVisibility(EVisibility::Visible);
-        //
-        //this->BackToGameButton->SetVisibility(EVisibility::Collapsed);
+        this->AboutGameButton->SetVisibility(EVisibility::Visible);
+        this->MenuTopWidget->SetVisibility(EVisibility::Visible);
+        this->HostGameButton->SetVisibility(EVisibility::Visible);
+        this->JoinGameButton->SetVisibility(EVisibility::Visible);
+        this->InventoryButton->SetVisibility(EVisibility::Visible);
+        this->LeaderboardButton->SetVisibility(EVisibility::Visible);
+        this->RecordedGameButton->SetVisibility(EVisibility::Visible);
+        
+        this->BackToGameButton->SetVisibility(EVisibility::Collapsed);
 
-		// Default to AbountGame when in main menu
-        this->OnMenuButtonClicked(this->AbountGameButton, EChildrenMenus::AbountGame);
+		// Default to AboutGame when in main menu
+        this->OnMenuButtonClicked(this->AboutGameButton, EChildrenMenus::AboutGame);
     }
 }
 void SBattlegroundMenu::BindMenuButtonEvents()
 {
-    this->AbountGameButton->SetOnClicked(FOnClicked::CreateSP(this, &SBattlegroundMenu::OnMenuButtonClicked, this->AbountGameButton, EChildrenMenus::AbountGame));
+    this->AboutGameButton->SetOnClicked(FOnClicked::CreateSP(this, &SBattlegroundMenu::OnMenuButtonClicked, this->AboutGameButton, EChildrenMenus::AboutGame));
     this->HostGameButton->SetOnClicked(FOnClicked::CreateSP(this, &SBattlegroundMenu::OnMenuButtonClicked, this->HostGameButton, EChildrenMenus::HostGame));
     this->JoinGameButton->SetOnClicked(FOnClicked::CreateSP(this, &SBattlegroundMenu::OnMenuButtonClicked, this->JoinGameButton, EChildrenMenus::JoinGame));
     this->InventoryButton->SetOnClicked(FOnClicked::CreateSP(this, &SBattlegroundMenu::OnMenuButtonClicked, this->InventoryButton, EChildrenMenus::Inventory));
@@ -264,7 +264,7 @@ FReply SBattlegroundMenu::OnMenuButtonClicked(TSharedPtr<SButton> clickedButton,
     {
     case EChildrenMenus::MAX:
         break;
-    case EChildrenMenus::AbountGame:
+    case EChildrenMenus::AboutGame:
         break;
     case EChildrenMenus::HostGame:
         break;

@@ -117,7 +117,7 @@ enum class EWidgetStates : uint8
 enum class EChildrenMenus : uint8
 {
 	MAX = 0,
-	AbountGame = 1,
+	AboutGame = 1,
 	HostGame = 2,
 	JoinGame = 3,
 	Inventory = 4,

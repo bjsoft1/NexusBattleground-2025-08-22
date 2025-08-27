@@ -49,8 +49,8 @@ private:
 	TSharedPtr<SBattlegroundWidgetMenuTop> MenuTopWidget;
 
 	/** Default Welcome Screend | Default Home Screen */
-	TSharedPtr<SBattlegroundWidget> AbountGameMenu;
-	TSharedPtr<SButton> AbountGameButton;
+	TSharedPtr<SBattlegroundWidget> AboutGameMenu;
+	TSharedPtr<SButton> AboutGameButton;
 	
 	/** User can host a new game */
 	TSharedPtr<SBattlegroundWidget> HostGameMenu;
