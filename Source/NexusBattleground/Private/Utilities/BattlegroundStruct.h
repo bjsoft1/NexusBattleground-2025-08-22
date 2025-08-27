@@ -12,6 +12,7 @@ public:
 	UPROPERTY() EPickupTypes PickupType;
 	UPROPERTY() uint8 Subtype = 1;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) bool IsValid = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) FString PickupName;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) uint8 AffectValue = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) uint8 SpaceRequired = 0;
@@ -51,3 +52,48 @@ public:
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) TSoftObjectPtr<UTexture2D> PickupIcon = nullptr;
 };
+
+
+/**
+	* Server doesn’t replicate heavy assets like meshes.
+	* Instead, it sends lightweight identifiers (like RowName) to clients.
+	*
+*/
+USTRUCT(BlueprintType)
+struct FInventoryItemServer
+{
+	GENERATED_BODY()
+
+	// ID in DataTable
+	UPROPERTY() FName RowName;
+
+	// Where to attach on the character
+	UPROPERTY() FName AttachedSocket;
+
+	// Quantity of this item
+	UPROPERTY() int32 Quantity = 1;
+};
+
+
+/**
+	* Client needs the actual mesh to display the item.
+	* It uses the RowName to look up additional data if needed.
+*/
+USTRUCT(BlueprintType)
+struct FInventoryItemClient
+{
+	GENERATED_BODY()
+
+	UPROPERTY() FName RowName;
+
+	UPROPERTY() FName AttachedSocket;
+
+	UPROPERTY() USkeletalMesh* SkeletalMesh;
+
+	UPROPERTY() UStaticMesh* StaticMesh;
+
+	UPROPERTY() bool IsStaticMesh;
+
+	UPROPERTY() int32 Quantity = 1;
+};
+

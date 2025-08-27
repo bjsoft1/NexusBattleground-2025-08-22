@@ -41,8 +41,13 @@ protected:
 
 private:
 #pragma region Configurable & Internal Properties
-	UPROPERTY(ReplicatedUsing = OnRepAnimationStates) EAnimationStates AnimationStates = EAnimationStates::None;
+	UPROPERTY(ReplicatedUsing = OnRep_AnimationStates) EAnimationStates AnimationStates = EAnimationStates::None;
 	UPROPERTY(Replicated) EWeaponTypes WeaponType;
+
+	// Inventory Helpers
+	UPROPERTY(ReplicatedUsing = OnRep_InventoryUpdated) TArray<FInventoryItemServer> ServerInventory;
+	UPROPERTY() TArray<FInventoryItemClient> ClientInventory;
+
 #pragma endregion Configurable & Internal Properties
 
 
@@ -97,8 +102,8 @@ private:
 
 private:
 #pragma region Client/OnRep RPC
-	UFUNCTION()
-	void OnRepAnimationStates() {};
+	UFUNCTION() void OnRep_AnimationStates();
+	UFUNCTION() void OnRep_InventoryUpdated();
 #pragma endregion Client/OnRep RPC
 
 

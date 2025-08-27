@@ -16,7 +16,6 @@ class ABattlegroundPickup;
 class SPickupHoverWidget;
 #pragma endregion Forward declaretions
 
-
 UCLASS()
 class NEXUSBATTLEGROUND_API AHumanCharacter : public ABattlegroundCharacter
 {
@@ -124,6 +123,12 @@ private:
 	bool CanPickupItem(ABattlegroundPickup* pickupItem);
 	bool HasInventorySpace();
 #pragma endregion Private Helper Methods
+
+
+	private: 
+#pragma region Pickup Helper Methods
+		void PickBackpack(ABattlegroundPickup* pickupItem, EPickupTypes pickupType, uint8 subType);
+#pragma endregion Pickup Helper Methods
 
 
 private:

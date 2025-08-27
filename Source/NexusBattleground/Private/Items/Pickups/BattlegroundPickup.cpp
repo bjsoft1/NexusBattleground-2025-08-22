@@ -141,7 +141,7 @@ void ABattlegroundPickup::OnRep_DatatableRowId()
     this->PickupMesh->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block); // Still traceable
 
     this->PickupData = pickupManager->GetPickupData(this->DatatableRowId);
-    if (!this->PickupData.StaticMesh.IsNull())
+    if (this->PickupData.IsValid)
     {
 		EPickupTypes pickupType;
 		uint8 pickupSubType;
@@ -153,7 +153,6 @@ void ABattlegroundPickup::OnRep_DatatableRowId()
 			this->PickupData.Subtype = pickupSubType;
         }
         else NEXUS_ERROR("Failed to parse pickup row name: %s", *this->DatatableRowId.ToString());
-
 
         UStaticMesh* staticMesh = this->PickupData.StaticMesh.LoadSynchronous();
         if (staticMesh)

@@ -139,7 +139,6 @@ void AHumanCharacter::EndPlay(const EEndPlayReason::Type endPlayReason)
 		this->PickupHoverWidget = nullptr;
 	}
 }
-
 void AHumanCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
@@ -202,13 +201,11 @@ bool AHumanCharacter::CanPickupItem(ABattlegroundPickup* pickupItem)
 	if (!gameMode) return false;
 	return gameMode->IsPickupRegistered(pickupItem);
 }
-
 bool AHumanCharacter::HasInventorySpace()
 {
 	// TODO : Check inventory space
 	return true;
 }
-
 void AHumanCharacter::GetCrosshairTrace(FVector& outStart, FVector& outEnd)
 {
 	if (!IsLocallyControlled()) return;
@@ -231,8 +228,15 @@ void AHumanCharacter::GetCrosshairTrace(FVector& outStart, FVector& outEnd)
 		outEnd = worldLocation + (worldDirection * traceDistance);
 	}
 }
-
 #pragma endregion Private Helper Methods
+
+
+#pragma region Pickup Helper Methods
+void AHumanCharacter::PickBackpack(ABattlegroundPickup* pickupItem, EPickupTypes pickupType, uint8 subType)
+{
+
+}
+#pragma endregion Pickup Helper Methods
 
 
 #pragma region Input Bindings
@@ -329,11 +333,21 @@ void AHumanCharacter::IE_PickupItem()
 #pragma region Server/Multicast RPC
 void AHumanCharacter::Server_PickupItem_Implementation(ABattlegroundPickup* pickupItem)
 {
-	if (!pickupItem) return;
+	if (!pickupItem || !AActor::HasAuthority()) return;
 
 	if (CanPickupItem(pickupItem))
 	{
-					
+		const EPickupTypes pickupType = pickupItem->GetPickupType();
+		const uint8 subType = pickupItem->GetPickupSubType();
+
+		switch (pickupType)
+		{
+		case EPickupTypes::Backpack:
+			this->PickBackpack(pickupItem, pickupType, subType);
+			break;
+		default:
+			break;
+		}
 	}
 }
 void AHumanCharacter::Server_SetControllerYaw_Implementation(bool isEnabled)

@@ -10,6 +10,7 @@
 
 
 #pragma region NexusBattleground Header Files
+#include "BattlegroundPickupManager.h"
 #pragma endregion NexusBattleground Header Files
 
 
@@ -68,6 +69,7 @@ void ABattlegroundCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 
 	DOREPLIFETIME(ABattlegroundCharacter, AnimationStates);
 	DOREPLIFETIME(ABattlegroundCharacter, WeaponType);
+	DOREPLIFETIME(ABattlegroundCharacter, ServerInventory);
 }
 #pragma endregion Lifecycle Overrides
 
@@ -96,6 +98,39 @@ void ABattlegroundCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 
 
 #pragma region Client/OnRep RPC
+void ABattlegroundCharacter::OnRep_AnimationStates()
+{
+}
+void ABattlegroundCharacter::OnRep_InventoryUpdated()
+{
+	for (auto& Item : this->ServerInventory)
+	{
+		// Check if we already have this item attached
+		if (ClientInventory.ContainsByPredicate([&](const FInventoryItemClient& Existing) { return Existing.RowName == Item.RowName; })) continue;
+
+		// Reconstruct full client-side data
+		FInventoryItemClient FullItem;
+		FullItem.RowName = Item.RowName;
+		FullItem.AttachedSocket = Item.AttachedSocket;
+
+		ABattlegroundPickupManager* pickupManager = ABattlegroundPickupManager::GetManager(GetWorld());
+		if (!pickupManager) return;
+
+		FPickupData pickupData = pickupManager->GetPickupData(Item.RowName);
+		//if (pickupData.)
+		//{
+		//	FullItem.IsStaticMesh = DataRow->bIsStaticMesh;
+		//	FullItem.SkeletalMesh = DataRow->SkeletalMesh;
+		//	FullItem.StaticMesh = DataRow->StaticMesh;
+		//}
+
+		// Attach item mesh
+		//AttachItemToCharacter(FullItem);
+
+		// Save in client inventory
+		//ClientInventory.Add(FullItem);
+	}
+}
 #pragma endregion Client/OnRep RPC
 
 
