@@ -92,14 +92,13 @@ private:
 	void AttachItemToCharacter(const FInventoryClient& Item);
 
 	FORCEINLINE FInventoryServer* FindServerInventoryByType(EPickupTypes pickupType) { return this->ServerInventory.FindByPredicate([&](FInventoryServer& item) { return item.PickupType == pickupType; }); }
-
 	FORCEINLINE FInventoryClient* FindInventoryByType_Subtype(EPickupTypes pickupType, uint8 subType) { return this->ClientInventory.FindByPredicate([&](FInventoryClient& item) { return item.PickupType == pickupType && item.Subtype == subType; }); }
 #pragma endregion Private Helper Methods
 
 
 private:
 #pragma region Pickup Helper Methods
-	FInventoryServer* PickBackpack(ABattlegroundPickup* pickupItem, uint8 subType);
+	FInventoryServer* AddOrReplaceUniqueItem(ABattlegroundPickup* pickupItem, EPickupTypes pickupType, uint8 subType, bool& updatingInventory, bool& needDisposePickupRequestedItem);
 #pragma endregion Pickup Helper Methods
 
 

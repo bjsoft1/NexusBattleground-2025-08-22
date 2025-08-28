@@ -259,7 +259,19 @@ namespace BattlegroundKeys
 	const FString SAVE_GAME_DEFAULT_SLOT = TEXT("PlayerSaveSlot");
 
 	const FName SOCKET_CHARECTER_BACKPACK = TEXT("backpackSocket");
+	const FName SOCKET_CHARECTER_HELMET = TEXT("helmetSocket");
+	const FName SOCKET_CHARECTER_ARMOR = TEXT("armorSocket");
 
+	FORCEINLINE static FName GetSocketNameByType(EPickupTypes pickupType)
+	{
+		switch (pickupType)
+		{
+		case EPickupTypes::Backpack: return SOCKET_CHARECTER_BACKPACK;
+		case EPickupTypes::Helmet: return SOCKET_CHARECTER_HELMET;
+		case EPickupTypes::Armor: return SOCKET_CHARECTER_ARMOR;
+		default: return FName("Unknown");
+		}
+	}
 }
 
 
