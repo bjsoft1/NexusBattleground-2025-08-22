@@ -69,15 +69,15 @@ public:
 	FORCEINLINE bool IsFreeFalling() const { return (this->AnimationStates & EAnimationStates::IsFreeFalling) != EAnimationStates::None; }
 	FORCEINLINE bool IsParachuteOpen() const { return (this->AnimationStates & EAnimationStates::IsParachuteOpen) != EAnimationStates::None; }
 
-	FORCEINLINE int16 GetBackpackCapacity() const { return BattlegroundUtilities::GetBackpackCapacity(FindServerInventoryByType(EPickupTypes::Backpack)); }
-	FORCEINLINE int16 GetBackpackFreeSpace() const { return GetBackpackCapacity() - GetBackpackUsedSpace(); }
+	FORCEINLINE int16 GetBackpackCapacity() { return BattlegroundUtilities::GetBackpackCapacity(FindServerInventoryByType(EPickupTypes::Backpack)); }
+	FORCEINLINE int16 GetBackpackFreeSpace() { return GetBackpackCapacity() - GetBackpackUsedSpace(); }
 #pragma endregion Public Inline Methods
 
 
 public:
 #pragma region Public Methods
-	int16 GetBackpackUsedSpace() const;
-	bool HasEnoughSpaceForPickup(ABattlegroundPickup* pickupItem) const;
+	int16 GetBackpackUsedSpace();
+	bool HasEnoughSpaceForPickup(ABattlegroundPickup* pickupItem);
 #pragma endregion Public Methods
 
 
@@ -91,7 +91,7 @@ private:
 #pragma region Private Helper Methods
 	void AttachItemToCharacter(const FInventoryClient& Item);
 
-	FORCEINLINE const FInventoryServer* FindServerInventoryByType(EPickupTypes pickupType) const { return this->ServerInventory.FindByPredicate([&](FInventoryServer& item) { return item.PickupType == pickupType; }); }
+	FORCEINLINE FInventoryServer* FindServerInventoryByType(EPickupTypes pickupType) { return this->ServerInventory.FindByPredicate([&](FInventoryServer& item) { return item.PickupType == pickupType; }); }
 
 	FORCEINLINE FInventoryClient* FindInventoryByType_Subtype(EPickupTypes pickupType, uint8 subType) { return this->ClientInventory.FindByPredicate([&](FInventoryClient& item) { return item.PickupType == pickupType && item.Subtype == subType; }); }
 #pragma endregion Private Helper Methods
@@ -99,7 +99,7 @@ private:
 
 private:
 #pragma region Pickup Helper Methods
-	void PickBackpack(ABattlegroundPickup* pickupItem, EPickupTypes pickupType, uint8 subType);
+	FInventoryServer* PickBackpack(ABattlegroundPickup* pickupItem, uint8 subType);
 #pragma endregion Pickup Helper Methods
 
 

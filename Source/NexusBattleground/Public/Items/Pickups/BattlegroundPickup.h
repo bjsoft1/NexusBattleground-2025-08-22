@@ -82,7 +82,7 @@ public:
 
 public:
 #pragma region Public Methods
-	void InitializePickup(const FName& rowId, uint16 amount = 1);
+	void InitializePickup(const FName& rowId, uint16 amount);
 
 	/**
 	 * Highlights the pickup item by enabling a post-process outline.

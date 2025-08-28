@@ -297,7 +297,7 @@ void AHumanCharacter::IE_SwitchCameraMode()
 }
 void AHumanCharacter::IE_PickupItem()
 {
-	if (ABattlegroundCharacter::CanPickupItem(this->LastHoverPickupItem))
+	if (ABattlegroundCharacter::HasEnoughSpaceForPickup(this->LastHoverPickupItem))
 		ABattlegroundCharacter::Server_PickupItem(this->LastHoverPickupItem);
 }
 #pragma endregion Input Bindings

@@ -77,7 +77,7 @@ void ABattlegroundCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 
 
 #pragma region Public Methods
-int16 ABattlegroundCharacter::GetBackpackUsedSpace() const 
+int16 ABattlegroundCharacter::GetBackpackUsedSpace() 
 {
 	int16 usedSpace = 0;
 	const uint16 capacity = GetBackpackCapacity();
@@ -86,12 +86,12 @@ int16 ABattlegroundCharacter::GetBackpackUsedSpace() const
 
 	return usedSpace;
 }
-bool ABattlegroundCharacter::HasEnoughSpaceForPickup(ABattlegroundPickup* pickupItem) const
+bool ABattlegroundCharacter::HasEnoughSpaceForPickup(ABattlegroundPickup* pickupItem)
 {
 	if (!pickupItem) return false;
 	const uint16 itemWeight = BattlegroundUtilities::GetPickupWight(pickupItem->GetRowId()) * pickupItem->GetAmount();
 
-	return GetBackpackCapacity() >= (GetBackpackFreeSpace() + itemWeight);
+	return GetBackpackFreeSpace() >= itemWeight;
 }
 #pragma endregion Public Methods
 
@@ -136,11 +136,30 @@ void ABattlegroundCharacter::AttachItemToCharacter(const FInventoryClient& inven
 
 
 #pragma region Pickup Helper Methods
-void ABattlegroundCharacter::PickBackpack(ABattlegroundPickup* pickupItem, EPickupTypes pickupType, uint8 subType)
+FInventoryServer* ABattlegroundCharacter::PickBackpack(ABattlegroundPickup* pickupItem, uint8 subType)
 {
-	//const auto backpackItem = FindInventoryByType(pickupType);
+	FInventoryServer* backpackItem = FindServerInventoryByType(EPickupTypes::Backpack);
+	const FName rowName = BattlegroundUtilities::MakePickupRowName(EPickupTypes::Backpack, subType);
+	if (backpackItem)
+	{
+		ABattlegroundPickupManager* pickupManager = ABattlegroundPickupManager::GetManager(AActor::GetWorld());
+		pickupManager->SpawnPickup(rowName, BattlegroundUtilities::GetFrontLocation(this, DEFAULT_PICKUP_FRONT_SPAWN_DISTANCE));
 
-	//TODO;
+		backpackItem->Subtype = subType;
+		backpackItem->RowName = rowName;
+
+		return backpackItem;
+	}
+
+	FInventoryServer* newItem = new FInventoryServer();
+	
+	newItem->PickupType = EPickupTypes::Backpack;
+	newItem->Subtype = subType;
+	newItem->RowName = rowName;
+	newItem->Quantity = 1;
+	newItem->AttachedSocket = BattlegroundKeys::SOCKET_CHARECTER_BACKPACK;
+
+	return newItem;
 }
 #pragma endregion Pickup Helper Methods
 
@@ -157,24 +176,37 @@ void ABattlegroundCharacter::Server_PickupItem_Implementation(ABattlegroundPicku
 {
 	if (!pickupItem || !AActor::HasAuthority()) return;
 
-	NEXUS_WARNING("Server Recived Request to pickup: %s", *pickupItem->GetName());
 
 	if (CanPickupItem(pickupItem))
 	{
-		const EPickupTypes pickupType = pickupItem->GetPickupType();
-		const uint8 subType = pickupItem->GetPickupSubType();
+		EPickupTypes pickupType;
+		uint8 subType;
 
+		if (!BattlegroundUtilities::ParsePickupRowName(pickupItem->GetRowId(), pickupType, subType)) return;
+
+		NEXUS_WARNING("Datatable ID:%s | Pickup Type: %s", *pickupItem->GetRowId().ToString(), *UEnum::GetValueAsString(pickupType));
+
+		FInventoryServer* serverInventory = nullptr;
+		
 		switch (pickupType)
 		{
 		case EPickupTypes::Backpack:
-			this->PickBackpack(pickupItem, pickupType, subType);
+			serverInventory = this->PickBackpack(pickupItem, subType);
 			break;
 		default:
 			break;
 		}
+
+		if (serverInventory)
+		{
+			// TODO: Play Animation
+			this->ServerInventory.Add(*serverInventory);
+			if (BattlegroundUtilities::IsListenServer(AActor::GetWorld())) this->OnRep_InventoryUpdated();
+		}
+
+		pickupItem->Destroy(true);
 	}
 
-	pickupItem->Destroy(true);
 }
 #pragma endregion Server/Multicast RPC
 

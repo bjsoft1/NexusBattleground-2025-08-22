@@ -22,25 +22,30 @@ DECLARE_LOG_CATEGORY_EXTERN(LogNexus, Log, All);
 #define DEFAULT_MAIN_MENU_DELAY 0.3f
 #define DEFAULT_QUIT_GAME_DELAY 1.0f
 
-#define DEFAULT_CHARECTER_BACKPACK_CAPACITY 200
-#define DEFAULT_BACKPACK_V1_CAPACITY 500
-#define DEFAULT_BACKPACK_V2_CAPACITY 1000
-#define DEFAULT_BACKPACK_V3_CAPACITY 2000
+#define DEFAULT_CHARECTER_BACKPACK_CAPACITY 2000
+#define DEFAULT_BACKPACK_V1_CAPACITY 5000
+#define DEFAULT_BACKPACK_V2_CAPACITY 10000
+#define DEFAULT_BACKPACK_V3_CAPACITY 20000
+
+#define DEFAULT_PICKUP_FRONT_SPAWN_DISTANCE 100.0f
+
+
 #endif
 
-static class AssetsPaths
+namespace AssetsPaths
 {
-public:
-	static const FString DEFAULT_WIDGET_STYLE_PATH;
 
-	static const FString SKM_FEMALE_PATH;
-	static const FString SKM_MALE_PATH;
 
-	static const FString ANIM_FEMALE_PATH;
-	
-	static const FString CLS_PICKUP_MANAGER_PATH;
+	const FString DEFAULT_WIDGET_STYLE_PATH(ASSET_PATH(TEXT("Styles")));
 
-	static const FString TX2D_MAIN_HUD_PATH;
+	const FString SKM_FEMALE_PATH(ASSET_PATH(TEXT("Characters/Mannequins/Meshes/SKM_Quinn_Simple")));
+	const FString SKM_MALE_PATH(ASSET_PATH(TEXT("Characters/Mannequins/Meshes/SKM_Manny_Simple")));
+
+	const FString ANIM_FEMALE_PATH(ASSET_PATH(TEXT("Blueprints/Animations/BP_BattlegroundAnimation")));
+
+	const FString CLS_PICKUP_MANAGER_PATH(ASSET_PATH(TEXT("Blueprints/Pickups/BP_BattlegroundPickupManager")));
+
+	const FString TX2D_MAIN_HUD_PATH(ASSET_PATH(TEXT("Assets/HUD/TX_HUDMain")));
 };
 
 static class BattlegroundUtilities
@@ -63,7 +68,7 @@ public:
 * @param outSubType     Output parameter to receive the parsed sub-type as uint8
 * @return true if parsing succeeded and both PickupType and SubType were valid, false otherwise
 */
-	static bool ParsePickupRowName(const FName& rowName, EPickupTypes& outPickupType, uint8& outSubType)
+	FORCEINLINE static bool ParsePickupRowName(const FName& rowName, EPickupTypes& outPickupType, uint8& outSubType)
 	{
 		FString rowString = rowName.ToString();
 		TArray<FString> parts;
@@ -74,7 +79,7 @@ public:
 		FString typeString = parts[0];
 		outPickupType = EPickupTypes::Unknown;
 
-		for (uint8 i = 0; i < static_cast<int32>(6u) + 1u; i++)
+		for (uint8 i = 0; i < static_cast<int32>(EPickupTypes::Backpack) + 1u; i++)
 		{
 			FString enumString = UEnum::GetValueAsString(static_cast<EPickupTypes>(i));
 			enumString = enumString.RightChop(enumString.Find(TEXT("::")) + 2);
@@ -86,6 +91,19 @@ public:
 		}
 		outSubType = FCString::Atoi(*parts[1]);
 		return true;
+	}
+	FORCEINLINE static FName MakePickupRowName(EPickupTypes pickupType, uint8 subType)
+	{
+		if (pickupType == EPickupTypes::Unknown) return NAME_None;
+
+		// Convert enum to string
+		FString typeString = UEnum::GetValueAsString(pickupType);
+		typeString = typeString.RightChop(typeString.Find(TEXT("::")) + 2);
+
+		// Combine with subtype
+		FString rowString = FString::Printf(TEXT("%s_%d"), *typeString, subType);
+
+		return FName(*rowString);
 	}
 
 
@@ -134,7 +152,7 @@ public:
 		default: return DEFAULT_CHARECTER_BACKPACK_CAPACITY;
 		}
 	}
-	
+
 	FORCEINLINE static uint8 GetPickupWight(const FName& rowName)
 	{
 		EPickupTypes pickupType;
@@ -174,6 +192,17 @@ public:
 		default: return 0;
 		}
 	}
+
+	FORCEINLINE static FVector GetFrontLocation(AActor* PlayerActor, const float& distance)
+	{
+
+		// Get player's current location and forward direction
+		const FVector playerLocation = PlayerActor->GetActorLocation();
+		const FVector forwardVector = PlayerActor->GetActorForwardVector();
+
+		return playerLocation + (forwardVector * distance);
+	}
+
 };
 
 static class GameScoreCalculator
@@ -228,6 +257,9 @@ public:
 namespace BattlegroundKeys
 {
 	const FString SAVE_GAME_DEFAULT_SLOT = TEXT("PlayerSaveSlot");
+
+	const FName SOCKET_CHARECTER_BACKPACK = TEXT("backpackSocket");
+
 }
 
 

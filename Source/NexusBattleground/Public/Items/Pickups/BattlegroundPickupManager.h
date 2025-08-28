@@ -84,6 +84,7 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent) FPickupData GetPickupData(const FName& rowName);
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent) FPickupData GetRandomPickupData();
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent) FName GetRandomPickupRow();
+	void SpawnPickup(const FName& rowName, const FVector& location);
 #pragma endregion Public Methods
 
 
