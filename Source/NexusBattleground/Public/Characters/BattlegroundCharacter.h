@@ -98,6 +98,11 @@ private:
 
 private:
 #pragma region Pickup Helper Methods
+	/**
+	* This method will add or replace unique item in the inventory.
+	* If not exists, it will be added.
+	* If exists, it will be replaced SubType and Update Pickup Item Properties in Level, To make sure it will re-able to pickup again.
+	*/
 	FInventoryServer* AddOrReplaceUniqueItem(ABattlegroundPickup* pickupItem, EPickupTypes pickupType, uint8 subType, bool& updatingInventory, bool& needDisposePickupRequestedItem);
 #pragma endregion Pickup Helper Methods
 
