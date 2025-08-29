@@ -235,6 +235,8 @@ void ABattlegroundCharacter::Server_PickupItem_Implementation(ABattlegroundPicku
 		if (serverInventory)
 		{
 			// TODO: Play Animation
+
+			// If Listeen Server, Just call OnRep function to update inventory
 			if (BattlegroundUtilities::IsListenServer(AActor::GetWorld())) this->OnRep_InventoryUpdated();
 		}
 
