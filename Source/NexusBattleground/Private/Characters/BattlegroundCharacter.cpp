@@ -140,6 +140,7 @@ FInventoryServer* ABattlegroundCharacter::AddOrReplaceUniqueItem(ABattlegroundPi
 {
 	FInventoryServer* uniqueItem = FindServerInventoryByType(pickupType);
 	const FName requestedRowName = pickupItem->GetRowId();
+	
 	if (uniqueItem)
 	{
 		const FName currentRowName = uniqueItem->RowName;
@@ -172,6 +173,9 @@ FInventoryServer* ABattlegroundCharacter::AddOrReplaceUniqueItem(ABattlegroundPi
 
 	needDisposePickupRequestedItem = true;
 	updatingInventory = false;
+
+	// Add new item to inventory, And return the reference, For safe pointer usage
+	// If we return the pointer from here, It may cause invalid pointer access due to GC will clean up the current new memory
 	return &ServerInventory.Add_GetRef(newItem);
 }
 #pragma endregion Pickup Helper Methods

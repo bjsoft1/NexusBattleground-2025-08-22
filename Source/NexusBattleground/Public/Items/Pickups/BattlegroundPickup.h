@@ -54,12 +54,18 @@ protected:
 
 private:
 #pragma region Configurable & Internal Properties
+	
+	// ------------- Only Replicated Properties -------------
 	UPROPERTY(Replicated) uint16 PickupAmount;
 	UPROPERTY(ReplicatedUsing = OnRep_DatatableRowId) FName DatatableRowId;
+	// ------------- Only Replicated Properties -------------
+
+	// ------------- Client Side Properties Do not need to replicated it. Due to client auto update this value according to ROW-ID-------------
 	UPROPERTY() FPickupData PickupData;
 	UPROPERTY() EPickupTypes PickupType;
 	UPROPERTY() uint8 PickupSubType;
 	UPROPERTY() UTexture2D* PickupIcon;
+	// ------------- Client Side Properties Do not need to replicated it. Due to client auto update this value according to ROW-ID-------------
 #pragma endregion Configurable & Internal Properties
 
 
@@ -82,6 +88,17 @@ public:
 
 public:
 #pragma region Public Methods
+
+	/**
+	* Initializes the pickup item with data from the specified row in the DataTable.
+	* This method called on the server when spawning the pickup actor.
+	* Or if client try to pickup existing item then the current item pickup by user and user existing pickup need to respan in the world. 
+	* So, Some cases we just re-initialize the existing pickup actor with changing the rowId.
+	* 
+	* LIKE: Backpack system, It client already have backpack then existing backpack need to throw.
+	* And Pickup a new backpack from the world. So, existing backpack pickup actor need to re-initialize with new rowId.
+	* 
+	*/
 	void InitializePickup(const FName& rowId, uint16 amount);
 
 	/**
@@ -99,8 +116,6 @@ public:
 	 * Example setup guide:
 	 *   Youtube: #YOUTUBE_HOW_TO_SETUP_OUTLINER
 	 *
-	 * UE Macro tip:
-	 *   You can use UE_MICRO for quick in-code reference or documentation flags.
 	 */
 	void SetHighlight(bool isHighlight);
 #pragma endregion Public Methods
