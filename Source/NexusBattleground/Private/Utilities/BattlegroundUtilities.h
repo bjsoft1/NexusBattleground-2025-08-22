@@ -203,6 +203,34 @@ public:
 		return playerLocation + (forwardVector * distance);
 	}
 
+	/**
+	 * Finds a component of type T attached to a given parent component at a specified socket.
+	 * Works for UStaticMeshComponent, USkeletalMeshComponent, etc.
+	 */
+	template<typename T>
+	static T* FindAttachedMesh(AActor* ownerActor, USkeletalMeshComponent* parentMesh, const FName& socketName)
+	{
+		if (!ownerActor || !parentMesh) return nullptr;
+
+		TArray<T*> components;
+		
+		// Get all attached components owned by the actor
+		ownerActor->GetComponents<T>(components);
+
+		for (T* component : components)
+		{
+			if (!component) continue;
+
+			// Check if the parent component is the skeletal mesh we want
+			if (component->GetAttachParent() == parentMesh)
+			{
+				// Check if it’s attached to the same socket
+				if (component->GetAttachSocketName() == socketName) return component;
+			}
+		}
+		return nullptr;
+	}
+
 };
 
 static class GameScoreCalculator

@@ -117,16 +117,27 @@ void ABattlegroundCharacter::AttachItemToCharacter(const FInventoryClient& inven
 	USceneComponent* charecterMesh = ACharacter::GetMesh();
 	const bool isStaticMesh = BattlegroundUtilities::IsStaticMeshPickup(inventoryItem.RowName);
 
+
 	if (isStaticMesh && inventoryItem.StaticMesh)
 	{
-		UStaticMeshComponent* meshComponent = NewObject<UStaticMeshComponent>(this);
+		// If already have attached mesh, Just replace the static mesh
+		UStaticMeshComponent* meshComponent = BattlegroundUtilities::FindAttachedMesh<UStaticMeshComponent>
+			(this, ACharacter::GetMesh(), inventoryItem.AttachedSocket);
+
+		if (!meshComponent) meshComponent = NewObject<UStaticMeshComponent>(this);
+
 		meshComponent->SetStaticMesh(inventoryItem.StaticMesh);
 		meshComponent->AttachToComponent(charecterMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale, inventoryItem.AttachedSocket);
 		meshComponent->RegisterComponent();
 	}
 	else if (!isStaticMesh && inventoryItem.SkeletalMesh)
 	{
-		USkeletalMeshComponent* meshComponent = NewObject<USkeletalMeshComponent>(this);
+		// If already have attached mesh, Just replace the skeletal mesh
+		USkeletalMeshComponent* meshComponent = BattlegroundUtilities::FindAttachedMesh<USkeletalMeshComponent>
+			(this, ACharacter::GetMesh(), inventoryItem.AttachedSocket);
+
+		if (!meshComponent) meshComponent = NewObject<USkeletalMeshComponent>(this);
+
 		meshComponent->SetSkeletalMesh(inventoryItem.SkeletalMesh);
 		meshComponent->AttachToComponent(charecterMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale, inventoryItem.AttachedSocket);
 		meshComponent->RegisterComponent();
