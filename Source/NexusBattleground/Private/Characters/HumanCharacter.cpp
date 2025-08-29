@@ -300,7 +300,7 @@ void AHumanCharacter::IE_PickupItem()
 	if (ABattlegroundCharacter::HasEnoughSpaceForPickup(this->LastHoverPickupItem))
 	{
 		ABattlegroundCharacter::Server_PickupItem(this->LastHoverPickupItem);
-		this->LastHoverPickupItem = nullptr;
+		this->SetHoverPickupItem(nullptr);
 	}
 }
 #pragma endregion Input Bindings
