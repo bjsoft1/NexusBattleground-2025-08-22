@@ -3,6 +3,15 @@
 #include "BattlegroundEnum.h"
 #include "BattlegroundStruct.generated.h"
 
+/**
+ * FPickupData
+ *
+ * Holds all data needed to define a pickup (type, mesh, name, etc.).
+ * Uses TSoftObjectPtr for meshes/icons so assets are only loaded when needed.
+ * This keeps memory usage low and avoids loading every pickup asset at once.
+ * If some pickup already loaded the mesh, it will be reused for other pickups of the same type.
+ * So, it auto handle by Unreal Engine, If we use TSoftObjectPtr.
+ */
 USTRUCT(BlueprintType)
 struct FPickupData
 {

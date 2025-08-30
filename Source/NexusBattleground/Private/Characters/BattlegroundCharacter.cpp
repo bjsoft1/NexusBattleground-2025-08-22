@@ -132,34 +132,84 @@ void ABattlegroundCharacter::AttachItemToCharacter(const FInventoryClient& inven
 		meshComponent->RegisterComponent();
 	}
 }
+// TODO: We need to used this commented code due to this code has some issues so, We using alternative method currenly,
+// After fixing the issues, We will switch back to this method
+//void ABattlegroundCharacter::AttachItemToCharacter(const FInventoryClient& inventoryItem)
+//{
+//	USceneComponent* charecterMesh = ACharacter::GetMesh();
+//	const bool isStaticMesh = BattlegroundUtilities::IsStaticMeshPickup(inventoryItem.RowName);
+//
+//
+//	if (isStaticMesh && inventoryItem.StaticMesh)
+//	{
+//		// If already have attached mesh, Just replace the static mesh
+//		UStaticMeshComponent* meshComponent = BattlegroundUtilities::FindAttachedMesh<UStaticMeshComponent>
+//			(this, ACharacter::GetMesh(), inventoryItem.AttachedSocket);
+//
+//		if (!meshComponent) meshComponent = NewObject<UStaticMeshComponent>(this);
+//
+//		meshComponent->SetStaticMesh(inventoryItem.StaticMesh);
+//		meshComponent->AttachToComponent(charecterMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale, inventoryItem.AttachedSocket);
+//		meshComponent->RegisterComponent();
+//	}
+//	else if (!isStaticMesh && inventoryItem.SkeletalMesh)
+//	{
+//		// If already have attached mesh, Just replace the skeletal mesh
+//		USkeletalMeshComponent* meshComponent = BattlegroundUtilities::FindAttachedMesh<USkeletalMeshComponent>
+//			(this, ACharacter::GetMesh(), inventoryItem.AttachedSocket);
+//
+//		if (!meshComponent) meshComponent = NewObject<USkeletalMeshComponent>(this);
+//
+//		meshComponent->SetSkeletalMesh(inventoryItem.SkeletalMesh);
+//		meshComponent->AttachToComponent(charecterMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale, inventoryItem.AttachedSocket);
+//		meshComponent->RegisterComponent();
+//	}
+//}
 #pragma endregion Private Helper Methods
 
 
 #pragma region Pickup Helper Methods
-FInventoryServer* ABattlegroundCharacter::PickBackpack(ABattlegroundPickup* pickupItem, uint8 subType)
+FInventoryServer* ABattlegroundCharacter::AddOrReplaceUniqueItem(ABattlegroundPickup* pickupItem, EPickupTypes pickupType, uint8 subType, bool& updatingInventory, bool& needDisposePickupRequestedItem)
 {
-	FInventoryServer* backpackItem = FindServerInventoryByType(EPickupTypes::Backpack);
-	const FName rowName = BattlegroundUtilities::MakePickupRowName(EPickupTypes::Backpack, subType);
-	if (backpackItem)
+	FInventoryServer* uniqueItem = FindServerInventoryByType(pickupType);
+	const FName requestedRowName = pickupItem->GetRowId();
+	
+	if (uniqueItem)
 	{
-		ABattlegroundPickupManager* pickupManager = ABattlegroundPickupManager::GetManager(AActor::GetWorld());
-		pickupManager->SpawnPickup(rowName, BattlegroundUtilities::GetFrontLocation(this, DEFAULT_PICKUP_FRONT_SPAWN_DISTANCE));
+		const FName currentRowName = uniqueItem->RowName;
 
-		backpackItem->Subtype = subType;
-		backpackItem->RowName = rowName;
+		if (currentRowName != requestedRowName)
+		{
+			// Re-initialize pickup item to the new type, Do not dispose the requested pickup item
+			// Just reused the requested pickup item, Due to the pickup item already registered in the user 
+			// So, If we dispose it, then we need to respawn it again
+			pickupItem->InitializePickup(uniqueItem->RowName, 1);
 
-		return backpackItem;
+			uniqueItem->RowName = requestedRowName;
+		}
+
+		uniqueItem->Subtype = subType;
+
+		needDisposePickupRequestedItem = false;
+		updatingInventory = true;
+
+		return uniqueItem;
 	}
 
-	FInventoryServer* newItem = new FInventoryServer();
+	FInventoryServer newItem;
 	
-	newItem->PickupType = EPickupTypes::Backpack;
-	newItem->Subtype = subType;
-	newItem->RowName = rowName;
-	newItem->Quantity = 1;
-	newItem->AttachedSocket = BattlegroundKeys::SOCKET_CHARECTER_BACKPACK;
+	newItem.PickupType = pickupType;
+	newItem.Subtype = subType;
+	newItem.RowName = requestedRowName;
+	newItem.Quantity = 1;
+	newItem.AttachedSocket = BattlegroundKeys::GetSocketNameByType(pickupType);
 
-	return newItem;
+	needDisposePickupRequestedItem = true;
+	updatingInventory = false;
+
+	// Add new item to inventory, And return the reference, For safe pointer usage
+	// If we return the pointer from here, It may cause invalid pointer access due to GC will clean up the current new memory
+	return &ServerInventory.Add_GetRef(newItem);
 }
 #pragma endregion Pickup Helper Methods
 
@@ -176,22 +226,29 @@ void ABattlegroundCharacter::Server_PickupItem_Implementation(ABattlegroundPicku
 {
 	if (!pickupItem || !AActor::HasAuthority()) return;
 
+	ABattlegroundGameMode* gameMode = Cast<ABattlegroundGameMode>(AActor::GetWorld()->GetAuthGameMode());
+	if (!gameMode) return;
 
 	if (CanPickupItem(pickupItem))
 	{
 		EPickupTypes pickupType;
 		uint8 subType;
 
+		// If Not valid RowName, Just return
 		if (!BattlegroundUtilities::ParsePickupRowName(pickupItem->GetRowId(), pickupType, subType)) return;
 
 		NEXUS_WARNING("Datatable ID:%s | Pickup Type: %s", *pickupItem->GetRowId().ToString(), *UEnum::GetValueAsString(pickupType));
 
 		FInventoryServer* serverInventory = nullptr;
-		
+		bool updatingInventory = false;
+		bool needDisposePickupItem = false;
+
 		switch (pickupType)
 		{
 		case EPickupTypes::Backpack:
-			serverInventory = this->PickBackpack(pickupItem, subType);
+		case EPickupTypes::Helmet:
+		case EPickupTypes::Armor:
+			serverInventory = this->AddOrReplaceUniqueItem(pickupItem, pickupType, subType, updatingInventory, needDisposePickupItem);
 			break;
 		default:
 			break;
@@ -200,11 +257,16 @@ void ABattlegroundCharacter::Server_PickupItem_Implementation(ABattlegroundPicku
 		if (serverInventory)
 		{
 			// TODO: Play Animation
-			this->ServerInventory.Add(*serverInventory);
+
+			// If Listeen Server, Just call OnRep function to update inventory
 			if (BattlegroundUtilities::IsListenServer(AActor::GetWorld())) this->OnRep_InventoryUpdated();
 		}
 
-		pickupItem->Destroy(true);
+		if (needDisposePickupItem)
+		{
+			gameMode->UnregisterPickup(pickupItem);
+			pickupItem->Destroy(true);
+		}
 	}
 
 }

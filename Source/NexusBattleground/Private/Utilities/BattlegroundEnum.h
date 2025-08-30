@@ -34,6 +34,28 @@ enum class EWeaponTypes : uint8
 	WT_SubmachineGun UMETA(DisplayName = "Submachine Gun"),
 };
 
+/**
+ * EAnimationStates
+ *
+ * This enum is used as a bitmask to represent multiple animation states
+ * (e.g., aiming, reloading, parachuting, etc.) within a single variable.
+ *
+ * > Replicated between Server and Clients:
+ *     - Instead of replicating multiple boolean flags, we combine them
+ *       into a single uint8 bitmask.
+ *     - This reduces replication overhead and helps save server bandwidth.
+ *
+ * > Developer Notes:
+ *     - Each state is represented by a single bit (1 << N).
+ *     - Multiple states can be active at the same time.
+ *     - When the server updates this value, it replicates once to all clients.
+ *
+ * > Usage:
+ *     - Use bitwise operations (&, |, ~) to check, set, or clear states.
+ *     - Example:
+ *         if (CurrentStates & EAnimationStates::IsAiming) { ... }
+ */
+
 UENUM(BlueprintType)
 enum class EAnimationStates : uint8
 {

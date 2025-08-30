@@ -124,24 +124,36 @@ void ABattlegroundPickup::SetHighlight(bool isHighlight)
 #pragma region Client/OnRep RPC
 void ABattlegroundPickup::OnRep_DatatableRowId()
 {
+	const bool isAlreadyInitialized = this->PickupData.StaticMesh.IsValid();
+	// NOTEE: Re-Initialization is required when the row ID changes | Sometime server may change the row ID to another valid one
+	// LIKE: If user try to pickup Backpack_1 and this user already have Backpack_2, so, server just change the row ID to Backpack_2
+	// Server do not dispose and re-create the pickup item, just change the row ID and let the client handle the rest
+    // 
+	// If already initialized, skip re-initialization
+    //if (isAlreadyInitialized) return;
 
-    if (this->PickupData.StaticMesh.IsValid() || this->DatatableRowId.IsNone()) return;
+    if (this->DatatableRowId.IsNone()) return;
 
     ABattlegroundPickupManager* pickupManager = ABattlegroundPickupManager::GetManager(GetWorld());
     if (!pickupManager) return;
 
-    this->PickupMesh = NewObject<UStaticMeshComponent>(this, UStaticMeshComponent::StaticClass(), TEXT("DynamicPickupMesh"));
-    this->PickupMesh->RegisterComponent();
-    this->PickupMesh->AttachToComponent(AActor::RootComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
+    if (!isAlreadyInitialized)
+    {
+        this->PickupMesh = NewObject<UStaticMeshComponent>(this, UStaticMeshComponent::StaticClass(), TEXT("DynamicPickupMesh"));
+        this->PickupMesh->RegisterComponent();
+        this->PickupMesh->AttachToComponent(AActor::RootComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
 
-    this->PickupMesh->SetSimulatePhysics(false);
-    this->PickupMesh->SetEnableGravity(false);
+        this->PickupMesh->SetSimulatePhysics(false);
+        this->PickupMesh->SetEnableGravity(false);
 
-    PickupMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-    this->PickupMesh->SetCollisionObjectType(ECC_WorldDynamic); // Or custom channel
-    this->PickupMesh->SetCollisionResponseToAllChannels(ECR_Ignore); // Ignore everything by default
-    this->PickupMesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore); // Ignore pawns
-    this->PickupMesh->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block); // Still traceable
+        PickupMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+        this->PickupMesh->SetCollisionObjectType(ECC_WorldDynamic); // Or custom channel
+        this->PickupMesh->SetCollisionResponseToAllChannels(ECR_Ignore); // Ignore everything by default
+        this->PickupMesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore); // Ignore pawns
+        this->PickupMesh->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block); // Still traceable
+    }
+    // Reset icon to force reload
+	else this->PickupIcon = nullptr;
 
     this->PickupData = pickupManager->GetPickupData(this->DatatableRowId);
     if (this->PickupData.IsValid)
