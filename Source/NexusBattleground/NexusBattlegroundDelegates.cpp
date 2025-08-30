@@ -5,7 +5,6 @@
 #include "NexusBattleground.h"
 #include "BattlegroundGameState.h"
 #include "BattlegroundPlayerState.h"
-#include "NexusBattlegroundDelegates.h"
 #include "IPlatformFilePak.h"
 #include "UObject/PackageReload.h"
 #include "Engine/GameEngine.h"
