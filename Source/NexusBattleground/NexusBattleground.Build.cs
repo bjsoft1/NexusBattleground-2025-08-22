@@ -22,7 +22,6 @@ public class NexusBattleground : ModuleRules
 
             "AssetRegistry",
             "SlateCore",
-            "AIModule",
             "GameplayTasks",
             "NavigationSystem",
             "OnlineSubsystem",
